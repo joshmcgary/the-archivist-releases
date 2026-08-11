@@ -8,6 +8,8 @@
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
   "icons": [
-    { "src": "../logo_26thearchivist.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }
+    { "src": "./docent-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./docent-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./docent-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
