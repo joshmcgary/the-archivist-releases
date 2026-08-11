@@ -19,6 +19,10 @@ let activeDetailWorkId = null;
 let artMenuOpen = false;
 let galleryScrollY = 0;
 let detailExpanded = false;
+let quoteCycleTimer = null;
+let quoteQueue = [];
+let quoteQueueSignature = '';
+let lastQuoteText = '';
 
 const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
 const updateVisualViewport = () => {
@@ -38,14 +42,49 @@ const matchesCategory = (work, category) => category === 'All'
   || (work.type || work.medium) === category;
 const workMediaSource = work => work.media?.src || '';
 const workExternalUrl = work => {
+  const candidates = [work.externalUrl, work.external_url, work.sourceUrl, work.remoteUrl, work.url, work.previewUrl, work.metadata?.external_url, work.metadata?.sourceUrl];
+  for (const candidate of candidates) {
+    try {
+      const parsed = new URL(String(candidate || ''));
+      if (['http:', 'https:'].includes(parsed.protocol)) return parsed.href;
+    } catch { /* Try the next legacy field. */ }
+  }
+  const thumbnailMatch = String(work.image || '').match(/^https:\/\/img\.youtube\.com\/vi\/([^/?#]{11})\//i);
+  return thumbnailMatch ? `https://www.youtube.com/watch?v=${thumbnailMatch[1]}` : '';
+};
+const linkedAppUrl = url => {
+  const youtube = String(url).match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?/\s]{11})/i);
+  if (youtube) return `youtube://watch?v=${youtube[1]}`;
   try {
-    const parsed = new URL(String(work.externalUrl || ''));
-    return ['http:', 'https:'].includes(parsed.protocol) ? parsed.href : '';
-  } catch { return ''; }
+    const parsed = new URL(url);
+    const spotify = parsed.hostname.endsWith('spotify.com') && parsed.pathname.match(/^\/(track|album|playlist|episode|show|artist)\/([^/?#]+)/i);
+    if (spotify) return `spotify:${spotify[1].toLowerCase()}:${spotify[2]}`;
+  } catch { /* The safe web URL remains the fallback. */ }
+  return '';
 };
 const openLinkedWork = work => {
   const url = workExternalUrl(work);
   if (!url) return false;
+  const youtube = String(url).match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?/\s]{11})/i);
+  if (youtube) {
+    location.assign(`https://www.youtube.com/watch?v=${youtube[1]}`);
+    return true;
+  }
+  const appUrl = linkedAppUrl(url);
+  if (appUrl) {
+    let fallbackTimer;
+    const cancelFallback = () => {
+      if (document.visibilityState === 'hidden') clearTimeout(fallbackTimer);
+      document.removeEventListener('visibilitychange', cancelFallback);
+    };
+    document.addEventListener('visibilitychange', cancelFallback);
+    location.href = appUrl;
+    fallbackTimer = setTimeout(() => {
+      document.removeEventListener('visibilitychange', cancelFallback);
+      location.href = url;
+    }, 1100);
+    return true;
+  }
   const anchor = document.createElement('a');
   anchor.href = url;
   anchor.target = '_blank';
@@ -55,6 +94,12 @@ const openLinkedWork = work => {
   anchor.remove();
   return true;
 };
+const sourceLaunchUrl = work => {
+  const url = workExternalUrl(work);
+  const youtube = String(url).match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?/\s]{11})/i);
+  return youtube ? `https://www.youtube.com/watch?v=${youtube[1]}` : url;
+};
+const sourceLaunchLabel = work => /(?:youtube\.com|youtu\.be)/i.test(workExternalUrl(work)) ? 'Open in YouTube' : 'Open source';
 const workCardVisual = work => {
   const source = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
   if (source) return `<img src="${source}" alt="${escapeHtml(work.title)}" loading="lazy">`;
@@ -286,7 +331,7 @@ const renderTopbar = () => {
     ['On device', gallery ? 'Ready' : 'Empty']
   ];
   return `<header class="topbar">
-    <button class="brand-lockup" data-home aria-label="Return to collection"><span class="nav-logo"><img src="../logo_26thearchivist.png" alt=""></span><span><strong>Docent</strong><em>by The Archivist</em></span></button>
+    <button class="brand-lockup" data-home aria-label="Return to collection"><span class="nav-logo"><img src="./docent-icon-512.png" alt=""></span><span><strong>Docent</strong><em>by The Archivist</em></span></button>
     <nav class="universal-nav" aria-label="Archive snapshot">${snapshot.map(([label, value]) => `<button data-stats><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></button>`).join('')}</nav>
     <div class="top-actions"><span class="offline-dot"></span><span class="sync-label">${escapeHtml(formatSync(gallery?.publishedAt))}</span><button class="icon-button" data-dropbox aria-label="Sync Dropbox" title="Sync Dropbox">↻</button><button class="icon-button" data-import aria-label="Import update" title="Import update">↥</button></div>
   </header><div class="stats-modal" data-stats-modal aria-hidden="true"><section class="stats-modal-card"><button class="stats-modal-close" data-stats-close aria-label="Close statistics">×</button><p class="eyebrow">Vault statistics</p><h2>The collection at a glance</h2><div class="stats-modal-grid">${snapshot.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('')}</div><p>Tap outside this panel to close.</p></section></div>`;
@@ -300,16 +345,17 @@ const renderDock = () => {
     anthology: '<svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2Zm0 14a2 2 0 0 1 2-2h12"/></svg>',
     reading: '<svg viewBox="0 0 24 24"><path d="M4 19V5m5 14V5m5 14V5m5 14-3-14"/></svg>',
     music: '<svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13M9 9l11-2"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
-    video: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/></svg>'
+    video: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/></svg>',
+    profile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>'
   };
-  const categories = [['All', 'Home', 'home'], ['Images', 'Images', 'images'], ['Poetry', 'Poetry', 'anthology'], ['Writing', 'Writing', 'reading'], ['Music', 'Music', 'music'], ['Video', 'Video', 'video']];
+  const categories = [['All', 'Home', 'home'], ['Images', 'Images', 'images'], ['Poetry', 'Poetry', 'anthology'], ['Writing', 'Writing', 'reading'], ['Music', 'Music', 'music'], ['Video', 'Video', 'video'], ['Profile', 'Profile', 'profile']];
   return `<button class="art-menu-scrim ${artMenuOpen ? 'is-open' : ''}" data-art-menu-dismiss aria-label="Close category menu"></button><aside class="art-menu ${artMenuOpen ? 'is-open' : ''}" aria-label="Browse artwork categories">
     <button class="art-menu-handle" data-art-menu-toggle aria-label="${artMenuOpen ? 'Close' : 'Open'} category menu"><span></span></button>
     <div class="art-menu-panel">
       <header><span>Browse</span><strong>The Docent</strong></header>
       <nav>${categories.map(([value, label, icon]) => {
-        const count = gallery.works.filter(work => matchesCategory(work, value)).length;
-        return `<button data-menu-category="${value}" class="category-${icon} ${activeType === value ? 'is-current' : ''}"><span class="category-icon">${categoryIcons[icon]}</span><span><strong>${label}</strong><em>${count} ${count === 1 ? 'work' : 'works'}</em></span></button>`;
+        const count = value === 'Profile' ? gallery.profile?.evaluationCorpusSize || gallery.works.length : gallery.works.filter(work => matchesCategory(work, value)).length;
+        return `<button data-menu-category="${value}" class="category-${icon} ${activeType === value ? 'is-current' : ''}"><span class="category-icon">${categoryIcons[icon]}</span><span><strong>${label}</strong><em>${value === 'Profile' ? `${count} works evaluated` : `${count} ${count === 1 ? 'work' : 'works'}`}</em></span></button>`;
       }).join('')}</nav>
     </div>
   </aside>`;
@@ -318,7 +364,7 @@ const renderDock = () => {
 const renderEmpty = () => {
   setCardViewLock(false);
   app.innerHTML = `${renderTopbar()}<main class="empty has-topbar">
-    <div class="monogram">C</div>
+    <div class="monogram docent-monogram"><img src="./docent-icon-512.png" alt="The Docent"></div>
     <p class="eyebrow">A companion to The Archivist</p>
     <h1>The Docent</h1>
     <p class="intro">Your private, portable gallery. Bring in a Docent file from The Archivist once; the complete portfolio remains on this device when disconnected.</p>
@@ -330,23 +376,175 @@ const renderEmpty = () => {
   bindActions();
 };
 
+const workGrade = work => work.grade ?? work.rating ?? work.metadata?.grade ?? work.metadata?.rating ?? '';
+const workQuotes = work => (Array.isArray(work.quotes) ? work.quotes : Array.isArray(work.metadata?.quotes) ? work.metadata.quotes : [])
+  .filter(quote => quote?.showInBook !== false)
+  .map(quote => typeof quote === 'string' ? { text: quote, attribution: '' } : quote)
+  .filter(quote => String(quote?.text || quote?.quote || '').trim());
+const epigraphMarkup = quote => `<button type="button" class="epigraph-link" data-quote-work="${escapeHtml(quote.work?.id || '')}" aria-label="Open ${escapeHtml(quote.work?.title || 'source work')}"><blockquote>“${escapeHtml(quote.text || quote.quote)}”</blockquote><figcaption><span></span>${escapeHtml(quote.attribution || gallery.profile?.name || 'The Artist')}<em>From ${escapeHtml(quote.work?.title || 'Untitled')}</em><small>The Archivist quote book</small></figcaption></button>`;
+const shuffledQuotes = quotes => {
+  const shuffled = [...quotes];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swap = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swap]] = [shuffled[swap], shuffled[index]];
+  }
+  if (shuffled.length > 1 && String(shuffled[0]?.text || shuffled[0]?.quote) === lastQuoteText) shuffled.push(shuffled.shift());
+  return shuffled;
+};
+
+const homeShelfCard = (work, index, variant = '') => `<button class="home-shelf-card ${variant === 'rated' ? 'is-rated-card' : ''} ${workExternalUrl(work) ? 'is-linked-work' : ''}" data-work="${escapeHtml(work.id)}" style="--delay:${index * 28}ms">
+  ${variant === 'rated' ? `<span class="home-score" aria-hidden="true">${escapeHtml(workGrade(work))}</span>` : ''}
+  <span class="home-shelf-art">${workCardVisual(work)}${variant === 'rated' ? `<span class="home-type-ribbon">${escapeHtml(work.medium || work.type || 'Artwork')}</span>` : ''}</span>
+  <span class="home-shelf-copy"><strong>${escapeHtml(work.title)}</strong><em>${escapeHtml(work.medium || work.type || 'Archive work')}</em></span>
+</button>`;
+
+const renderHome = works => {
+  const updateTime = work => Date.parse(work.updatedAt || work.date || '') || 0;
+  const gradeScore = work => {
+    const grade = String(workGrade(work)).trim().toUpperCase();
+    const numeric = Number.parseFloat(grade);
+    if (Number.isFinite(numeric)) return numeric;
+    const letter = grade.match(/^([ABCDF])([+-])?/);
+    if (!letter) return -Infinity;
+    return ({ A: 4, B: 3, C: 2, D: 1, F: 0 }[letter[1]] || 0) + (letter[2] === '+' ? .3 : letter[2] === '-' ? -.3 : 0);
+  };
+  const recent = [...works].sort((left, right) => updateTime(right) - updateTime(left) || works.indexOf(right) - works.indexOf(left)).slice(0, 12);
+  const highestRated = works.filter(work => String(workGrade(work)).trim()).sort((left, right) => gradeScore(right) - gradeScore(left)).slice(0, 12);
+  const latest = recent[0] || works[works.length - 1] || works[0];
+  const publicQuotes = works.flatMap(work => workQuotes(work).map(quote => ({ ...quote, work })));
+  const quoteSignature = publicQuotes.map(quote => `${quote.text || quote.quote}|${quote.attribution || ''}|${quote.work?.id || ''}`).join('\n');
+  if (quoteQueueSignature !== quoteSignature || !quoteQueue.length) {
+    quoteQueueSignature = quoteSignature;
+    quoteQueue = shuffledQuotes(publicQuotes);
+  }
+  const featuredQuote = quoteQueue.shift();
+  if (featuredQuote) lastQuoteText = String(featuredQuote.text || featuredQuote.quote);
+  const shelves = [
+    ['Recently updated', recent],
+    ['Highest rated', highestRated, 'rated'],
+    ['Images', works.filter(isImageWork)],
+    ['Poetry', works.filter(isPoetryWork)],
+    ['Music', works.filter(isMusicWork)],
+    ['Video', works.filter(isVideoWork)],
+    ['Writing', works.filter(work => !isPoetryWork(work) && (['writing', 'prose', 'essay', 'story', 'document'].includes(String(work.type || work.medium || '').toLowerCase()) || work.media?.mimeType === 'application/pdf' || work.mimeType === 'application/pdf'))]
+  ].filter(([, shelfWorks]) => shelfWorks.length);
+  app.innerHTML = `<div class="shell home-shell">
+    ${renderTopbar()}
+    ${featuredQuote ? `<figure class="home-epigraph" data-epigraph>${epigraphMarkup(featuredQuote)}</figure>` : ''}
+    <section class="home-feature" aria-label="Latest addition">
+      <div class="home-feature-media">${workCardVisual(latest)}</div>
+      <div class="home-feature-shade"></div>
+      <div class="home-feature-copy"><p class="eyebrow">Latest addition</p><h1>${escapeHtml(latest.title)}</h1><p>${escapeHtml(latest.description || latest.medium || latest.type || 'The newest work in this portable collection.')}</p><button data-work="${escapeHtml(latest.id)}">View work <span>→</span></button></div>
+    </section>
+    <main class="home-shelves" id="collection">
+      ${shelves.map(([title, shelfWorks, variant]) => `<section class="home-shelf ${variant === 'rated' ? 'is-rated-shelf' : ''}"><header><h2>${escapeHtml(title)}</h2><span>${shelfWorks.length}</span></header><div class="home-shelf-track">${shelfWorks.map((work, index) => homeShelfCard(work, index, variant)).join('')}</div></section>`).join('')}
+    </main>
+    <section class="about-panel" id="about"><p class="eyebrow">About the collection</p><h2>${escapeHtml(gallery.profile?.name || 'The Artist')}</h2>${gallery.profile?.statement ? `<p>${escapeHtml(gallery.profile.statement)}</p>` : '<p>This portable collection was curated in The Archivist.</p>'}</section>
+    <footer><span>${works.length} ${works.length === 1 ? 'work' : 'works'} on this device</span>${gallery.profile?.contact ? `<a href="mailto:${encodeURIComponent(gallery.profile.contact)}">Contact</a>` : ''}</footer>
+    ${renderDock()}
+  </div>`;
+  bindActions();
+  document.querySelector('[data-epigraph]')?.addEventListener('click', event => {
+    const trigger = event.target.closest('[data-quote-work]');
+    const sourceWork = works.find(work => String(work.id) === String(trigger?.dataset.quoteWork));
+    if (sourceWork) renderWork(sourceWork);
+  });
+  clearInterval(quoteCycleTimer);
+  if (publicQuotes.length > 1) quoteCycleTimer = setInterval(() => {
+    const epigraph = document.querySelector('[data-epigraph]');
+    if (!epigraph) return clearInterval(quoteCycleTimer);
+    epigraph.classList.add('is-changing');
+    setTimeout(() => {
+      if (!quoteQueue.length) quoteQueue = shuffledQuotes(publicQuotes);
+      const nextQuote = quoteQueue.shift();
+      lastQuoteText = String(nextQuote.text || nextQuote.quote);
+      epigraph.innerHTML = epigraphMarkup(nextQuote);
+      epigraph.classList.remove('is-changing');
+    }, 260);
+  }, 9000);
+};
+
+const profileScore = key => {
+  const values = (gallery?.works || []).map(work => Number.parseFloat(work[key] ?? work.metadata?.[key])).filter(Number.isFinite);
+  return values.length ? (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1) : '—';
+};
+
+const profileSections = text => {
+  const sections = [];
+  let current = { title: 'Critical profile', paragraphs: [] };
+  String(text || '').split('\n').forEach(raw => {
+    const line = raw.trim();
+    if (!line) return;
+    if (/^#{1,3}\s+/.test(line) || /^\*\*.+\*\*$/.test(line)) {
+      if (current.paragraphs.length) sections.push(current);
+      current = { title: line.replace(/[#*]/g, '').trim(), paragraphs: [] };
+    } else current.paragraphs.push(line.replace(/^[-*]\s*/, '').replace(/\*\*/g, ''));
+  });
+  if (current.paragraphs.length) sections.push(current);
+  return sections;
+};
+
+const renderProfile = works => {
+  const profile = gallery.profile || {};
+  const media = [...works.reduce((map, work) => {
+    const label = work.type || work.medium || 'Unclassified';
+    map.set(label, (map.get(label) || 0) + 1);
+    return map;
+  }, new Map()).entries()].sort((left, right) => right[1] - left[1]);
+  const tags = [...works.flatMap(work => work.tags || []).reduce((map, tag) => map.set(tag, (map.get(tag) || 0) + 1), new Map()).entries()].sort((left, right) => right[1] - left[1]).slice(0, 10);
+  const sections = profileSections(profile.evaluation);
+  const strongest = [...works].filter(work => String(workGrade(work)).trim()).sort((left, right) => Number.parseFloat(workGrade(right)) - Number.parseFloat(workGrade(left))).slice(0, 8);
+  const maxMedium = Math.max(1, ...media.map(([, count]) => count));
+  app.innerHTML = `<div class="shell profile-shell">
+    ${renderTopbar()}
+    <main class="profile-page">
+      <header class="profile-hero">
+        <div class="profile-portrait">${profile.portrait ? `<img src="${profile.portrait}" alt="Portrait of ${escapeHtml(profile.name || 'the artist')}">` : `<span>${escapeHtml(String(profile.name || 'A').charAt(0))}</span>`}</div>
+        <div class="profile-intro"><p class="eyebrow">The artist behind the archive</p><h1>${escapeHtml(profile.name || 'The Artist')}</h1>${profile.location ? `<p class="profile-location">${escapeHtml(profile.location)}</p>` : ''}${profile.statement ? `<blockquote>${escapeHtml(profile.statement)}</blockquote>` : '<blockquote>An artistic identity assembled from the complete portable corpus.</blockquote>'}</div>
+      </header>
+      <section class="profile-scoreboard" aria-label="Corpus evaluation"><div><span>Works</span><strong>${works.length}</strong></div><div><span>Grade</span><strong>${profileScore('grade')}</strong></div><div><span>Media</span><strong>${media.length}</strong></div><div><span>Projects</span><strong>${new Set(works.flatMap(work => work.projects || [])).size}</strong></div></section>
+      <section class="profile-practice"><div><p class="eyebrow">Multimodal practice</p><h2>A body of work without a single container.</h2></div><div class="profile-mediums">${media.map(([label, count]) => `<div><header><strong>${escapeHtml(label)}</strong><span>${count}</span></header><i style="--profile-bar:${Math.round((count / maxMedium) * 100)}%"></i></div>`).join('')}</div></section>
+      ${sections.length ? `<section class="profile-critical"><header><p class="eyebrow">Corpus intelligence</p><h2>Critical profile</h2><p>${profile.evaluationUpdatedAt ? `Synthesized ${escapeHtml(new Date(profile.evaluationUpdatedAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }))}` : `${works.length} works considered`}</p></header><div class="profile-essay">${sections.map(section => `<article><h3>${escapeHtml(section.title)}</h3>${section.paragraphs.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</article>`).join('')}</div></section>` : `<section class="profile-critical profile-awaiting"><p class="eyebrow">Corpus intelligence</p><h2>Awaiting the artist’s public corpus evaluation.</h2><p>Publish an Artistic Profile from Archivist to complete this page.</p></section>`}
+      ${tags.length ? `<section class="profile-signals"><p class="eyebrow">Recurring constellations</p><div>${tags.map(([tag, count]) => `<span>${escapeHtml(tag)} <em>${count}</em></span>`).join('')}</div></section>` : ''}
+      ${strongest.length ? `<section class="home-shelf profile-evidence"><header><h2>Evidence in the archive</h2><span>${strongest.length}</span></header><div class="home-shelf-track">${strongest.map((work, index) => homeShelfCard(work, index)).join('')}</div></section>` : ''}
+      <footer><span>Artist profile · ${works.length} works</span>${profile.contact ? `<a href="mailto:${encodeURIComponent(profile.contact)}">Contact</a>` : ''}</footer>
+    </main>${renderDock()}
+  </div>`;
+  bindActions();
+};
+
 const renderGallery = () => {
+  clearInterval(quoteCycleTimer);
   detailExpanded = false;
   setCardViewLock(false);
   const works = gallery.works || [];
+  if (!works.length) {
+    renderEmpty();
+    return;
+  }
+  if (activeType === 'All') {
+    renderHome(works);
+    return;
+  }
+  if (activeType === 'Profile') {
+    renderProfile(works);
+    return;
+  }
   const categoryWorks = works.filter(work => matchesCategory(work, activeType));
+  const categoryUpdateTime = work => Date.parse(work.updatedAt || work.date || '') || 0;
+  const categoryLatest = [...categoryWorks].sort((left, right) => categoryUpdateTime(right) - categoryUpdateTime(left) || categoryWorks.indexOf(right) - categoryWorks.indexOf(left))[0] || categoryWorks[0] || works[0];
   const projects = ['All', ...new Set(categoryWorks.flatMap(work => work.projects || []))];
   const types = ['All', ...new Set(categoryWorks.map(work => work.type || work.medium).filter(Boolean))];
   const tags = ['All', ...new Set(categoryWorks.flatMap(work => work.tags || []))];
   const filteredWorks = currentCollectionWorks();
   const years = categoryWorks.map(work => String(work.date || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)).map(Number).sort();
   const activeFilters = [activeProject !== 'All' && activeProject, activeTag !== 'All' && `#${activeTag}`].filter(Boolean);
-  app.innerHTML = `<div class="shell">
+  app.innerHTML = `<div class="shell category-shell">
     ${renderTopbar()}
-    <section class="hero">
-      <p class="eyebrow">${activeType === 'All' ? 'Selected works' : 'Collection'}</p>
-      <h1>${escapeHtml(activeType === 'All' ? (gallery.profile?.name || 'The Artist') : activeType)}</h1>
-      ${activeType === 'All' && gallery.profile?.statement ? `<p class="statement">${escapeHtml(gallery.profile.statement)}</p>` : ''}
+    <section class="home-feature category-feature" aria-label="Latest in ${escapeHtml(activeType)}">
+      <div class="home-feature-media">${workCardVisual(categoryLatest)}</div>
+      <div class="home-feature-shade"></div>
+      <div class="home-feature-copy"><p class="eyebrow">Latest in ${escapeHtml(activeType)}</p><h1>${escapeHtml(categoryLatest.title)}</h1><p>${escapeHtml(categoryLatest.description || categoryLatest.medium || categoryLatest.type || `The newest work in ${activeType}.`)}</p><button data-work="${escapeHtml(categoryLatest.id)}">View work <span>→</span></button></div>
     </section>
     <section class="collection-tools" id="collection">
       <label class="search"><span>Search collection</span><input type="search" value="${escapeHtml(searchQuery)}" placeholder="Title, medium, year, project…" data-search></label>
@@ -374,7 +572,7 @@ const renderGallery = () => {
     </details>
     <main class="work-grid">
       ${filteredWorks.map((work, index) => `<button class="work-card ${workExternalUrl(work) ? 'is-linked-work' : ''}" data-work="${escapeHtml(work.id)}" style="--delay:${index * 35}ms">
-        <span class="image-wrap">${workCardVisual(work)}${work.grade ? `<span class="card-grade">${escapeHtml(work.grade)}</span>` : ''}</span>
+        <span class="image-wrap">${workCardVisual(work)}</span>
         <span class="work-meta"><strong>${escapeHtml(work.title)}</strong><span>${escapeHtml([workExternalUrl(work) ? 'Open source' : '', work.medium, formatDate(work.date)].filter(Boolean).join(' · '))}</span></span>
       </button>`).join('')}
       ${filteredWorks.length ? '' : '<div class="no-results"><strong>No works found</strong><span>Try another search or project.</span></div>'}
@@ -402,7 +600,7 @@ const renderWork = work => {
     <div class="work-stage" data-swipe-stage>
       <button class="detail-close" data-back aria-label="Close card and return to gallery">×</button>
       <div class="card-motion" data-card-motion><div class="detail-card ${detailSide === 'metadata' ? 'is-flipped' : ''}" data-detail-card>
-        <section class="detail-face detail-front">${workDetailFront(work)}${work.grade ? `<span class="detail-grade"><small>Grade</small>${escapeHtml(work.grade)}</span>` : ''}</section>
+        <section class="detail-face detail-front">${workDetailFront(work)}${workExternalUrl(work) ? `<a class="external-launch" href="${escapeHtml(sourceLaunchUrl(work))}">${escapeHtml(sourceLaunchLabel(work))}<span>↗</span></a>` : ''}</section>
         <section class="detail-face detail-back">
           <p class="eyebrow">${escapeHtml(work.projects?.join(' · ') || 'Selected work')}</p>
           <h1>${escapeHtml(work.title)}</h1>
@@ -412,9 +610,10 @@ const renderWork = work => {
             ${work.type ? `<div><dt>Artwork type</dt><dd>${escapeHtml(work.type)}</dd></div>` : ''}
             ${work.dimensions ? `<div><dt>Dimensions</dt><dd>${escapeHtml(work.dimensions)}</dd></div>` : ''}
             ${work.catalogId ? `<div><dt>Catalog</dt><dd>${escapeHtml(work.catalogId)}</dd></div>` : ''}
-            ${work.grade ? `<div><dt>Grade</dt><dd>${escapeHtml(work.grade)}</dd></div>` : ''}
+            ${workGrade(work) ? `<div><dt>Grade</dt><dd>${escapeHtml(workGrade(work))}</dd></div>` : ''}
             ${work.identity ? `<div><dt>Identity</dt><dd>${escapeHtml(work.identity)}</dd></div>` : ''}
             ${work.duration ? `<div><dt>Duration</dt><dd>${escapeHtml(work.duration)}</dd></div>` : ''}
+            ${workExternalUrl(work) ? `<div><dt>Source</dt><dd><a class="metadata-source-link" href="${escapeHtml(sourceLaunchUrl(work))}">${escapeHtml(sourceLaunchLabel(work))} ↗</a></dd></div>` : ''}
             ${work.projects?.length ? `<div><dt>Project</dt><dd>${escapeHtml(work.projects.join(', '))}</dd></div>` : ''}
             ${work.tags?.length ? `<div><dt>Tags</dt><dd>${escapeHtml(work.tags.map(tag => `#${tag}`).join(' '))}</dd></div>` : ''}
           </dl>
@@ -424,8 +623,8 @@ const renderWork = work => {
         </section>
       </div></div>
     </div>
-    <div class="card-slider-wrap"><span>Previous</span><div class="card-slider" role="slider" tabindex="0" aria-label="Drag left or right to browse this collection" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" data-card-slider><span class="card-slider-track"><i data-slider-progress></i><b data-slider-thumb></b></span></div><span>Next</span></div>
-    <p class="swipe-hint">Tap the card to turn it over</p>
+    <div class="card-slider-wrap"><span>Next</span><div class="card-slider" role="slider" tabindex="0" aria-label="Pull left for next or right for previous" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" data-card-slider><span class="card-slider-track"><i data-slider-progress></i><b data-slider-thumb></b></span></div><span>Previous</span></div>
+    <p class="swipe-hint">${workExternalUrl(work) ? 'Hold the preview to open its source app' : work.media?.mimeType === 'application/pdf' ? 'Hold to expand · swipe sideways to browse' : 'Tap the card to turn it over'}</p>
     ${renderDock()}
   </article>`;
   const stage = document.querySelector('[data-swipe-stage]');
@@ -456,15 +655,20 @@ const renderWork = work => {
   const cancelLongPress = () => { clearTimeout(longPressTimer); longPressTimer = null; };
   const enterFullBleed = pointerId => {
     if (!pointerStart || pointerStart.id !== pointerId || detailExpanded) return;
-    detailExpanded = true;
     pointerStart.longPressed = true;
+    if (workExternalUrl(work)) {
+      pointerStart.openExternal = true;
+      navigator.vibrate?.(18);
+      return;
+    }
+    detailExpanded = true;
     document.querySelector('.work-view')?.classList.add('is-full-bleed');
     document.querySelector('[data-back]')?.setAttribute('aria-label', 'Exit full-screen card');
     navigator.vibrate?.(18);
   };
   stage?.addEventListener('pointerdown', event => {
-    if (event.target.closest('audio,video,iframe,button,input,.pdf-reader')) return;
-    pointerStart = { x: event.clientX, y: event.clientY, id: event.pointerId, time: performance.now(), dx: 0, longPressed: false };
+    if (event.target.closest('audio,video,iframe,button,input,a')) return;
+    pointerStart = { x: event.clientX, y: event.clientY, id: event.pointerId, time: performance.now(), dx: 0, longPressed: false, openExternal: false };
     cancelLongPress();
     longPressTimer = setTimeout(() => enterFullBleed(event.pointerId), 560);
     cardMotion.style.transition = 'none';
@@ -488,7 +692,9 @@ const renderWork = work => {
     const dy = event.clientY - pointerStart.y;
     const velocity = Math.abs(dx) / Math.max(1, performance.now() - pointerStart.time);
     const longPressed = pointerStart.longPressed;
+    const openExternal = pointerStart.openExternal;
     pointerStart = null;
+    if (openExternal) { cardMotion.style.transition = ''; cardMotion.style.transform = ''; openLinkedWork(work); return; }
     if (longPressed) { cardMotion.style.transition = ''; cardMotion.style.transform = ''; return; }
     if ((Math.abs(dx) > 38 || velocity > .28) && Math.abs(dx) > Math.abs(dy) * .7) {
       goToWork(dx < 0 ? next : previous, dx < 0 ? -1 : 1);
@@ -546,7 +752,7 @@ const renderWork = work => {
     sliderDrag = null;
     if (Math.abs(percent) >= 38 || velocity > .32) {
       sliderThumb.style.transform = `translateX(${direction < 0 ? '-120px' : '120px'})`;
-      goToWork(direction < 0 ? previous : next, direction < 0 ? -1 : 1);
+      goToWork(direction < 0 ? next : previous, direction < 0 ? -1 : 1);
     } else resetSlider();
     event.preventDefault();
   };
@@ -590,7 +796,6 @@ const bindActions = () => {
   document.querySelectorAll('[data-work]').forEach(button => button.addEventListener('click', () => {
     const work = gallery.works.find(candidate => String(candidate.id) === button.dataset.work);
     if (work) {
-      if (openLinkedWork(work)) return;
       galleryScrollY = window.scrollY; detailExpanded = false; detailSide = 'image'; renderWork(work);
     }
   }));
@@ -615,7 +820,7 @@ const bindActions = () => {
   };
   document.querySelectorAll('[data-collection]').forEach(button => button.addEventListener('click', () => openGalleryTarget('#collection')));
   document.querySelectorAll('[data-about]').forEach(button => button.addEventListener('click', () => openGalleryTarget('#about')));
-  document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', () => { if (gallery && !document.querySelector('.shell')) renderGallery(); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', () => { if (gallery) { activeType = 'All'; activeProject = 'All'; activeTag = 'All'; searchQuery = ''; renderGallery(); } window.scrollTo({ top: 0, behavior: 'smooth' }); }));
   document.querySelectorAll('[data-search-nav]').forEach(button => button.addEventListener('click', () => {
     openGalleryTarget('[data-search]', { focus: true });
   }));
@@ -714,11 +919,12 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=44', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
 const oauthState = oauth.get('state');
+const connectFromQr = oauth.get('connect') === 'dropbox';
 if (oauthCode) {
   try {
     if (oauthState !== sessionStorage.getItem('curator-dropbox-state')) throw new Error('Dropbox rejected the connection state.');
@@ -729,7 +935,12 @@ if (oauthCode) {
 
 gallery = await readStoredGallery();
 gallery ? renderGallery() : renderEmpty();
-if (navigator.onLine) syncDropbox({ quiet: true }).catch(() => {});
+if (connectFromQr) {
+  history.replaceState({}, '', location.pathname);
+  const existingDropbox = await readValue(DROPBOX_TOKEN);
+  if (existingDropbox) syncDropbox().catch(error => alert(error.message));
+  else connectDropbox().catch(error => alert(error.message));
+} else if (navigator.onLine) syncDropbox({ quiet: true }).catch(() => {});
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && navigator.onLine) syncDropbox({ quiet: true }).catch(() => {});
 });
