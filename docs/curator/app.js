@@ -472,23 +472,18 @@ const profileScore = key => {
 const profileSections = text => {
   const sections = [];
   let current = { title: 'Critical profile', paragraphs: [] };
-  String(text || '').split('\n').forEach(raw => {
+  String(text || '').replace(/\\n/g, '\n').split('\n').forEach(raw => {
     const line = raw.trim();
     if (!line) return;
     const tableCells = line.includes('|')
       ? line.replace(/^\|/, '').replace(/\|$/, '').split('|').map(cell => cell.trim()).filter(Boolean)
       : [];
     const isTableDivider = tableCells.length && tableCells.every(cell => /^:?-{3,}:?$/.test(cell));
-    const isRule = /^[-—_=\s]{3,}$/.test(line);
-    if (isTableDivider || isRule) return;
+    const isRule = /^[|:—_=\-\s]{3,}$/.test(line);
+    if (tableCells.length >= 2 || isTableDivider || isRule) return;
     if (/^#{1,3}\s+/.test(line) || /^\*\*.+\*\*$/.test(line)) {
       if (current.paragraphs.length) sections.push(current);
       current = { title: line.replace(/[#*]/g, '').trim(), paragraphs: [] };
-    } else if (tableCells.length >= 2) {
-      const normalizedHeader = tableCells.map(cell => cell.toLowerCase());
-      if (normalizedHeader.includes('metric') && normalizedHeader.includes('score')) return;
-      const [label, value, ...description] = tableCells;
-      current.paragraphs.push(`${label}${value ? ` — ${value}` : ''}${description.length ? `. ${description.join(' ')}` : ''}`);
     } else current.paragraphs.push(line.replace(/^[-*]\s*/, '').replace(/\*\*/g, ''));
   });
   if (current.paragraphs.length) sections.push(current);
@@ -504,6 +499,12 @@ const renderProfile = works => {
   }, new Map()).entries()].sort((left, right) => right[1] - left[1]);
   const tags = [...works.flatMap(work => work.tags || []).reduce((map, tag) => map.set(tag, (map.get(tag) || 0) + 1), new Map()).entries()].sort((left, right) => right[1] - left[1]).slice(0, 10);
   const sections = profileSections(profile.evaluation);
+  const dimensions = [
+    ['Cleverness', profileScore('cleverness'), 'Ingenuity, wit, and inventive problem-solving'],
+    ['Greatness', profileScore('greatness'), 'Artistic impact, ambition, and consequence'],
+    ['Proficiency', profileScore('proficiency'), 'Command, finish, and execution consistency'],
+    ['Expertise', profileScore('expertise'), 'Depth of knowledge and control of the medium']
+  ];
   const strongest = [...works].filter(work => String(workGrade(work)).trim()).sort((left, right) => Number.parseFloat(workGrade(right)) - Number.parseFloat(workGrade(left))).slice(0, 8);
   const maxMedium = Math.max(1, ...media.map(([, count]) => count));
   app.innerHTML = `<div class="shell profile-shell">
@@ -514,6 +515,7 @@ const renderProfile = works => {
         <div class="profile-intro"><p class="eyebrow">The artist behind the archive</p><h1>${escapeHtml(profile.name || 'The Artist')}</h1>${profile.location ? `<p class="profile-location">${escapeHtml(profile.location)}</p>` : ''}${profile.statement ? `<blockquote>${escapeHtml(profile.statement)}</blockquote>` : '<blockquote>An artistic identity assembled from the complete portable corpus.</blockquote>'}</div>
       </header>
       <section class="profile-scoreboard" aria-label="Corpus evaluation"><div><span>Works</span><strong>${works.length}</strong></div><div><span>Grade</span><strong>${profileScore('grade')}</strong></div><div><span>Media</span><strong>${media.length}</strong></div><div><span>Projects</span><strong>${new Set(works.flatMap(work => work.projects || [])).size}</strong></div></section>
+      <section class="profile-dimensions" aria-label="Creative dimensions"><header><p class="eyebrow">Creative dimensions</p><h2>The character of the complete practice.</h2></header><div>${dimensions.map(([label, score, definition]) => `<article><div><strong>${label}</strong><span>${score} / 10</span></div><i style="--dimension-score:${Number.isFinite(Number.parseFloat(score)) ? Math.min(100, Number.parseFloat(score) * 10) : 0}%"></i><p>${definition}</p></article>`).join('')}</div></section>
       <section class="profile-practice"><div><p class="eyebrow">Multimodal practice</p><h2>A body of work without a single container.</h2></div><div class="profile-mediums">${media.map(([label, count]) => `<div><header><strong>${escapeHtml(label)}</strong><span>${count}</span></header><i style="--profile-bar:${Math.round((count / maxMedium) * 100)}%"></i></div>`).join('')}</div></section>
       ${sections.length ? `<section class="profile-critical"><header><p class="eyebrow">Corpus intelligence</p><h2>Critical profile</h2><p>${profile.evaluationUpdatedAt ? `Synthesized ${escapeHtml(new Date(profile.evaluationUpdatedAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }))}` : `${works.length} works considered`}</p></header><div class="profile-essay">${sections.map(section => `<article><h3>${escapeHtml(section.title)}</h3>${section.paragraphs.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</article>`).join('')}</div></section>` : `<section class="profile-critical profile-awaiting"><p class="eyebrow">Corpus intelligence</p><h2>Awaiting the artist’s public corpus evaluation.</h2><p>Publish an Artistic Profile from Archivist to complete this page.</p></section>`}
       ${tags.length ? `<section class="profile-signals"><p class="eyebrow">Recurring constellations</p><div>${tags.map(([tag, count]) => `<span>${escapeHtml(tag)} <em>${count}</em></span>`).join('')}</div></section>` : ''}
@@ -930,7 +932,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=46', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=47', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
