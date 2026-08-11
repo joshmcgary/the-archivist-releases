@@ -475,9 +475,20 @@ const profileSections = text => {
   String(text || '').split('\n').forEach(raw => {
     const line = raw.trim();
     if (!line) return;
+    const tableCells = line.includes('|')
+      ? line.replace(/^\|/, '').replace(/\|$/, '').split('|').map(cell => cell.trim()).filter(Boolean)
+      : [];
+    const isTableDivider = tableCells.length && tableCells.every(cell => /^:?-{3,}:?$/.test(cell));
+    const isRule = /^[-—_=\s]{3,}$/.test(line);
+    if (isTableDivider || isRule) return;
     if (/^#{1,3}\s+/.test(line) || /^\*\*.+\*\*$/.test(line)) {
       if (current.paragraphs.length) sections.push(current);
       current = { title: line.replace(/[#*]/g, '').trim(), paragraphs: [] };
+    } else if (tableCells.length >= 2) {
+      const normalizedHeader = tableCells.map(cell => cell.toLowerCase());
+      if (normalizedHeader.includes('metric') && normalizedHeader.includes('score')) return;
+      const [label, value, ...description] = tableCells;
+      current.paragraphs.push(`${label}${value ? ` — ${value}` : ''}${description.length ? `. ${description.join(' ')}` : ''}`);
     } else current.paragraphs.push(line.replace(/^[-*]\s*/, '').replace(/\*\*/g, ''));
   });
   if (current.paragraphs.length) sections.push(current);
@@ -919,7 +930,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=45', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=46', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
