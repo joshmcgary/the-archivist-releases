@@ -1,0 +1,13 @@
+{
+  "name": "The Docent by The Archivist",
+  "short_name": "The Docent",
+  "description": "A private, offline portfolio companion for The Archivist.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "../logo_26thearchivist.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
