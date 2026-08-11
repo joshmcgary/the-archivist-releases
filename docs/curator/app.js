@@ -466,21 +466,30 @@ const renderHome = works => {
 
 const profileScore = key => {
   const values = (gallery?.works || []).map(work => Number.parseFloat(work[key] ?? work.metadata?.[key])).filter(Number.isFinite);
-  return values.length ? (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1) : '—';
+  if (values.length) return (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1);
+  const signature = gallery?.profile?.creativeSignature;
+  const signatureValue = key === 'grade'
+    ? signature?.averageGrade
+    : signature?.averages?.[key] ?? signature?.dimensionAverages?.[key] ?? signature?.[`average${key.charAt(0).toUpperCase()}${key.slice(1)}`];
+  if (Number.isFinite(Number.parseFloat(signatureValue))) return Number.parseFloat(signatureValue).toFixed(1);
+  const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = String(gallery?.profile?.evaluation || '').match(new RegExp(`${escaped}[^0-9]{0,20}([0-9]+(?:\\.[0-9]+)?)`, 'i'));
+  return match ? Number.parseFloat(match[1]).toFixed(1) : '—';
 };
 
 const profileSections = text => {
   const sections = [];
   let current = { title: 'Critical profile', paragraphs: [] };
   String(text || '').replace(/\\n/g, '\n').split('\n').forEach(raw => {
-    const line = raw.trim();
+    const line = raw.trim().replace(/^```(?:markdown|text)?\s*/i, '').replace(/```$/g, '').trim();
     if (!line) return;
     const tableCells = line.includes('|')
       ? line.replace(/^\|/, '').replace(/\|$/, '').split('|').map(cell => cell.trim()).filter(Boolean)
       : [];
     const isTableDivider = tableCells.length && tableCells.every(cell => /^:?-{3,}:?$/.test(cell));
-    const isRule = /^[|:—_=\-\s]{3,}$/.test(line);
-    if (tableCells.length >= 2 || isTableDivider || isRule) return;
+    const isRule = /^[|:+—–_=\-\s─-╿\\/]{3,}$/.test(line);
+    const tableLike = line.includes('|') || /^\+[-=+]+\+$/.test(line) || /^(metric|score|core definition|structural function)\b/i.test(line);
+    if (tableLike || tableCells.length >= 2 || isTableDivider || isRule) return;
     if (/^#{1,3}\s+/.test(line) || /^\*\*.+\*\*$/.test(line)) {
       if (current.paragraphs.length) sections.push(current);
       current = { title: line.replace(/[#*]/g, '').trim(), paragraphs: [] };
@@ -932,7 +941,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=47', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=48', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
