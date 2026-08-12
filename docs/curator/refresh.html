@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Refreshing The Docent</title>
+  <style>
+    html,body{height:100%;margin:0;background:#080808;color:#d9d2c2;font-family:system-ui,sans-serif}
+    body{display:grid;place-items:center;text-align:center;padding:28px;box-sizing:border-box}
+    main{max-width:360px}strong{display:block;color:#08a0ea;font:italic 36px Georgia,serif}
+    p{margin-top:18px;color:#777;font-size:12px;line-height:1.6;letter-spacing:.08em;text-transform:uppercase}
+  </style>
+</head>
+<body>
+  <main><strong>Refreshing The Docent</strong><p>Clearing the old interface shell. Your saved gallery will remain on this device.</p></main>
+  <script>
+    (async () => {
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(registration => registration.unregister()));
+      }
+      if ('caches' in window) {
+        const names = await caches.keys();
+        await Promise.all(names.filter(name => name.startsWith('the-docent-shell-')).map(name => caches.delete(name)));
+      }
+      location.replace(`./?shell=d52&recovered=${Date.now()}`);
+    })().catch(error => {
+      document.querySelector('p').textContent = `Refresh failed: ${error.message}. Close this page and try again while online.`;
+    });
+  </script>
+</body>
+</html>
