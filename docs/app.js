@@ -5,6 +5,7 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
+const DOCENT_BUILD = 'D50';
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -35,6 +36,11 @@ const isImageWork = work => ['drawing', 'image', 'photography', 'painting', 'ill
 const isMusicWork = work => ['music', 'audio', 'song', 'sound', 'album', 'recording'].includes(String(work.type || work.medium || '').toLowerCase()) || String(work.mimeType || '').startsWith('audio/');
 const isVideoWork = work => ['video', 'film', 'animation', 'motion'].includes(String(work.type || work.medium || '').toLowerCase()) || String(work.mimeType || '').startsWith('video/');
 const isPoetryWork = work => ['poetry', 'poem'].includes(String(work.type || work.medium || '').toLowerCase());
+const isWritingWork = work => {
+  const labels = [work.type, work.medium, ...(work.projects || []), ...(work.collections || []), ...(work.tags || [])]
+    .map(value => String(value || '').toLowerCase());
+  return labels.some(label => ['writing', 'prose', 'essay', 'story', 'document', 'theology', 'commentary', 'bible thoughts'].includes(label));
+};
 const matchesCategory = (work, category) => category === 'All'
   || (category === 'Images' && isImageWork(work))
   || (category === 'Music' && isMusicWork(work))
@@ -101,6 +107,10 @@ const sourceLaunchUrl = work => {
 };
 const sourceLaunchLabel = work => /(?:youtube\.com|youtu\.be)/i.test(workExternalUrl(work)) ? 'Open in YouTube' : 'Open source';
 const workCardVisual = work => {
+  if (isWritingWork(work) && work.text) {
+    const excerpt = String(work.text).replace(/\s+/g, ' ').trim().slice(0, 220);
+    return `<span class="media-placeholder media-writing"><strong>${escapeHtml(work.type || 'Writing')}</strong><em>${escapeHtml(excerpt)}</em></span>`;
+  }
   const source = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
   if (source) return `<img src="${source}" alt="${escapeHtml(work.title)}" loading="lazy">`;
   const kind = isMusicWork(work) ? 'Music' : isVideoWork(work) ? 'Video' : (work.type || work.medium || 'Archive');
@@ -113,6 +123,10 @@ const workDetailFront = work => {
   if (isVideoWork(work) && media) return `<video src="${media}" controls playsinline ${work.image ? `poster="${work.image}"` : ''}></video>`;
   if (isMusicWork(work) && media) return `<div class="audio-front">${work.image ? `<img src="${work.image}" alt="${escapeHtml(work.title)}">` : '<span class="audio-mark">♪</span>'}<h2>${escapeHtml(work.title)}</h2><audio src="${media}" controls></audio></div>`;
   const image = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? media : '');
+  if (isWritingWork(work) && work.text) {
+    const excerpt = String(work.text).replace(/\s+/g, ' ').trim();
+    return `<div class="text-front writing-front"><p class="eyebrow">${escapeHtml(work.type || 'Writing')}</p><h2>${escapeHtml(work.title)}</h2>${work.identity ? `<p class="writing-byline">By ${escapeHtml(work.identity)}</p>` : ''}<p>${escapeHtml(excerpt)}</p></div>`;
+  }
   if (image) return `<img src="${image}" alt="${escapeHtml(work.title)}">`;
   if (isPoetryWork(work) && work.text) return `<div class="text-front poetry-front"><p class="eyebrow">Poetry</p><h2>${escapeHtml(work.title)}</h2><p>Turn the card over to read the transcription.</p></div>`;
   return `<div class="text-front"><p class="eyebrow">${escapeHtml(work.type || work.medium || 'Archive work')}</p><h2>${escapeHtml(work.title)}</h2><p>${escapeHtml(work.text || work.description || 'Turn the card over for its Archivist record.')}</p></div>`;
@@ -656,7 +670,7 @@ const renderWork = work => {
             ${work.tags?.length ? `<div><dt>Tags</dt><dd>${escapeHtml(work.tags.map(tag => `#${tag}`).join(' '))}</dd></div>` : ''}
           </dl>
           ${work.critique ? `<section class="critique-card"><span>Archivist critique</span><p>${escapeHtml(work.critique)}</p></section>` : ''}
-          ${isPoetryWork(work) && work.text ? `<section class="transcription-card"><span>Transcription</span><p>${escapeHtml(work.text)}</p></section>` : ''}
+          ${work.text ? `<section class="transcription-card"><span>${isPoetryWork(work) ? 'Transcription' : 'Writing'}</span><p>${escapeHtml(work.text)}</p></section>` : ''}
           ${work.description ? `<p class="description">${escapeHtml(work.description)}</p>` : ''}
         </section>
       </div></div>
@@ -829,6 +843,13 @@ const renderWork = work => {
 };
 
 const bindActions = () => {
+  document.querySelector('[data-version-code]')?.remove();
+  const versionCode = document.createElement('span');
+  versionCode.className = 'version-code';
+  versionCode.dataset.versionCode = '';
+  versionCode.textContent = `${DOCENT_BUILD} · ${gallery?.payloadVersion || 'G?'}`;
+  versionCode.title = `Docent interface ${DOCENT_BUILD}; gallery payload ${gallery?.payloadVersion || 'legacy'}`;
+  document.body.appendChild(versionCode);
   document.querySelectorAll('[data-import]').forEach(button => button.addEventListener('click', () => packageInput.click()));
   document.querySelectorAll('[data-dropbox]').forEach(button => button.addEventListener('click', () => syncDropbox().catch(error => alert(error.message))));
   document.querySelectorAll('[data-work]').forEach(button => button.addEventListener('click', () => {
@@ -957,7 +978,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=49', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=50', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
