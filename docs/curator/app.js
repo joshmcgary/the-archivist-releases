@@ -5,7 +5,7 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D50';
+const DOCENT_BUILD = 'D51';
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -107,7 +107,8 @@ const sourceLaunchUrl = work => {
 };
 const sourceLaunchLabel = work => /(?:youtube\.com|youtu\.be)/i.test(workExternalUrl(work)) ? 'Open in YouTube' : 'Open source';
 const workCardVisual = work => {
-  if (isWritingWork(work) && work.text) {
+  const hasProseFront = Boolean(work.text) && (isWritingWork(work) || Boolean(workExternalUrl(work)));
+  if (hasProseFront) {
     const excerpt = String(work.text).replace(/\s+/g, ' ').trim().slice(0, 220);
     return `<span class="media-placeholder media-writing"><strong>${escapeHtml(work.type || 'Writing')}</strong><em>${escapeHtml(excerpt)}</em></span>`;
   }
@@ -123,7 +124,8 @@ const workDetailFront = work => {
   if (isVideoWork(work) && media) return `<video src="${media}" controls playsinline ${work.image ? `poster="${work.image}"` : ''}></video>`;
   if (isMusicWork(work) && media) return `<div class="audio-front">${work.image ? `<img src="${work.image}" alt="${escapeHtml(work.title)}">` : '<span class="audio-mark">♪</span>'}<h2>${escapeHtml(work.title)}</h2><audio src="${media}" controls></audio></div>`;
   const image = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? media : '');
-  if (isWritingWork(work) && work.text) {
+  const hasProseFront = Boolean(work.text) && (isWritingWork(work) || Boolean(workExternalUrl(work)));
+  if (hasProseFront) {
     const excerpt = String(work.text).replace(/\s+/g, ' ').trim();
     return `<div class="text-front writing-front"><p class="eyebrow">${escapeHtml(work.type || 'Writing')}</p><h2>${escapeHtml(work.title)}</h2>${work.identity ? `<p class="writing-byline">By ${escapeHtml(work.identity)}</p>` : ''}<p>${escapeHtml(excerpt)}</p></div>`;
   }
@@ -978,7 +980,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=50', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=51', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
