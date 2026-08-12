@@ -1,5 +1,5 @@
-const CACHE = 'the-docent-shell-v51';
-const SHELL = ['./', './index.html', './styles.css?v=51', './app.js?v=51', './manifest.webmanifest', './docent-icon-180.png', './docent-icon-192.png', './docent-icon-512.png', './docent-icon-maskable-512.png', './vendor/pdf.min.mjs', './vendor/pdf.worker.min.mjs'];
+const CACHE = 'the-docent-shell-v52';
+const SHELL = ['./', './index.html', './styles.css?v=52', './app.js?v=52', './manifest.webmanifest', './docent-icon-180.png', './docent-icon-192.png', './docent-icon-512.png', './docent-icon-maskable-512.png', './vendor/pdf.min.mjs', './vendor/pdf.worker.min.mjs'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)));
@@ -7,8 +7,12 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))));
-  self.clients.claim();
+  event.waitUntil((async () => {
+    await Promise.all((await caches.keys()).filter(key => key !== CACHE).map(key => caches.delete(key)));
+    await self.clients.claim();
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    await Promise.all(windows.map(client => client.navigate(client.url)));
+  })());
 });
 
 self.addEventListener('fetch', event => {
