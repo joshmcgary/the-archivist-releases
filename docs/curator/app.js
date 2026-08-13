@@ -5,7 +5,7 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D56';
+const DOCENT_BUILD = 'D57';
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -113,13 +113,15 @@ const sourceLaunchUrl = work => {
 };
 const sourceLaunchLabel = work => /(?:youtube\.com|youtu\.be)/i.test(workExternalUrl(work)) ? 'Open in YouTube' : 'Open source';
 const workCardVisual = work => {
+  const source = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
+  const isPdf = work.media?.mimeType === 'application/pdf' || work.mimeType === 'application/pdf';
+  if (isPdf && source) return `<img src="${source}" alt="Cover of ${escapeHtml(work.title)}" loading="lazy">`;
   const hasProseFront = Boolean(work.text) && (isWritingWork(work) || Boolean(workExternalUrl(work)));
   if (hasProseFront) {
     const quote = workQuotes(work)[0];
     const excerpt = String(quote?.text || quote?.quote || work.text).replace(/\s+/g, ' ').trim().slice(0, 240);
     return `<span class="media-placeholder media-writing"><em>“${escapeHtml(excerpt)}”</em><small>${escapeHtml(work.title || 'Writing')}</small></span>`;
   }
-  const source = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
   if (source) return `<img src="${source}" alt="${escapeHtml(work.title)}" loading="lazy">`;
   const kind = isMusicWork(work) ? 'Music' : isVideoWork(work) ? 'Video' : (work.type || work.medium || 'Archive');
   const excerpt = work.text || work.description || work.critique || '';
@@ -1029,7 +1031,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=56', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=57', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
