@@ -5,7 +5,7 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D55';
+const DOCENT_BUILD = 'D56';
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -40,6 +40,11 @@ const isWritingWork = work => {
   const labels = [work.type, work.medium, ...(work.projects || []), ...(work.collections || []), ...(work.tags || [])]
     .map(value => String(value || '').toLowerCase());
   return labels.some(label => ['writing', 'prose', 'essay', 'story', 'document', 'theology', 'commentary', 'bible thoughts'].includes(label));
+};
+const BIBLE_BOOKS = ['Genesis','Exodus','Leviticus','Numbers','Deuteronomy','Joshua','Judges','Ruth','1 Samuel','2 Samuel','1 Kings','2 Kings','1 Chronicles','2 Chronicles','Ezra','Nehemiah','Esther','Job','Psalms','Proverbs','Ecclesiastes','Song of Solomon','Isaiah','Jeremiah','Lamentations','Ezekiel','Daniel','Hosea','Joel','Amos','Obadiah','Jonah','Micah','Nahum','Habakkuk','Zephaniah','Haggai','Zechariah','Malachi','Matthew','Mark','Luke','John','Acts','Romans','1 Corinthians','2 Corinthians','Galatians','Ephesians','Philippians','Colossians','1 Thessalonians','2 Thessalonians','1 Timothy','2 Timothy','Titus','Philemon','Hebrews','James','1 Peter','2 Peter','1 John','2 John','3 John','Jude','Revelation'];
+const bibleBookOrder = name => {
+  const index = BIBLE_BOOKS.findIndex(book => book.toLowerCase() === String(name || '').toLowerCase());
+  return index < 0 ? Number.MAX_SAFE_INTEGER : index;
 };
 const matchesCategory = (work, category) => category === 'All'
   || (category === 'Images' && isImageWork(work))
@@ -128,9 +133,7 @@ const workDetailFront = work => {
   const image = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? media : '');
   const hasProseFront = Boolean(work.text) && (isWritingWork(work) || Boolean(workExternalUrl(work)));
   if (hasProseFront) {
-    const quote = workQuotes(work)[0];
-    const excerpt = String(quote?.text || quote?.quote || work.text).replace(/\s+/g, ' ').trim().slice(0, 420);
-    return `<div class="text-front writing-front writing-quote-front"><blockquote>“${escapeHtml(excerpt)}”</blockquote><h2>${escapeHtml(work.title)}</h2>${work.identity ? `<p class="writing-byline">By ${escapeHtml(work.identity)}</p>` : ''}</div>`;
+    return `<div class="text-front writing-front"><h2>${escapeHtml(work.title)}</h2>${work.identity ? `<p class="writing-byline">By ${escapeHtml(work.identity)}</p>` : ''}<p>${escapeHtml(work.text)}</p></div>`;
   }
   if (image) return `<img src="${image}" alt="${escapeHtml(work.title)}">`;
   if (isPoetryWork(work) && work.text) return `<div class="text-front poetry-front"><p class="eyebrow">Poetry</p><h2>${escapeHtml(work.title)}</h2><p>Turn the card over to read the transcription.</p></div>`;
@@ -607,7 +610,8 @@ const renderGallery = () => {
   }
   const categoryWorks = works.filter(work => matchesCategory(work, activeType));
   const categoryUpdateTime = work => Date.parse(work.updatedAt || work.date || '') || 0;
-  const categoryLatest = [...categoryWorks].sort((left, right) => categoryUpdateTime(right) - categoryUpdateTime(left) || categoryWorks.indexOf(right) - categoryWorks.indexOf(left))[0] || categoryWorks[0] || works[0];
+  const featuredCategoryWorks = activeProject === 'All' ? categoryWorks : categoryWorks.filter(work => work.projects?.includes(activeProject));
+  const categoryLatest = [...featuredCategoryWorks].sort((left, right) => categoryUpdateTime(right) - categoryUpdateTime(left) || featuredCategoryWorks.indexOf(right) - featuredCategoryWorks.indexOf(left))[0] || categoryWorks[0] || works[0];
   const projects = ['All', ...new Set(categoryWorks.flatMap(work => work.projects || []))];
   const types = ['All', ...new Set(categoryWorks.map(work => work.type || work.medium).filter(Boolean))];
   const tags = ['All', ...new Set(categoryWorks.flatMap(work => work.tags || []))];
@@ -621,8 +625,16 @@ const renderGallery = () => {
   ].filter(([, shelfWorks]) => shelfWorks.length);
   const years = categoryWorks.map(work => String(work.date || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)).map(Number).sort();
   const activeFilters = [activeProject !== 'All' && activeProject, activeTag !== 'All' && `#${activeTag}`].filter(Boolean);
+  const writingVolumes = activeType === 'Writing' ? projects.filter(project => project !== 'All' && project.toLowerCase() !== 'bible thoughts').map(project => ({
+    name: project,
+    items: categoryWorks.filter(work => work.projects?.includes(project))
+  })).filter(volume => volume.items.length).sort((a, b) => {
+    const bibleDifference = bibleBookOrder(a.name) - bibleBookOrder(b.name);
+    return bibleDifference || a.name.localeCompare(b.name);
+  }) : [];
   app.innerHTML = `<div class="shell category-shell">
     ${renderTopbar()}
+    ${writingVolumes.length ? `<section class="docent-library" aria-label="Writing library"><header><p class="eyebrow">Writing library</p><h2>Select a volume</h2><span>${writingVolumes.length} books</span></header><div class="docent-library-shelf">${writingVolumes.map(volume => `<button data-project="${escapeHtml(volume.name)}" class="${activeProject === volume.name ? 'is-active' : ''}" style="--book-height:${Math.min(176, 112 + Math.log2(volume.items.length + 1) * 14)}px;--book-width:${Math.min(66, 42 + Math.log2(volume.items.length + 1) * 5)}px" title="${escapeHtml(volume.name)} — ${volume.items.length} writings"><span>${escapeHtml(volume.name)}</span><em>${volume.items.length}</em></button>`).join('')}</div></section>` : ''}
     <section class="home-feature category-feature" aria-label="Latest in ${escapeHtml(activeType)}">
       <div class="home-feature-media">${workCardVisual(categoryLatest)}</div>
       <div class="home-feature-shade"></div>
@@ -1017,7 +1029,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=55', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=56', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
