@@ -5,7 +5,7 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D53';
+const DOCENT_BUILD = 'D54';
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -24,6 +24,7 @@ let quoteCycleTimer = null;
 let quoteQueue = [];
 let quoteQueueSignature = '';
 let lastQuoteText = '';
+let profileExamplesOpen = true;
 
 const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
 const updateVisualViewport = () => {
@@ -45,6 +46,7 @@ const matchesCategory = (work, category) => category === 'All'
   || (category === 'Images' && isImageWork(work))
   || (category === 'Music' && isMusicWork(work))
   || (category === 'Video' && isVideoWork(work))
+  || (category === 'Writing' && isWritingWork(work) && !isPoetryWork(work))
   || (work.type || work.medium) === category;
 const workMediaSource = work => work.media?.src || '';
 const workExternalUrl = work => {
@@ -109,8 +111,9 @@ const sourceLaunchLabel = work => /(?:youtube\.com|youtu\.be)/i.test(workExterna
 const workCardVisual = work => {
   const hasProseFront = Boolean(work.text) && (isWritingWork(work) || Boolean(workExternalUrl(work)));
   if (hasProseFront) {
-    const excerpt = String(work.text).replace(/\s+/g, ' ').trim().slice(0, 220);
-    return `<span class="media-placeholder media-writing"><strong>${escapeHtml(work.type || 'Writing')}</strong><em>${escapeHtml(excerpt)}</em></span>`;
+    const quote = workQuotes(work)[0];
+    const excerpt = String(quote?.text || quote?.quote || work.text).replace(/\s+/g, ' ').trim().slice(0, 240);
+    return `<span class="media-placeholder media-writing"><em>“${escapeHtml(excerpt)}”</em><small>${escapeHtml(work.title || 'Writing')}</small></span>`;
   }
   const source = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
   if (source) return `<img src="${source}" alt="${escapeHtml(work.title)}" loading="lazy">`;
@@ -126,8 +129,9 @@ const workDetailFront = work => {
   const image = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? media : '');
   const hasProseFront = Boolean(work.text) && (isWritingWork(work) || Boolean(workExternalUrl(work)));
   if (hasProseFront) {
-    const excerpt = String(work.text).replace(/\s+/g, ' ').trim();
-    return `<div class="text-front writing-front"><p class="eyebrow">${escapeHtml(work.type || 'Writing')}</p><h2>${escapeHtml(work.title)}</h2>${work.identity ? `<p class="writing-byline">By ${escapeHtml(work.identity)}</p>` : ''}<p>${escapeHtml(excerpt)}</p></div>`;
+    const quote = workQuotes(work)[0];
+    const excerpt = String(quote?.text || quote?.quote || work.text).replace(/\s+/g, ' ').trim().slice(0, 420);
+    return `<div class="text-front writing-front writing-quote-front"><blockquote>“${escapeHtml(excerpt)}”</blockquote><h2>${escapeHtml(work.title)}</h2>${work.identity ? `<p class="writing-byline">By ${escapeHtml(work.identity)}</p>` : ''}</div>`;
   }
   if (image) return `<img src="${image}" alt="${escapeHtml(work.title)}">`;
   if (isPoetryWork(work) && work.text) return `<div class="text-front poetry-front"><p class="eyebrow">Poetry</p><h2>${escapeHtml(work.title)}</h2><p>Turn the card over to read the transcription.</p></div>`;
@@ -455,7 +459,7 @@ const renderHome = works => {
     <main class="home-shelves" id="collection">
       ${shelves.map(([title, shelfWorks, variant]) => `<section class="home-shelf ${variant === 'rated' ? 'is-rated-shelf' : ''}"><header><h2>${escapeHtml(title)}</h2><span>${shelfWorks.length}</span></header><div class="home-shelf-track">${shelfWorks.map((work, index) => homeShelfCard(work, index, variant)).join('')}</div></section>`).join('')}
     </main>
-    <section class="about-panel" id="about"><p class="eyebrow">About the collection</p><h2>${escapeHtml(gallery.profile?.name || 'The Artist')}</h2>${gallery.profile?.statement ? `<p>${escapeHtml(gallery.profile.statement)}</p>` : '<p>This portable collection was curated in The Archivist.</p>'}</section>
+    <button class="about-panel" id="about" data-open-profile><span class="eyebrow">About the collection</span><h2>${escapeHtml(gallery.profile?.name || 'The Artist')}</h2>${gallery.profile?.statement ? `<span>${escapeHtml(gallery.profile.statement)}</span>` : '<span>This portable collection was curated in The Archivist.</span>'}</button>
     <footer><span>${works.length} ${works.length === 1 ? 'work' : 'works'} on this device</span>${gallery.profile?.contact ? `<a href="mailto:${encodeURIComponent(gallery.profile.contact)}">Contact</a>` : ''}</footer>
     ${renderDock()}
   </div>`;
@@ -551,6 +555,7 @@ const renderProfile = works => {
   app.innerHTML = `<div class="shell profile-shell">
     ${renderTopbar()}
     <main class="profile-page">
+      ${strongest.length ? `<aside class="profile-examples ${profileExamplesOpen ? 'is-open' : ''}" data-profile-examples><button class="profile-examples-close" data-profile-examples-close aria-label="Hide example artwork">×</button><p class="eyebrow">Selected examples</p><div class="profile-examples-track">${strongest.slice(0, 4).map((work, index) => homeShelfCard(work, index)).join('')}</div></aside><button class="profile-examples-tab ${profileExamplesOpen ? '' : 'is-visible'}" data-profile-examples-open>Examples</button>` : ''}
       <header class="profile-hero">
         <div class="profile-portrait">${profile.portrait ? `<img src="${profile.portrait}" alt="Portrait of ${escapeHtml(profile.name || 'the artist')}">` : `<span>${escapeHtml(String(profile.name || 'A').charAt(0))}</span>`}</div>
         <div class="profile-intro"><p class="eyebrow">The artist behind the archive</p><h1>${escapeHtml(profile.name || 'The Artist')}</h1>${profile.location ? `<p class="profile-location">${escapeHtml(profile.location)}</p>` : ''}${profile.statement ? `<blockquote>${escapeHtml(profile.statement)}</blockquote>` : '<blockquote>An artistic identity assembled from the complete portable corpus.</blockquote>'}</div>
@@ -591,6 +596,13 @@ const renderGallery = () => {
   const types = ['All', ...new Set(categoryWorks.map(work => work.type || work.medium).filter(Boolean))];
   const tags = ['All', ...new Set(categoryWorks.flatMap(work => work.tags || []))];
   const filteredWorks = currentCollectionWorks();
+  const gradeScore = work => Number.parseFloat(workGrade(work)) || -Infinity;
+  const updateTime = work => Date.parse(work.updatedAt || work.date || '') || 0;
+  const categoryShelves = [
+    ['Recently updated', [...filteredWorks].sort((a, b) => updateTime(b) - updateTime(a)).slice(0, 16)],
+    ['Highest rated', [...filteredWorks].filter(work => String(workGrade(work)).trim()).sort((a, b) => gradeScore(b) - gradeScore(a)).slice(0, 16), 'rated'],
+    ...projects.filter(project => project !== 'All').map(project => [project, filteredWorks.filter(work => work.projects?.includes(project))])
+  ].filter(([, shelfWorks]) => shelfWorks.length);
   const years = categoryWorks.map(work => String(work.date || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)).map(Number).sort();
   const activeFilters = [activeProject !== 'All' && activeProject, activeTag !== 'All' && `#${activeTag}`].filter(Boolean);
   app.innerHTML = `<div class="shell category-shell">
@@ -624,14 +636,11 @@ const renderGallery = () => {
         <div><strong>${filteredWorks.length}</strong><span>Currently visible</span></div>
       </div>
     </details>
-    <main class="work-grid">
-      ${filteredWorks.map((work, index) => `<button class="work-card ${workExternalUrl(work) ? 'is-linked-work' : ''}" data-work="${escapeHtml(work.id)}" style="--delay:${index * 35}ms">
-        <span class="image-wrap">${workCardVisual(work)}</span>
-        <span class="work-meta"><strong>${escapeHtml(work.title)}</strong><span>${escapeHtml([workExternalUrl(work) ? 'Open source' : '', work.medium, formatDate(work.date)].filter(Boolean).join(' · '))}</span></span>
-      </button>`).join('')}
+    <main class="home-shelves category-shelves">
+      ${categoryShelves.map(([title, shelfWorks, variant]) => `<section class="home-shelf ${variant === 'rated' ? 'is-rated-shelf' : ''}"><header><h2>${escapeHtml(title)}</h2><span>${shelfWorks.length}</span></header><div class="home-shelf-track">${shelfWorks.map((work, index) => homeShelfCard(work, index, variant)).join('')}</div></section>`).join('')}
       ${filteredWorks.length ? '' : '<div class="no-results"><strong>No works found</strong><span>Try another search or project.</span></div>'}
     </main>
-    <section class="about-panel" id="about"><p class="eyebrow">About the collection</p><h2>${escapeHtml(gallery.profile?.name || 'The Artist')}</h2>${gallery.profile?.statement ? `<p>${escapeHtml(gallery.profile.statement)}</p>` : '<p>This portable collection was curated in The Archivist.</p>'}</section>
+    <button class="about-panel" id="about" data-open-profile><span class="eyebrow">About the collection</span><h2>${escapeHtml(gallery.profile?.name || 'The Artist')}</h2>${gallery.profile?.statement ? `<span>${escapeHtml(gallery.profile.statement)}</span>` : '<span>This portable collection was curated in The Archivist.</span>'}</button>
     <footer><span>${categoryWorks.length} ${categoryWorks.length === 1 ? 'work' : 'works'} in ${activeType === 'All' ? 'the collection' : escapeHtml(activeType)}</span>${gallery.profile?.contact ? `<a href="mailto:${encodeURIComponent(gallery.profile.contact)}">Contact</a>` : ''}</footer>
     ${renderDock()}
   </div>`;
@@ -881,6 +890,17 @@ const bindActions = () => {
   };
   document.querySelectorAll('[data-collection]').forEach(button => button.addEventListener('click', () => openGalleryTarget('#collection')));
   document.querySelectorAll('[data-about]').forEach(button => button.addEventListener('click', () => openGalleryTarget('#about')));
+  document.querySelectorAll('[data-open-profile]').forEach(button => button.addEventListener('click', () => { activeType = 'Profile'; activeProject = 'All'; activeTag = 'All'; searchQuery = ''; renderGallery(); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  document.querySelector('[data-profile-examples-close]')?.addEventListener('click', () => {
+    profileExamplesOpen = false;
+    document.querySelector('[data-profile-examples]')?.classList.remove('is-open');
+    document.querySelector('[data-profile-examples-open]')?.classList.add('is-visible');
+  });
+  document.querySelector('[data-profile-examples-open]')?.addEventListener('click', () => {
+    profileExamplesOpen = true;
+    document.querySelector('[data-profile-examples]')?.classList.add('is-open');
+    document.querySelector('[data-profile-examples-open]')?.classList.remove('is-visible');
+  });
   document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', () => { if (gallery) { activeType = 'All'; activeProject = 'All'; activeTag = 'All'; searchQuery = ''; renderGallery(); } window.scrollTo({ top: 0, behavior: 'smooth' }); }));
   document.querySelectorAll('[data-search-nav]').forEach(button => button.addEventListener('click', () => {
     openGalleryTarget('[data-search]', { focus: true });
@@ -980,7 +1000,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=53', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=54', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
