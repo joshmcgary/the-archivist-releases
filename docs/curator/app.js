@@ -5,7 +5,7 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D54';
+const DOCENT_BUILD = 'D55';
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -24,7 +24,6 @@ let quoteCycleTimer = null;
 let quoteQueue = [];
 let quoteQueueSignature = '';
 let lastQuoteText = '';
-let profileExamplesOpen = true;
 
 const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
 const updateVisualViewport = () => {
@@ -535,6 +534,24 @@ const profileSections = text => {
   return sections;
 };
 
+const profileParagraphMarkup = (paragraph, works) => {
+  const citedWorks = works
+    .filter(work => String(work.title || '').trim().length >= 4)
+    .sort((a, b) => String(b.title).length - String(a.title).length);
+  if (!citedWorks.length) return escapeHtml(paragraph);
+  const escapedTitles = citedWorks.map(work => String(work.title).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const matcher = new RegExp(`(${escapedTitles.join('|')})`, 'gi');
+  let cursor = 0;
+  let markup = '';
+  for (const match of String(paragraph).matchAll(matcher)) {
+    const work = citedWorks.find(candidate => String(candidate.title).toLowerCase() === match[0].toLowerCase());
+    markup += escapeHtml(String(paragraph).slice(cursor, match.index));
+    markup += work ? `<button type="button" class="profile-citation" data-profile-citation="${escapeHtml(work.id)}">${escapeHtml(match[0])}</button>` : escapeHtml(match[0]);
+    cursor = match.index + match[0].length;
+  }
+  return markup + escapeHtml(String(paragraph).slice(cursor));
+};
+
 const renderProfile = works => {
   const profile = gallery.profile || {};
   const media = [...works.reduce((map, work) => {
@@ -555,7 +572,6 @@ const renderProfile = works => {
   app.innerHTML = `<div class="shell profile-shell">
     ${renderTopbar()}
     <main class="profile-page">
-      ${strongest.length ? `<aside class="profile-examples ${profileExamplesOpen ? 'is-open' : ''}" data-profile-examples><button class="profile-examples-close" data-profile-examples-close aria-label="Hide example artwork">×</button><p class="eyebrow">Selected examples</p><div class="profile-examples-track">${strongest.slice(0, 4).map((work, index) => homeShelfCard(work, index)).join('')}</div></aside><button class="profile-examples-tab ${profileExamplesOpen ? '' : 'is-visible'}" data-profile-examples-open>Examples</button>` : ''}
       <header class="profile-hero">
         <div class="profile-portrait">${profile.portrait ? `<img src="${profile.portrait}" alt="Portrait of ${escapeHtml(profile.name || 'the artist')}">` : `<span>${escapeHtml(String(profile.name || 'A').charAt(0))}</span>`}</div>
         <div class="profile-intro"><p class="eyebrow">The artist behind the archive</p><h1>${escapeHtml(profile.name || 'The Artist')}</h1>${profile.location ? `<p class="profile-location">${escapeHtml(profile.location)}</p>` : ''}${profile.statement ? `<blockquote>${escapeHtml(profile.statement)}</blockquote>` : '<blockquote>An artistic identity assembled from the complete portable corpus.</blockquote>'}</div>
@@ -563,11 +579,11 @@ const renderProfile = works => {
       <section class="profile-scoreboard" aria-label="Corpus evaluation"><div><span>Works</span><strong>${works.length}</strong></div><div><span>Grade</span><strong>${profileScore('grade')}</strong></div><div><span>Media</span><strong>${media.length}</strong></div><div><span>Projects</span><strong>${new Set(works.flatMap(work => work.projects || [])).size}</strong></div></section>
       <section class="profile-dimensions" aria-label="Creative dimensions"><header><p class="eyebrow">Creative dimensions</p><h2>The character of the complete practice.</h2></header><div>${dimensions.map(([label, score, definition]) => `<article><div><strong>${label}</strong><span>${score} / 10</span></div><i style="--dimension-score:${Number.isFinite(Number.parseFloat(score)) ? Math.min(100, Number.parseFloat(score) * 10) : 0}%"></i><p>${definition}</p></article>`).join('')}</div></section>
       <section class="profile-practice"><div><p class="eyebrow">Multimodal practice</p><h2>A body of work without a single container.</h2></div><div class="profile-mediums">${media.map(([label, count]) => `<div><header><strong>${escapeHtml(label)}</strong><span>${count}</span></header><i style="--profile-bar:${Math.round((count / maxMedium) * 100)}%"></i></div>`).join('')}</div></section>
-      ${sections.length ? `<section class="profile-critical"><header><p class="eyebrow">Corpus intelligence</p><h2>Critical profile</h2><p>${profile.evaluationUpdatedAt ? `Synthesized ${escapeHtml(new Date(profile.evaluationUpdatedAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }))}` : `${works.length} works considered`}</p></header><div class="profile-essay">${sections.map(section => `<article><h3>${escapeHtml(section.title)}</h3>${section.paragraphs.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</article>`).join('')}</div></section>` : `<section class="profile-critical profile-awaiting"><p class="eyebrow">Corpus intelligence</p><h2>Awaiting the artist’s public corpus evaluation.</h2><p>Publish an Artistic Profile from Archivist to complete this page.</p></section>`}
+      ${sections.length ? `<section class="profile-critical"><header><p class="eyebrow">Corpus intelligence</p><h2>Critical profile</h2><p>${profile.evaluationUpdatedAt ? `Synthesized ${escapeHtml(new Date(profile.evaluationUpdatedAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }))}` : `${works.length} works considered`}</p></header><div class="profile-essay">${sections.map(section => `<article><h3>${escapeHtml(section.title)}</h3>${section.paragraphs.map(paragraph => `<p>${profileParagraphMarkup(paragraph, works)}</p>`).join('')}</article>`).join('')}</div></section>` : `<section class="profile-critical profile-awaiting"><p class="eyebrow">Corpus intelligence</p><h2>Awaiting the artist’s public corpus evaluation.</h2><p>Publish an Artistic Profile from Archivist to complete this page.</p></section>`}
       ${tags.length ? `<section class="profile-signals"><p class="eyebrow">Recurring constellations</p><div>${tags.map(([tag, count]) => `<span>${escapeHtml(tag)} <em>${count}</em></span>`).join('')}</div></section>` : ''}
       ${strongest.length ? `<section class="home-shelf profile-evidence"><header><h2>Evidence in the archive</h2><span>${strongest.length}</span></header><div class="home-shelf-track">${strongest.map((work, index) => homeShelfCard(work, index)).join('')}</div></section>` : ''}
       <footer><span>Artist profile · ${works.length} works</span>${profile.contact ? `<a href="mailto:${encodeURIComponent(profile.contact)}">Contact</a>` : ''}</footer>
-    </main>${renderDock()}
+    </main><div class="citation-viewer" data-citation-viewer aria-hidden="true"><button class="citation-viewer-scrim" data-citation-close aria-label="Close cited artwork"></button><figure><button data-citation-close aria-label="Close cited artwork">×</button><div data-citation-art></div><figcaption><strong data-citation-title></strong><span>Referenced in the critical profile</span></figcaption></figure></div>${renderDock()}
   </div>`;
   bindActions();
 };
@@ -891,16 +907,17 @@ const bindActions = () => {
   document.querySelectorAll('[data-collection]').forEach(button => button.addEventListener('click', () => openGalleryTarget('#collection')));
   document.querySelectorAll('[data-about]').forEach(button => button.addEventListener('click', () => openGalleryTarget('#about')));
   document.querySelectorAll('[data-open-profile]').forEach(button => button.addEventListener('click', () => { activeType = 'Profile'; activeProject = 'All'; activeTag = 'All'; searchQuery = ''; renderGallery(); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
-  document.querySelector('[data-profile-examples-close]')?.addEventListener('click', () => {
-    profileExamplesOpen = false;
-    document.querySelector('[data-profile-examples]')?.classList.remove('is-open');
-    document.querySelector('[data-profile-examples-open]')?.classList.add('is-visible');
-  });
-  document.querySelector('[data-profile-examples-open]')?.addEventListener('click', () => {
-    profileExamplesOpen = true;
-    document.querySelector('[data-profile-examples]')?.classList.add('is-open');
-    document.querySelector('[data-profile-examples-open]')?.classList.remove('is-visible');
-  });
+  const citationViewer = document.querySelector('[data-citation-viewer]');
+  const closeCitation = () => { citationViewer?.classList.remove('is-open'); citationViewer?.setAttribute('aria-hidden', 'true'); };
+  document.querySelectorAll('[data-profile-citation]').forEach(button => button.addEventListener('click', () => {
+    const work = gallery.works.find(candidate => String(candidate.id) === button.dataset.profileCitation);
+    if (!work || !citationViewer) return;
+    citationViewer.querySelector('[data-citation-art]').innerHTML = workCardVisual(work);
+    citationViewer.querySelector('[data-citation-title]').textContent = work.title;
+    citationViewer.classList.add('is-open');
+    citationViewer.setAttribute('aria-hidden', 'false');
+  }));
+  citationViewer?.querySelectorAll('[data-citation-close]').forEach(button => button.addEventListener('click', closeCitation));
   document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', () => { if (gallery) { activeType = 'All'; activeProject = 'All'; activeTag = 'All'; searchQuery = ''; renderGallery(); } window.scrollTo({ top: 0, behavior: 'smooth' }); }));
   document.querySelectorAll('[data-search-nav]').forEach(button => button.addEventListener('click', () => {
     openGalleryTarget('[data-search]', { focus: true });
@@ -1000,7 +1017,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=54', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=55', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
