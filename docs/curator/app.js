@@ -5,7 +5,7 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D57';
+const DOCENT_BUILD = 'D58';
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -116,6 +116,7 @@ const workCardVisual = work => {
   const source = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
   const isPdf = work.media?.mimeType === 'application/pdf' || work.mimeType === 'application/pdf';
   if (isPdf && source) return `<img src="${source}" alt="Cover of ${escapeHtml(work.title)}" loading="lazy">`;
+  if (isPdf && workMediaSource(work)) return `<span class="pdf-cover-preview" data-pdf-cover="${escapeHtml(work.id)}"><span>Rendering cover…</span></span>`;
   const hasProseFront = Boolean(work.text) && (isWritingWork(work) || Boolean(workExternalUrl(work)));
   if (hasProseFront) {
     const quote = workQuotes(work)[0];
@@ -185,6 +186,49 @@ const hydratePdfReader = async work => {
   } catch (error) {
     status.textContent = 'PDF could not be rendered';
     pages.innerHTML = `<p class="pdf-error">${escapeHtml(error?.message || 'Try opening this PDF in its native app.')}</p>`;
+  }
+};
+
+const hydratePdfCardCovers = async () => {
+  const targets = [...document.querySelectorAll('[data-pdf-cover]')];
+  if (!targets.length) return;
+  try {
+    const pdfjs = await import('./vendor/pdf.min.mjs');
+    pdfjs.GlobalWorkerOptions.workerSrc = new URL('./vendor/pdf.worker.min.mjs', import.meta.url).href;
+    const grouped = targets.reduce((map, target) => {
+      const key = target.dataset.pdfCover;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(target);
+      return map;
+    }, new Map());
+    await Promise.all([...grouped.entries()].map(async ([workId, workTargets]) => {
+      const work = gallery?.works?.find(candidate => String(candidate.id) === workId);
+      if (!work?.media?.src || !workTargets.some(target => target.isConnected)) return;
+      const pdf = await pdfjs.getDocument({ data: dataUrlBytes(work.media.src) }).promise;
+      const page = await pdf.getPage(1);
+      const base = page.getViewport({ scale: 1 });
+      const cssWidth = Math.max(180, workTargets[0]?.clientWidth || 240);
+      const pixelRatio = Math.min(2, window.devicePixelRatio || 1);
+      const viewport = page.getViewport({ scale: (cssWidth / base.width) * pixelRatio });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.setAttribute('aria-label', `Cover of ${work.title}`);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      const cover = canvas.toDataURL('image/jpeg', .88);
+      workTargets.forEach(target => {
+        if (!target.isConnected) return;
+        const image = new Image();
+        image.src = cover;
+        image.alt = `Cover of ${work.title}`;
+        target.replaceChildren(image);
+      });
+      pdf.destroy();
+    }));
+  } catch (error) {
+    console.warn('Docent could not render PDF card covers.', error);
   }
 };
 
@@ -891,6 +935,7 @@ const bindActions = () => {
   versionCode.textContent = `${DOCENT_BUILD} · ${gallery?.payloadVersion || 'G?'}`;
   versionCode.title = `Docent interface ${DOCENT_BUILD}; gallery payload ${gallery?.payloadVersion || 'legacy'}`;
   document.body.appendChild(versionCode);
+  hydratePdfCardCovers();
   document.querySelectorAll('[data-import]').forEach(button => button.addEventListener('click', () => packageInput.click()));
   document.querySelectorAll('[data-dropbox]').forEach(button => button.addEventListener('click', () => syncDropbox().catch(error => alert(error.message))));
   document.querySelectorAll('[data-work]').forEach(button => button.addEventListener('click', () => {
@@ -1031,7 +1076,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=57', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=58', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
