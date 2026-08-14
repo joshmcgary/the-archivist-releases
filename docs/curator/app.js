@@ -9,7 +9,8 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D60';
+const DOCENT_BUILD = 'D61';
+const MAX_DOCENT_PACKAGE_BYTES = 40 * 1024 * 1024;
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -363,6 +364,15 @@ const syncDropbox = async ({ quiet = false } = {}) => {
     return false;
   }
   if (!response.ok) throw new Error('The Docent could not download the Dropbox gallery.');
+  const dropboxMetadata = (() => {
+    try { return JSON.parse(response.headers.get('Dropbox-API-Result') || '{}'); } catch { return {}; }
+  })();
+  const payloadBytes = Number(response.headers.get('Content-Length')) || Number(dropboxMetadata.size) || 0;
+  if (payloadBytes > MAX_DOCENT_PACKAGE_BYTES) {
+    await response.body?.cancel?.();
+    if (!quiet) alert('This gallery uses the retired oversized format. Open the updated Archivist once to publish its compact replacement.');
+    return false;
+  }
   const value = await response.json();
   if (!validPackage(value)) throw new Error('Dropbox returned an invalid Docent gallery.');
   if (gallery?.version && gallery.version === value.version) return true;
@@ -1077,7 +1087,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=60', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=61', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
