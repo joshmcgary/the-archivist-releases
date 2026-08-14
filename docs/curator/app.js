@@ -5,7 +5,7 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D58';
+const DOCENT_BUILD = 'D59';
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -16,7 +16,6 @@ let activeProject = 'All';
 let activeType = 'All';
 let activeTag = 'All';
 let detailSide = 'image';
-let activeDetailWorkId = null;
 let artMenuOpen = false;
 let galleryScrollY = 0;
 let detailExpanded = false;
@@ -381,6 +380,7 @@ const formatSync = value => {
 
 const renderTopbar = () => {
   const works = gallery?.works || [];
+  const vaultWorks = Number(gallery?.stats?.vaultWorks) || works.length;
   const mediaCounts = works.reduce((counts, work) => {
     const medium = work.type || work.medium || 'Unclassified';
     counts[medium] = (counts[medium] || 0) + 1;
@@ -391,7 +391,7 @@ const renderTopbar = () => {
   const years = works.map(work => String(work.date || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)).map(Number).sort();
   const dateRange = years.length ? (years[0] === years[years.length - 1] ? years[0] : `${years[0]}–${years[years.length - 1]}`) : '—';
   const snapshot = [
-    ['Vault files', works.length],
+    ['Vault files', vaultWorks],
     ['Projects', projects.size],
     ['Media types', Object.keys(mediaCounts).filter(type => type !== 'Unclassified').length],
     ['Most used', mostUsed],
@@ -558,7 +558,7 @@ const profileSections = text => {
     if (inCodeBlock) return;
     const line = source.replace(/[│┃║]/g, '|').trim();
     if (!line) return;
-    const isRule = /^[|:+—–_=\-\s─-╿\\/<>\[\]]{3,}$/.test(line);
+    const isRule = /^(?:[|:+—–_=\-\s─-╿\\/<>]|\[|\]){3,}$/.test(line);
     const visualLayout = line.includes('|')
       || /[┌┐└┘├┤┬┴┼╔╗╚╝╠╣╦╩╬]/.test(line)
       || /(?:-{3,}|={3,}|_{3,}|—{3,}|─{3,})/.test(line)
@@ -723,10 +723,7 @@ const renderGallery = () => {
 
 const renderWork = work => {
   setCardViewLock(true);
-  activeDetailWorkId = String(work.id);
   const works = currentCollectionWorks();
-  const detailTypes = new Set(works.map(candidate => candidate.type || candidate.medium).filter(Boolean));
-  const detailProjects = new Set(works.flatMap(candidate => candidate.projects || []));
   const index = works.findIndex(candidate => String(candidate.id) === String(work.id));
   const previous = index > 0 ? works[index - 1] : works[works.length - 1];
   const next = index < works.length - 1 ? works[index + 1] : works[0];
@@ -1076,7 +1073,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=58', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=59', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
