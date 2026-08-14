@@ -1,11 +1,15 @@
 const DB_NAME = 'the-curator';
 const STORE = 'gallery';
-const CURRENT = 'current';
+// Do not hydrate the pre-G7 monolithic gallery: it may contain full PDFs and
+// video blobs large enough to terminate mobile Safari before Dropbox can sync.
+// The Dropbox token remains in the same database, so the compact gallery can
+// be fetched again without asking the user to reconnect.
+const CURRENT = 'current-g7';
 const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D59';
+const DOCENT_BUILD = 'D60';
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -1073,7 +1077,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=59', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=60', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
