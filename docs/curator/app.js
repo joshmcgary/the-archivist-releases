@@ -4,12 +4,12 @@ const STORE = 'gallery';
 // video blobs large enough to terminate mobile Safari before Dropbox can sync.
 // The Dropbox token remains in the same database, so the compact gallery can
 // be fetched again without asking the user to reconnect.
-const CURRENT = 'current-g8';
+const CURRENT = 'current-g9';
 const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D62';
+const DOCENT_BUILD = 'D63';
 const MAX_DOCENT_PACKAGE_BYTES = 40 * 1024 * 1024;
 
 const app = document.querySelector('#app');
@@ -438,15 +438,16 @@ const renderDock = () => {
     music: '<svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13M9 9l11-2"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
     video: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/></svg>',
     chapel: '<svg viewBox="0 0 24 24"><path d="M12 2v6m-3-3h6M5 21V10l7-4 7 4v11M9 21v-7h6v7"/></svg>',
+    quotes: '<svg viewBox="0 0 24 24"><path d="M5 6h6v6H7v6H3v-8a4 4 0 0 1 2-4Zm10 0h6v6h-4v6h-4v-8a4 4 0 0 1 2-4Z"/></svg>',
     profile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>'
   };
-  const categories = [['All', 'Home', 'home'], ['Images', 'The Gallery', 'images'], ['Poetry', 'The Poetry Room', 'anthology'], ['Writing', 'The Reading Room', 'reading'], ['Music', 'The Listening Booth', 'music'], ['Video', 'The Cinema', 'video'], ['Theology', 'The Chapel', 'chapel'], ['Profile', 'Profile', 'profile']];
+  const categories = [['All', 'Home', 'home'], ['Images', 'The Gallery', 'images'], ['Poetry', 'The Poetry Room', 'anthology'], ['Writing', 'The Reading Room', 'reading'], ['Music', 'The Listening Booth', 'music'], ['Video', 'The Cinema', 'video'], ['Theology', 'The Chapel', 'chapel'], ['Quotes', 'The Quote Book', 'quotes'], ['Profile', 'Profile', 'profile']];
   return `<button class="art-menu-scrim ${artMenuOpen ? 'is-open' : ''}" data-art-menu-dismiss aria-label="Close category menu"></button><aside class="art-menu ${artMenuOpen ? 'is-open' : ''}" aria-label="Browse artwork categories">
     <button class="art-menu-handle" data-art-menu-toggle aria-label="${artMenuOpen ? 'Close' : 'Open'} category menu"><span></span></button>
     <div class="art-menu-panel">
       <header><span>Browse</span><strong>The Docent</strong></header>
       <nav>${categories.map(([value, label, icon]) => {
-        const count = value === 'Profile' ? gallery.profile?.evaluationCorpusSize || gallery.works.length : gallery.works.filter(work => matchesCategory(work, value)).length;
+        const count = value === 'Profile' ? gallery.profile?.evaluationCorpusSize || gallery.works.length : value === 'Quotes' ? gallery.works.reduce((sum, work) => sum + workQuotes(work).length, 0) : gallery.works.filter(work => matchesCategory(work, value)).length;
         return `<button data-menu-category="${value}" class="category-${icon} ${activeType === value ? 'is-current' : ''}"><span class="category-icon">${categoryIcons[icon]}</span><span><strong>${label}</strong><em>${value === 'Profile' ? `${count} works evaluated` : `${count} ${count === 1 ? 'work' : 'works'}`}</em></span></button>`;
       }).join('')}</nav>
     </div>
@@ -491,7 +492,7 @@ const homeShelfCard = (work, index, variant = '') => `<button class="home-shelf-
 </button>`;
 
 const renderHome = works => {
-  const updateTime = work => Date.parse(work.updatedAt || work.date || '') || 0;
+  const updateTime = work => Date.parse(work.addedAt || '') || 0;
   const gradeScore = work => {
     const grade = String(workGrade(work)).trim().toUpperCase();
     const numeric = Number.parseFloat(grade);
@@ -512,7 +513,7 @@ const renderHome = works => {
   const featuredQuote = quoteQueue.shift();
   if (featuredQuote) lastQuoteText = String(featuredQuote.text || featuredQuote.quote);
   const shelves = [
-    ['Recently updated', recent],
+    ['Recently added', recent],
     ['Highest rated', highestRated, 'rated'],
     ['Images', works.filter(isImageWork)],
     ['Poetry', works.filter(isPoetryWork)],
@@ -661,6 +662,34 @@ const renderProfile = works => {
   bindActions();
 };
 
+const renderQuoteBook = works => {
+  clearInterval(quoteCycleTimer);
+  setCardViewLock(false);
+  const quotes = works.flatMap(work => workQuotes(work).map((quote, index) => ({
+    ...quote,
+    index,
+    work,
+    subjects: workSubjects(work).length ? workSubjects(work) : ['Uncategorized']
+  })));
+  const subjectCounts = new Map();
+  quotes.forEach(quote => quote.subjects.forEach(subject => subjectCounts.set(subject, (subjectCounts.get(subject) || 0) + 1)));
+  const subjects = ['All', ...[...subjectCounts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([subject]) => subject)];
+  const query = searchQuery.trim().toLowerCase();
+  const visible = quotes.filter(quote => (activeSubject === 'All' || quote.subjects.includes(activeSubject)) && (!query || [quote.text, quote.quote, quote.attribution, quote.work.title, quote.work.catalogId, ...quote.subjects].join(' ').toLowerCase().includes(query)))
+    .sort((left, right) => (Date.parse(right.work.addedAt || '') || 0) - (Date.parse(left.work.addedAt || '') || 0) || left.index - right.index);
+  app.innerHTML = `<div class="quote-book-shell">${renderTopbar()}
+    <header class="quote-book-head"><p class="eyebrow">Language worth keeping</p><h1>The Quote Book</h1><p>${quotes.length} compiled statements from ${new Set(quotes.map(quote => quote.work.id)).size} source works.</p></header>
+    <main class="quote-book-layout"><aside class="quote-subject-index"><label>Search quotes<input type="search" value="${escapeHtml(searchQuery)}" placeholder="Words, subjects, sources…" data-search></label><nav>${subjects.map(subject => `<button class="${subject === activeSubject ? 'is-active' : ''}" data-subject="${escapeHtml(subject)}"><span>${escapeHtml(subject)}</span><em>${subject === 'All' ? quotes.length : subjectCounts.get(subject)}</em></button>`).join('')}</nav></aside>
+    <section><p class="quote-result-count">${visible.length} ${visible.length === 1 ? 'quote' : 'quotes'}${activeSubject !== 'All' ? ` about ${escapeHtml(activeSubject)}` : ''}</p><div class="quote-card-grid">${visible.map(quote => `<button class="quote-book-card" data-quote-source="${escapeHtml(quote.work.id)}"><span class="quote-mark">”</span><blockquote>“${escapeHtml(quote.text || quote.quote)}”</blockquote><cite>— ${escapeHtml(quote.attribution || gallery.profile?.name || 'The Artist')}</cite><footer><strong>${escapeHtml(quote.work.title)}</strong><em>${escapeHtml(quote.work.catalogId || quote.work.type || '')}</em></footer></button>`).join('')}</div></section></main>${renderDock()}</div>`;
+  bindActions();
+  document.querySelectorAll('[data-quote-source]').forEach(button => button.addEventListener('click', () => {
+    const source = works.find(work => String(work.id) === button.dataset.quoteSource);
+    if (!source) return;
+    activeType = 'All'; activeProject = 'All'; activeSubject = 'All'; activeTag = 'All'; searchQuery = '';
+    renderWork(source);
+  }));
+};
+
 const renderGallery = () => {
   clearInterval(quoteCycleTimer);
   detailExpanded = false;
@@ -678,8 +707,12 @@ const renderGallery = () => {
     renderProfile(works);
     return;
   }
+  if (activeType === 'Quotes') {
+    renderQuoteBook(works);
+    return;
+  }
   const categoryWorks = works.filter(work => matchesCategory(work, activeType));
-  const categoryUpdateTime = work => Date.parse(work.updatedAt || work.date || '') || 0;
+  const categoryUpdateTime = work => Date.parse(work.addedAt || '') || 0;
   const featuredCategoryWorks = activeProject === 'All' ? categoryWorks : categoryWorks.filter(work => work.projects?.includes(activeProject));
   const categoryLatest = [...featuredCategoryWorks].sort((left, right) => categoryUpdateTime(right) - categoryUpdateTime(left) || featuredCategoryWorks.indexOf(right) - featuredCategoryWorks.indexOf(left))[0] || categoryWorks[0] || works[0];
   const projects = ['All', ...new Set(categoryWorks.flatMap(work => work.projects || []))];
@@ -688,9 +721,9 @@ const renderGallery = () => {
   const subjects = ['All', ...new Set(categoryWorks.flatMap(work => workSubjects(work)))];
   const filteredWorks = currentCollectionWorks();
   const gradeScore = work => Number.parseFloat(workGrade(work)) || -Infinity;
-  const updateTime = work => Date.parse(work.updatedAt || work.date || '') || 0;
+  const updateTime = work => Date.parse(work.addedAt || '') || 0;
   const categoryShelves = [
-    ['Recently updated', [...filteredWorks].sort((a, b) => updateTime(b) - updateTime(a)).slice(0, 16)],
+    ['Recently added', [...filteredWorks].sort((a, b) => updateTime(b) - updateTime(a)).slice(0, 16)],
     ['Highest rated', [...filteredWorks].filter(work => String(workGrade(work)).trim()).sort((a, b) => gradeScore(b) - gradeScore(a)).slice(0, 16), 'rated'],
     ...projects.filter(project => project !== 'All').map(project => [project, filteredWorks.filter(work => work.projects?.includes(project))])
   ].filter(([, shelfWorks]) => shelfWorks.length);

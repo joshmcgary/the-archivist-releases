@@ -1,5 +1,5 @@
-const CACHE = 'the-docent-shell-v62';
-const SHELL = ['./', './index.html', './styles.css?v=62', './app.js?v=62', './manifest.webmanifest', './docent-icon-180.png', './docent-icon-192.png', './docent-icon-512.png', './docent-icon-maskable-512.png', './vendor/pdf.min.mjs', './vendor/pdf.worker.min.mjs'];
+const CACHE = 'the-docent-shell-v63';
+const SHELL = ['./', './index.html', './styles.css?v=63', './app.js?v=63', './manifest.webmanifest', './docent-icon-180.png', './docent-icon-192.png', './docent-icon-512.png', './docent-icon-maskable-512.png', './vendor/pdf.min.mjs', './vendor/pdf.worker.min.mjs'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)));
