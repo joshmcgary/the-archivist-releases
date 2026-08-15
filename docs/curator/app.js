@@ -4,12 +4,12 @@ const STORE = 'gallery';
 // video blobs large enough to terminate mobile Safari before Dropbox can sync.
 // The Dropbox token remains in the same database, so the compact gallery can
 // be fetched again without asking the user to reconnect.
-const CURRENT = 'current-g7';
+const CURRENT = 'current-g8';
 const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D61';
+const DOCENT_BUILD = 'D62';
 const MAX_DOCENT_PACKAGE_BYTES = 40 * 1024 * 1024;
 
 const app = document.querySelector('#app');
@@ -20,6 +20,7 @@ let searchQuery = '';
 let activeProject = 'All';
 let activeType = 'All';
 let activeTag = 'All';
+let activeSubject = 'All';
 let detailSide = 'image';
 let artMenuOpen = false;
 let galleryScrollY = 0;
@@ -40,6 +41,12 @@ const isImageWork = work => ['drawing', 'image', 'photography', 'painting', 'ill
 const isMusicWork = work => ['music', 'audio', 'song', 'sound', 'album', 'recording'].includes(String(work.type || work.medium || '').toLowerCase()) || String(work.mimeType || '').startsWith('audio/');
 const isVideoWork = work => ['video', 'film', 'animation', 'motion'].includes(String(work.type || work.medium || '').toLowerCase()) || String(work.mimeType || '').startsWith('video/');
 const isPoetryWork = work => ['poetry', 'poem'].includes(String(work.type || work.medium || '').toLowerCase());
+const workSubjects = work => Array.isArray(work.subjects) ? work.subjects.filter(Boolean) : [];
+const isTheologyWork = work => {
+  const labels = [...workSubjects(work), work.type, work.medium, ...(work.projects || []), ...(work.collections || []), ...(work.tags || [])]
+    .map(value => String(value || '').toLowerCase()).join(' ');
+  return /theolog|scriptur|bible|sermon|epistle|homilet|devotion|church|gospel|chapel/.test(labels);
+};
 const isWritingWork = work => {
   const labels = [work.type, work.medium, ...(work.projects || []), ...(work.collections || []), ...(work.tags || [])]
     .map(value => String(value || '').toLowerCase());
@@ -54,6 +61,7 @@ const matchesCategory = (work, category) => category === 'All'
   || (category === 'Images' && isImageWork(work))
   || (category === 'Music' && isMusicWork(work))
   || (category === 'Video' && isVideoWork(work))
+  || (category === 'Theology' && isTheologyWork(work))
   || (category === 'Writing' && isWritingWork(work) && !isPoetryWork(work))
   || (work.type || work.medium) === category;
 const workMediaSource = work => work.media?.src || '';
@@ -242,7 +250,8 @@ const currentCollectionWorks = () => {
     if (!matchesCategory(work, activeType)) return false;
     if (activeProject !== 'All' && !work.projects?.includes(activeProject)) return false;
     if (activeTag !== 'All' && !work.tags?.includes(activeTag)) return false;
-    const haystack = [work.title, work.medium, work.type, work.dimensions, work.date, work.description, work.catalogId, work.text, ...(work.projects || []), ...(work.tags || [])].join(' ').toLowerCase();
+    if (activeSubject !== 'All' && !workSubjects(work).includes(activeSubject)) return false;
+    const haystack = [work.title, work.medium, work.type, work.dimensions, work.date, work.description, work.catalogId, work.text, ...(work.projects || []), ...(work.tags || []), ...workSubjects(work)].join(' ').toLowerCase();
     return !query || haystack.includes(query);
   });
 };
@@ -428,9 +437,10 @@ const renderDock = () => {
     reading: '<svg viewBox="0 0 24 24"><path d="M4 19V5m5 14V5m5 14V5m5 14-3-14"/></svg>',
     music: '<svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13M9 9l11-2"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
     video: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/></svg>',
+    chapel: '<svg viewBox="0 0 24 24"><path d="M12 2v6m-3-3h6M5 21V10l7-4 7 4v11M9 21v-7h6v7"/></svg>',
     profile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>'
   };
-  const categories = [['All', 'Home', 'home'], ['Images', 'Images', 'images'], ['Poetry', 'Poetry', 'anthology'], ['Writing', 'Writing', 'reading'], ['Music', 'Music', 'music'], ['Video', 'Video', 'video'], ['Profile', 'Profile', 'profile']];
+  const categories = [['All', 'Home', 'home'], ['Images', 'The Gallery', 'images'], ['Poetry', 'The Poetry Room', 'anthology'], ['Writing', 'The Reading Room', 'reading'], ['Music', 'The Listening Booth', 'music'], ['Video', 'The Cinema', 'video'], ['Theology', 'The Chapel', 'chapel'], ['Profile', 'Profile', 'profile']];
   return `<button class="art-menu-scrim ${artMenuOpen ? 'is-open' : ''}" data-art-menu-dismiss aria-label="Close category menu"></button><aside class="art-menu ${artMenuOpen ? 'is-open' : ''}" aria-label="Browse artwork categories">
     <button class="art-menu-handle" data-art-menu-toggle aria-label="${artMenuOpen ? 'Close' : 'Open'} category menu"><span></span></button>
     <div class="art-menu-panel">
@@ -675,6 +685,7 @@ const renderGallery = () => {
   const projects = ['All', ...new Set(categoryWorks.flatMap(work => work.projects || []))];
   const types = ['All', ...new Set(categoryWorks.map(work => work.type || work.medium).filter(Boolean))];
   const tags = ['All', ...new Set(categoryWorks.flatMap(work => work.tags || []))];
+  const subjects = ['All', ...new Set(categoryWorks.flatMap(work => workSubjects(work)))];
   const filteredWorks = currentCollectionWorks();
   const gradeScore = work => Number.parseFloat(workGrade(work)) || -Infinity;
   const updateTime = work => Date.parse(work.updatedAt || work.date || '') || 0;
@@ -684,7 +695,7 @@ const renderGallery = () => {
     ...projects.filter(project => project !== 'All').map(project => [project, filteredWorks.filter(work => work.projects?.includes(project))])
   ].filter(([, shelfWorks]) => shelfWorks.length);
   const years = categoryWorks.map(work => String(work.date || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)).map(Number).sort();
-  const activeFilters = [activeProject !== 'All' && activeProject, activeTag !== 'All' && `#${activeTag}`].filter(Boolean);
+  const activeFilters = [activeProject !== 'All' && activeProject, activeSubject !== 'All' && activeSubject, activeTag !== 'All' && `#${activeTag}`].filter(Boolean);
   const writingVolumes = activeType === 'Writing' ? projects.filter(project => project !== 'All' && project.toLowerCase() !== 'bible thoughts').map(project => ({
     name: project,
     items: categoryWorks.filter(work => work.projects?.includes(project))
@@ -703,11 +714,12 @@ const renderGallery = () => {
     <section class="collection-tools" id="collection">
       <label class="search"><span>Search collection</span><input type="search" value="${escapeHtml(searchQuery)}" placeholder="Title, medium, year, project…" data-search></label>
       <details class="facet-drawer" ${activeFilters.length ? 'open' : ''}>
-        <summary><span>Filter collection</span><em>${activeFilters.length ? escapeHtml(activeFilters.join(' · ')) : 'Project · Tags'}</em></summary>
+        <summary><span>Filter collection</span><em>${activeFilters.length ? escapeHtml(activeFilters.join(' · ')) : 'Project · Subjects · Tags'}</em></summary>
         <details class="project-rolodex">
           <summary><span>Project</span><strong>${escapeHtml(activeProject === 'All' ? 'All projects' : activeProject)}</strong><em>${projects.length - 1}</em></summary>
           <div class="rolodex-stack">${projects.map((project, index) => `<button class="${project === activeProject ? 'is-active' : ''}" data-project="${escapeHtml(project)}"><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(project)}</strong><em>${project === 'All' ? categoryWorks.length : categoryWorks.filter(work => work.projects?.includes(project)).length}</em></button>`).join('')}</div>
         </details>
+        <div class="facet-group"><label>Subjects</label><div class="filter-row">${subjects.map(subject => `<button class="filter-chip ${subject === activeSubject ? 'is-active' : ''}" data-subject="${escapeHtml(subject)}">${escapeHtml(subject)}</button>`).join('')}</div></div>
         <div class="facet-group"><label>Tags</label><div class="filter-row">${tags.map(tag => `<button class="filter-chip ${tag === activeTag ? 'is-active' : ''}" data-tag="${escapeHtml(tag)}">${tag === 'All' ? 'All' : `#${escapeHtml(tag)}`}</button>`).join('')}</div></div>
         ${activeFilters.length ? '<button class="clear-filters" data-clear-filters>Clear filters</button>' : ''}
       </details>
@@ -719,7 +731,7 @@ const renderGallery = () => {
         <div><strong>${categoryWorks.length}</strong><span>Total works</span></div>
         <div><strong>${types.length - 1}</strong><span>Artwork types</span></div>
         <div><strong>${projects.length - 1}</strong><span>Projects</span></div>
-        <div><strong>${tags.length - 1}</strong><span>Tags</span></div>
+        <div><strong>${subjects.length - 1}</strong><span>Subjects</span></div>
         <div><strong>${years.length ? `${years[0]}–${years[years.length - 1]}` : '—'}</strong><span>Date range</span></div>
         <div><strong>${filteredWorks.length}</strong><span>Currently visible</span></div>
       </div>
@@ -976,7 +988,7 @@ const bindActions = () => {
   };
   document.querySelectorAll('[data-collection]').forEach(button => button.addEventListener('click', () => openGalleryTarget('#collection')));
   document.querySelectorAll('[data-about]').forEach(button => button.addEventListener('click', () => openGalleryTarget('#about')));
-  document.querySelectorAll('[data-open-profile]').forEach(button => button.addEventListener('click', () => { activeType = 'Profile'; activeProject = 'All'; activeTag = 'All'; searchQuery = ''; renderGallery(); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  document.querySelectorAll('[data-open-profile]').forEach(button => button.addEventListener('click', () => { activeType = 'Profile'; activeProject = 'All'; activeTag = 'All'; activeSubject = 'All'; searchQuery = ''; renderGallery(); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
   const citationViewer = document.querySelector('[data-citation-viewer]');
   const closeCitation = () => { citationViewer?.classList.remove('is-open'); citationViewer?.setAttribute('aria-hidden', 'true'); };
   document.querySelectorAll('[data-profile-citation]').forEach(button => button.addEventListener('click', () => {
@@ -988,7 +1000,7 @@ const bindActions = () => {
     citationViewer.setAttribute('aria-hidden', 'false');
   }));
   citationViewer?.querySelectorAll('[data-citation-close]').forEach(button => button.addEventListener('click', closeCitation));
-  document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', () => { if (gallery) { activeType = 'All'; activeProject = 'All'; activeTag = 'All'; searchQuery = ''; renderGallery(); } window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', () => { if (gallery) { activeType = 'All'; activeProject = 'All'; activeTag = 'All'; activeSubject = 'All'; searchQuery = ''; renderGallery(); } window.scrollTo({ top: 0, behavior: 'smooth' }); }));
   document.querySelectorAll('[data-search-nav]').forEach(button => button.addEventListener('click', () => {
     openGalleryTarget('[data-search]', { focus: true });
   }));
@@ -1042,6 +1054,7 @@ const bindActions = () => {
     activeType = button.dataset.menuCategory;
     activeProject = 'All';
     activeTag = 'All';
+    activeSubject = 'All';
     searchQuery = '';
     artMenuOpen = false;
     renderGallery();
@@ -1058,7 +1071,8 @@ const bindActions = () => {
   document.querySelectorAll('[data-project]').forEach(button => button.addEventListener('click', () => { activeProject = button.dataset.project; renderGallery(); }));
   document.querySelectorAll('[data-type]').forEach(button => button.addEventListener('click', () => { activeType = button.dataset.type; renderGallery(); }));
   document.querySelectorAll('[data-tag]').forEach(button => button.addEventListener('click', () => { activeTag = button.dataset.tag; renderGallery(); }));
-  document.querySelector('[data-clear-filters]')?.addEventListener('click', () => { activeProject = 'All'; activeTag = 'All'; searchQuery = ''; renderGallery(); });
+  document.querySelectorAll('[data-subject]').forEach(button => button.addEventListener('click', () => { activeSubject = button.dataset.subject; renderGallery(); }));
+  document.querySelector('[data-clear-filters]')?.addEventListener('click', () => { activeProject = 'All'; activeTag = 'All'; activeSubject = 'All'; searchQuery = ''; renderGallery(); });
   const installButton = document.querySelector('[data-install]');
   if (installButton && deferredInstall) {
     installButton.hidden = false;
@@ -1087,7 +1101,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=61', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=62', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
