@@ -4,13 +4,13 @@ const STORE = 'gallery';
 // video blobs large enough to terminate mobile Safari before Dropbox can sync.
 // The Dropbox token remains in the same database, so the compact gallery can
 // be fetched again without asking the user to reconnect.
-const CURRENT = 'current-g9';
+const CURRENT = 'current-g10';
 const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D63';
-const MAX_DOCENT_PACKAGE_BYTES = 40 * 1024 * 1024;
+const DOCENT_BUILD = 'D64';
+const MAX_DOCENT_PACKAGE_BYTES = 80 * 1024 * 1024;
 
 const app = document.querySelector('#app');
 const packageInput = document.querySelector('#package-input');
@@ -124,12 +124,14 @@ const sourceLaunchUrl = work => {
   return youtube ? `https://www.youtube.com/watch?v=${youtube[1]}` : url;
 };
 const sourceLaunchLabel = work => /(?:youtube\.com|youtu\.be)/i.test(workExternalUrl(work)) ? 'Open in YouTube' : 'Open source';
+const youtubeVideoId = work => String(workExternalUrl(work)).match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?/\s]{11})/i)?.[1] || '';
 const workCardVisual = work => {
   const source = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
   const isPdf = work.media?.mimeType === 'application/pdf' || work.mimeType === 'application/pdf';
   if (isPdf && source) return `<img src="${source}" alt="Cover of ${escapeHtml(work.title)}" loading="lazy">`;
   if (isPdf && workMediaSource(work)) return `<span class="pdf-cover-preview" data-pdf-cover="${escapeHtml(work.id)}"><span>Rendering cover…</span></span>`;
-  const hasProseFront = Boolean(work.text) && (isWritingWork(work) || Boolean(workExternalUrl(work)));
+  if (source && isVideoWork(work)) return `<img src="${source}" alt="${escapeHtml(work.title)}" loading="lazy">`;
+  const hasProseFront = Boolean(work.text) && isWritingWork(work) && !isVideoWork(work);
   if (hasProseFront) {
     const quote = workQuotes(work)[0];
     const excerpt = String(quote?.text || quote?.quote || work.text).replace(/\s+/g, ' ').trim().slice(0, 240);
@@ -142,11 +144,13 @@ const workCardVisual = work => {
 };
 const workDetailFront = work => {
   const media = workMediaSource(work);
+  const youtubeId = youtubeVideoId(work);
   if (work.media?.mimeType === 'application/pdf' && media) return `<div class="pdf-reader" data-pdf-reader><div class="pdf-reader-toolbar"><span data-pdf-status>Preparing PDF…</span><button data-open-pdf>Open in PDF app ↗</button></div><div class="pdf-pages" data-pdf-pages></div></div>`;
   if (isVideoWork(work) && media) return `<video src="${media}" controls playsinline ${work.image ? `poster="${work.image}"` : ''}></video>`;
+  if (isVideoWork(work) && youtubeId) return `<iframe class="youtube-player" src="https://www.youtube-nocookie.com/embed/${youtubeId}?playsinline=1" title="${escapeHtml(work.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
   if (isMusicWork(work) && media) return `<div class="audio-front">${work.image ? `<img src="${work.image}" alt="${escapeHtml(work.title)}">` : '<span class="audio-mark">♪</span>'}<h2>${escapeHtml(work.title)}</h2><audio src="${media}" controls></audio></div>`;
   const image = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? media : '');
-  const hasProseFront = Boolean(work.text) && (isWritingWork(work) || Boolean(workExternalUrl(work)));
+  const hasProseFront = Boolean(work.text) && isWritingWork(work) && !isVideoWork(work);
   if (hasProseFront) {
     return `<div class="text-front writing-front"><h2>${escapeHtml(work.title)}</h2>${work.identity ? `<p class="writing-byline">By ${escapeHtml(work.identity)}</p>` : ''}<p>${escapeHtml(work.text)}</p></div>`;
   }
