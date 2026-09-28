@@ -9,7 +9,11 @@ const DROPBOX_TOKEN = 'dropbox-token';
 const DROPBOX_APP_KEY = 'q0q03vfz682exrg';
 const DROPBOX_PATH = '/The_Docent_Gallery_Latest.json';
 const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
-const DOCENT_BUILD = 'D64';
+const DROPBOX_MANIFEST_PATH = '/The_Docent/manifest.json';
+const DOCENT_MANIFEST = 'docent-manifest';
+const DOCENT_SHARD_PREFIX = 'docent-shard:';
+const DOCENT_BUILD = 'ARCHIVE-86';
+const THOUGHTS_SITE_URL = 'https://josh-mcgary-thoughts.lucidknight.chatgpt.site/#/';
 const MAX_DOCENT_PACKAGE_BYTES = 80 * 1024 * 1024;
 
 const app = document.querySelector('#app');
@@ -17,31 +21,97 @@ const packageInput = document.querySelector('#package-input');
 let gallery = null;
 let deferredInstall = null;
 let searchQuery = '';
+let searchRenderTimer = null;
 let activeProject = 'All';
-let activeType = 'All';
+const entranceType = ({ hostname, search }) => {
+  const requested = new URLSearchParams(search).get('entrance');
+  if (requested) return ({ poetry: 'Poetry', art: 'Images', music: 'Music', thoughts: 'Thoughts' })[requested.toLowerCase()] || 'All';
+  if (hostname.startsWith('poetry.')) return 'Poetry';
+  if (hostname.startsWith('art.')) return 'Images';
+  if (hostname.startsWith('music.')) return 'Music';
+  if (hostname.startsWith('thoughts.')) return 'Thoughts';
+  return 'All';
+};
+let activeType = entranceType(location);
 let activeTag = 'All';
+let activePublicAge = 'All';
 let activeSubject = 'All';
+let activeYear = 'All';
+let activePublicCollection = '';
 let detailSide = 'image';
 let artMenuOpen = false;
 let galleryScrollY = 0;
 let detailExpanded = false;
 let quoteCycleTimer = null;
+let artHeroCycleTimer = null;
+let homePortalTimers = [];
 let quoteQueue = [];
 let quoteQueueSignature = '';
 let lastQuoteText = '';
+let searchPromptTimer = null;
+let artTitleFontIndex = 0;
 
 const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+const quoteLetterMarkup = value => `“${String(value || '').toUpperCase()}”`.split(/(\s+)/).map(token => /\s+/.test(token)
+  ? token
+  : `<span class="quote-word">${Array.from(token).map(character => `<span class="quote-letter" style="--letter-delay:${(Math.random() * .45).toFixed(2)}s;--letter-x:${((Math.random() - .5) * 3).toFixed(1)}px;--letter-y:${((Math.random() - .5) * 3).toFixed(1)}px;--letter-blur:${(.5 + Math.random() * .8).toFixed(1)}px">${escapeHtml(character)}</span>`).join('')}</span>`).join('');
+window.addEventListener('error', event => { if (!app.children.length) app.innerHTML = `<main class="empty"><p class="eyebrow">Preview error</p><h1>Unable to open the archive</h1><p class="intro">${escapeHtml(event.message)}</p></main>`; });
+window.addEventListener('unhandledrejection', event => { if (!app.children.length) app.innerHTML = `<main class="empty"><p class="eyebrow">Preview error</p><h1>Unable to open the archive</h1><p class="intro">${escapeHtml(event.reason?.message || event.reason)}</p></main>`; });
 const updateVisualViewport = () => {
   const height = window.visualViewport?.height || window.innerHeight;
   document.documentElement.style.setProperty('--docent-viewport-height', `${Math.round(height)}px`);
 };
 updateVisualViewport();
 const validPackage = value => Boolean(value && ['the-archivist.docent-gallery', 'the-archivist.curator-gallery', 'the-archivist.gallery'].includes(value.schema) && value.schemaVersion === 1 && Array.isArray(value.works));
+const validManifest = value => Boolean(value?.schema === 'the-archivist.docent-manifest' && value.schemaVersion === 1 && Array.isArray(value.shards));
+const validShard = value => Boolean(value?.schema === 'the-archivist.docent-shard' && value.schemaVersion === 1 && Array.isArray(value.works));
 const isImageWork = work => ['drawing', 'image', 'photography', 'painting', 'illustration', 'sculpture'].includes(String(work.type || work.medium || '').toLowerCase());
 const isMusicWork = work => ['music', 'audio', 'song', 'sound', 'album', 'recording'].includes(String(work.type || work.medium || '').toLowerCase()) || String(work.mimeType || '').startsWith('audio/');
 const isVideoWork = work => ['video', 'film', 'animation', 'motion'].includes(String(work.type || work.medium || '').toLowerCase()) || String(work.mimeType || '').startsWith('video/');
+const isArtWork = work => isImageWork(work) || ['visual', 'digital art', 'graphic design', 'panel art', 'comic', 'software'].includes(String(work.type || work.medium || '').toLowerCase());
+const isVisualWork = work => isArtWork(work) || isVideoWork(work);
 const isPoetryWork = work => ['poetry', 'poem'].includes(String(work.type || work.medium || '').toLowerCase());
 const workSubjects = work => Array.isArray(work.subjects) ? work.subjects.filter(Boolean) : [];
+const workAge = work => {
+  const explicit = work.chronology?.age ?? work.age;
+  if (Number.isFinite(Number(explicit))) return String(Math.trunc(Number(explicit)));
+  const catalogAge = String(work.catalogId || '').match(/^(\d{1,3})(?:\.|$)/)?.[1];
+  return catalogAge || '';
+};
+const publicSearchCache = new WeakMap();
+const PUBLIC_SEARCH_OMIT = new Set(['src', 'data', 'blob', 'bytes', 'image', 'imagedata', 'sourceartworkdata', 'thumbnail', 'poster', 'grade', 'rating', 'proficiency', 'expertise', 'cleverness', 'greatness']);
+const ART_DISPLAY_FONTS = [
+  '"Arial Black", Impact, sans-serif',
+  '"Snell Roundhand", "Brush Script MT", cursive',
+  '"American Typewriter", Rockwell, serif',
+  'Papyrus, fantasy',
+  'Chalkduster, "Marker Felt", fantasy',
+  'Didot, "Bodoni 72", serif',
+  '"Courier New", Courier, monospace',
+  'Futura, "Avenir Next Condensed", sans-serif',
+  'Copperplate, "Copperplate Gothic Light", serif',
+  'Zapfino, "Apple Chancery", cursive'
+];
+const publicSearchText = work => {
+  if (publicSearchCache.has(work)) return publicSearchCache.get(work);
+  const values = [];
+  const visit = (value, key = '') => {
+    if (PUBLIC_SEARCH_OMIT.has(String(key).toLowerCase()) || value == null) return;
+    if (Array.isArray(value)) return value.forEach(item => visit(item, key));
+    if (typeof value === 'object') return Object.entries(value).forEach(([childKey, childValue]) => visit(childValue, childKey));
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') values.push(String(value));
+  };
+  visit(work);
+  const text = values.join(' ').toLocaleLowerCase().replace(/[-_./]+/g, ' ').replace(/\s+/g, ' ');
+  publicSearchCache.set(work, text);
+  return text;
+};
+const matchesPublicSearch = (work, query) => {
+  const terms = String(query || '').toLocaleLowerCase().replace(/[-_./]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+  if (!terms.length) return true;
+  const haystack = publicSearchText(work);
+  return terms.every(term => haystack.includes(term));
+};
 const isTheologyWork = work => {
   const labels = [...workSubjects(work), work.type, work.medium, ...(work.projects || []), ...(work.collections || []), ...(work.tags || [])]
     .map(value => String(value || '').toLowerCase()).join(' ');
@@ -58,11 +128,12 @@ const bibleBookOrder = name => {
   return index < 0 ? Number.MAX_SAFE_INTEGER : index;
 };
 const matchesCategory = (work, category) => category === 'All'
-  || (category === 'Images' && isImageWork(work))
+  || (category === 'Images' && isArtWork(work))
   || (category === 'Music' && isMusicWork(work))
   || (category === 'Video' && isVideoWork(work))
   || (category === 'Theology' && isTheologyWork(work))
   || (category === 'Writing' && isWritingWork(work) && !isPoetryWork(work))
+  || (category === 'Thoughts' && !isPoetryWork(work) && (isWritingWork(work) || isTheologyWork(work)))
   || (work.type || work.medium) === category;
 const workMediaSource = work => work.media?.src || '';
 const workExternalUrl = work => {
@@ -125,23 +196,25 @@ const sourceLaunchUrl = work => {
 };
 const sourceLaunchLabel = work => /(?:youtube\.com|youtu\.be)/i.test(workExternalUrl(work)) ? 'Open in YouTube' : 'Open source';
 const youtubeVideoId = work => String(workExternalUrl(work)).match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?/\s]{11})/i)?.[1] || '';
-const workCardVisual = work => {
+const workCardVisual = (work, { eager = false } = {}) => {
   const source = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
+  const imageLoading = eager ? 'eager' : 'lazy';
   const isPdf = work.media?.mimeType === 'application/pdf' || work.mimeType === 'application/pdf';
-  if (isPdf && source) return `<img src="${source}" alt="Cover of ${escapeHtml(work.title)}" loading="lazy">`;
+  if (isPdf && source) return `<img src="${source}" alt="Cover of ${escapeHtml(work.title)}" loading="${imageLoading}">`;
   if (isPdf && workMediaSource(work)) return `<span class="pdf-cover-preview" data-pdf-cover="${escapeHtml(work.id)}"><span>Rendering cover…</span></span>`;
-  if (source && isVideoWork(work)) return `<img src="${source}" alt="${escapeHtml(work.title)}" loading="lazy">`;
+  if (source && isVideoWork(work)) return `<img src="${source}" alt="${escapeHtml(work.title)}" loading="${imageLoading}">`;
   const hasProseFront = Boolean(work.text) && isWritingWork(work) && !isVideoWork(work);
   if (hasProseFront) {
     const quote = workQuotes(work)[0];
     const excerpt = String(quote?.text || quote?.quote || work.text).replace(/\s+/g, ' ').trim().slice(0, 240);
     return `<span class="media-placeholder media-writing"><em>“${escapeHtml(excerpt)}”</em><small>${escapeHtml(work.title || 'Writing')}</small></span>`;
   }
-  if (source) return `<img src="${source}" alt="${escapeHtml(work.title)}" loading="lazy">`;
+  if (source) return `<img src="${source}" alt="${escapeHtml(work.title)}" loading="${imageLoading}">`;
   const kind = isMusicWork(work) ? 'Music' : isVideoWork(work) ? 'Video' : (work.type || work.medium || 'Archive');
   const excerpt = work.text || work.description || work.critique || '';
   return `<span class="media-placeholder media-${escapeHtml(kind.toLowerCase())}"><strong>${escapeHtml(kind)}</strong>${excerpt ? `<em>${escapeHtml(excerpt.slice(0, 180))}</em>` : '<em>Open the card to view</em>'}</span>`;
 };
+const artHeroMarkup = work => workCardVisual(work, { eager: true });
 const workDetailFront = work => {
   const media = workMediaSource(work);
   const youtubeId = youtubeVideoId(work);
@@ -255,8 +328,9 @@ const currentCollectionWorks = () => {
     if (activeProject !== 'All' && !work.projects?.includes(activeProject)) return false;
     if (activeTag !== 'All' && !work.tags?.includes(activeTag)) return false;
     if (activeSubject !== 'All' && !workSubjects(work).includes(activeSubject)) return false;
-    const haystack = [work.title, work.medium, work.type, work.dimensions, work.date, work.description, work.catalogId, work.text, ...(work.projects || []), ...(work.tags || []), ...workSubjects(work)].join(' ').toLowerCase();
-    return !query || haystack.includes(query);
+    if (activeYear !== 'All' && String(work.date || work.addedAt || '').slice(0, 4) !== activeYear) return false;
+    if (activePublicAge !== 'All' && workAge(work) !== activePublicAge) return false;
+    return matchesPublicSearch(work, query);
   });
 };
 const setCardViewLock = locked => {
@@ -358,12 +432,48 @@ const getDropboxAccessToken = async () => {
   return updated.accessToken;
 };
 
+const downloadDropboxJson = async (accessToken, path) => {
+  const response = await fetch('https://content.dropboxapi.com/2/files/download', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Dropbox-API-Arg': JSON.stringify({ path }) }
+  });
+  if (response.status === 409) return null;
+  if (!response.ok) throw new Error('The Docent could not download its Dropbox update.');
+  return response.json();
+};
+
+const syncIncrementalDropbox = async accessToken => {
+  const manifest = await downloadDropboxJson(accessToken, DROPBOX_MANIFEST_PATH);
+  if (!manifest) return false;
+  if (!validManifest(manifest)) throw new Error('Dropbox returned an invalid Docent manifest.');
+  const storedManifest = await readValue(DOCENT_MANIFEST);
+  const storedById = new Map((storedManifest?.shards || []).map(shard => [shard.id, shard]));
+  const shards = [];
+  for (const descriptor of manifest.shards) {
+    let shard = storedById.get(descriptor.id)?.fingerprint === descriptor.fingerprint
+      ? await readValue(`${DOCENT_SHARD_PREFIX}${descriptor.id}`) : null;
+    if (!validShard(shard) || shard.fingerprint !== descriptor.fingerprint) {
+      shard = await downloadDropboxJson(accessToken, descriptor.path);
+      if (!validShard(shard) || shard.fingerprint !== descriptor.fingerprint) throw new Error(`Docent segment ${descriptor.id} is incomplete.`);
+      await storeValue(`${DOCENT_SHARD_PREFIX}${descriptor.id}`, shard);
+    }
+    shards.push(shard);
+  }
+  const works = shards.flatMap(shard => shard.works).sort((left, right) => (left.order || 0) - (right.order || 0));
+  const value = { ...manifest, schema: 'the-archivist.docent-gallery', schemaVersion: 1, works };
+  await storeValue(DOCENT_MANIFEST, manifest);
+  await storeGallery(value);
+  renderGallery();
+  return true;
+};
+
 const syncDropbox = async ({ quiet = false } = {}) => {
   const accessToken = await getDropboxAccessToken();
   if (!accessToken) {
     if (!quiet) await connectDropbox();
     return false;
   }
+  if (await syncIncrementalDropbox(accessToken)) return true;
   let response;
   for (const path of [DROPBOX_PATH, LEGACY_DROPBOX_PATH]) {
     response = await fetch('https://content.dropboxapi.com/2/files/download', {
@@ -406,30 +516,15 @@ const formatSync = value => {
 };
 
 const renderTopbar = () => {
-  const works = gallery?.works || [];
-  const vaultWorks = Number(gallery?.stats?.vaultWorks) || works.length;
-  const mediaCounts = works.reduce((counts, work) => {
-    const medium = work.type || work.medium || 'Unclassified';
-    counts[medium] = (counts[medium] || 0) + 1;
-    return counts;
-  }, {});
-  const mostUsed = Object.entries(mediaCounts).sort(([, left], [, right]) => right - left)[0]?.[0] || '—';
-  const projects = new Set(works.flatMap(work => work.projects || []));
-  const years = works.map(work => String(work.date || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)).map(Number).sort();
-  const dateRange = years.length ? (years[0] === years[years.length - 1] ? years[0] : `${years[0]}–${years[years.length - 1]}`) : '—';
-  const snapshot = [
-    ['Vault files', vaultWorks],
-    ['Projects', projects.size],
-    ['Media types', Object.keys(mediaCounts).filter(type => type !== 'Unclassified').length],
-    ['Most used', mostUsed],
-    ['Date range', dateRange],
-    ['On device', gallery ? 'Ready' : 'Empty']
-  ];
-  return `<header class="topbar">
-    <button class="brand-lockup" data-home aria-label="Return to collection"><span class="nav-logo"><img src="./docent-icon-512.png" alt=""></span><span><strong>Docent</strong><em>by The Archivist</em></span></button>
-    <nav class="universal-nav" aria-label="Archive snapshot">${snapshot.map(([label, value]) => `<button data-stats><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></button>`).join('')}</nav>
-    <div class="top-actions"><span class="offline-dot"></span><span class="sync-label">${escapeHtml(formatSync(gallery?.publishedAt))}</span><button class="icon-button" data-dropbox aria-label="Sync Dropbox" title="Sync Dropbox">↻</button><button class="icon-button" data-import aria-label="Import update" title="Import update">↥</button></div>
-  </header><div class="stats-modal" data-stats-modal aria-hidden="true"><section class="stats-modal-card"><button class="stats-modal-close" data-stats-close aria-label="Close statistics">×</button><p class="eyebrow">Vault statistics</p><h2>The collection at a glance</h2><div class="stats-modal-grid">${snapshot.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('')}</div><p>Tap outside this panel to close.</p></section></div>`;
+  return `<header class="archive-header">
+    <button class="archive-wordmark" data-home aria-label="Josh McGary dot com — return home"><strong><span>Josh</span><span>McGary.com</span></strong></button>
+    <nav aria-label="Archive sections">
+      <button class="${activeType === 'Images' ? 'is-active' : ''}" data-menu-category="Images">Art</button>
+      <button class="${activeType === 'Video' ? 'is-active' : ''}" data-menu-category="Video">Video</button>
+      <a href="${THOUGHTS_SITE_URL}">Thoughts</a>
+      <button class="${activeType === 'Music' ? 'is-active' : ''}" data-menu-category="Music">Audio</button>
+    </nav>
+  </header>`;
 };
 
 const renderDock = () => {
@@ -445,11 +540,11 @@ const renderDock = () => {
     quotes: '<svg viewBox="0 0 24 24"><path d="M5 6h6v6H7v6H3v-8a4 4 0 0 1 2-4Zm10 0h6v6h-4v6h-4v-8a4 4 0 0 1 2-4Z"/></svg>',
     profile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>'
   };
-  const categories = [['All', 'Home', 'home'], ['Images', 'The Gallery', 'images'], ['Poetry', 'The Poetry Room', 'anthology'], ['Writing', 'The Reading Room', 'reading'], ['Music', 'The Listening Booth', 'music'], ['Video', 'The Cinema', 'video'], ['Theology', 'The Chapel', 'chapel'], ['Quotes', 'The Quote Book', 'quotes'], ['Profile', 'Profile', 'profile']];
+  const categories = [['All', 'Home', 'home'], ['Images', 'The Gallery', 'images'], ['Poetry', 'The Poetry Room', 'anthology'], ['Thoughts', 'The Thoughts Archive', 'reading'], ['Writing', 'The Reading Room', 'reading'], ['Music', 'The Listening Booth', 'music'], ['Video', 'The Cinema', 'video'], ['Theology', 'The Chapel', 'chapel'], ['Quotes', 'The Quote Book', 'quotes'], ['Profile', 'Profile', 'profile']];
   return `<button class="art-menu-scrim ${artMenuOpen ? 'is-open' : ''}" data-art-menu-dismiss aria-label="Close category menu"></button><aside class="art-menu ${artMenuOpen ? 'is-open' : ''}" aria-label="Browse artwork categories">
     <button class="art-menu-handle" data-art-menu-toggle aria-label="${artMenuOpen ? 'Close' : 'Open'} category menu"><span></span></button>
     <div class="art-menu-panel">
-      <header><span>Browse</span><strong>The Docent</strong></header>
+      <header><span>Browse</span><strong>${escapeHtml(gallery?.profile?.name || 'The archive')}</strong></header>
       <nav>${categories.map(([value, label, icon]) => {
         const count = value === 'Profile' ? gallery.profile?.evaluationCorpusSize || gallery.works.length : value === 'Quotes' ? gallery.works.reduce((sum, work) => sum + workQuotes(work).length, 0) : gallery.works.filter(work => matchesCategory(work, value)).length;
         return `<button data-menu-category="${value}" class="category-${icon} ${activeType === value ? 'is-current' : ''}"><span class="category-icon">${categoryIcons[icon]}</span><span><strong>${label}</strong><em>${value === 'Profile' ? `${count} works evaluated` : `${count} ${count === 1 ? 'work' : 'works'}`}</em></span></button>`;
@@ -478,6 +573,26 @@ const workQuotes = work => (Array.isArray(work.quotes) ? work.quotes : Array.isA
   .filter(quote => quote?.showInBook !== false)
   .map(quote => typeof quote === 'string' ? { text: quote, attribution: '' } : quote)
   .filter(quote => String(quote?.text || quote?.quote || '').trim());
+
+const fitHomeQuotes = () => {
+  document.querySelectorAll('.home-hover-gallery-panel.is-words .portal-word-slide').forEach(slide => {
+    const quote = slide.querySelector('q');
+    if (!quote || !slide.clientWidth || !slide.clientHeight) return;
+    const style = getComputedStyle(slide);
+    const citation = slide.querySelector('small');
+    const availableHeight = slide.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom) - (citation?.offsetHeight || 0) - 12;
+    let low = 10;
+    let high = 180;
+    for (let pass = 0; pass < 10; pass += 1) {
+      const size = (low + high) / 2;
+      quote.style.fontSize = `${size}px`;
+      if (quote.scrollHeight <= availableHeight) low = size;
+      else high = size;
+    }
+    quote.style.fontSize = `${Math.floor(low * 10) / 10}px`;
+  });
+};
+window.addEventListener('resize', () => requestAnimationFrame(fitHomeQuotes));
 const epigraphMarkup = quote => `<button type="button" class="epigraph-link" data-quote-work="${escapeHtml(quote.work?.id || '')}" aria-label="Open ${escapeHtml(quote.work?.title || 'source work')}"><blockquote>“${escapeHtml(quote.text || quote.quote)}”</blockquote><figcaption><span></span>${escapeHtml(quote.attribution || gallery.profile?.name || 'The Artist')}<em>From ${escapeHtml(quote.work?.title || 'Untitled')}</em><small>The Archivist quote book</small></figcaption></button>`;
 const shuffledQuotes = quotes => {
   const shuffled = [...quotes];
@@ -489,26 +604,42 @@ const shuffledQuotes = quotes => {
   return shuffled;
 };
 
-const homeShelfCard = (work, index, variant = '') => `<button class="home-shelf-card ${variant === 'rated' ? 'is-rated-card' : ''} ${workExternalUrl(work) ? 'is-linked-work' : ''}" data-work="${escapeHtml(work.id)}" style="--delay:${index * 28}ms">
+const homeShelfCard = (work, index, variant = '') => `<button class="home-shelf-card ${variant === 'rated' ? 'is-rated-card' : ''} ${workExternalUrl(work) ? 'is-linked-work' : ''} ${youtubeVideoId(work) ? 'has-hover-video' : ''}" data-work="${escapeHtml(work.id)}" ${youtubeVideoId(work) ? `data-hover-video="${escapeHtml(youtubeVideoId(work))}"` : ''} style="--delay:${index * 28}ms">
   ${variant === 'rated' ? `<span class="home-score" aria-hidden="true">${escapeHtml(workGrade(work))}</span>` : ''}
   <span class="home-shelf-art">${workCardVisual(work)}${variant === 'rated' ? `<span class="home-type-ribbon">${escapeHtml(work.medium || work.type || 'Artwork')}</span>` : ''}</span>
   <span class="home-shelf-copy"><strong>${escapeHtml(work.title)}</strong><em>${escapeHtml(work.medium || work.type || 'Archive work')}</em></span>
 </button>`;
+const publicCollectionHref = key => {
+  const parameters = new URLSearchParams(location.search);
+  parameters.set('section', activeType);
+  if (key) parameters.set('collection', key);
+  else parameters.delete('collection');
+  return `${location.pathname}?${parameters.toString()}`;
+};
+
+const publicEntranceCard = ({ value, kicker, title, description, count, accent, marks, slides = [], wordSlides = [] }) => `${value === 'Thoughts' ? `<a class="public-entrance public-entrance-${accent}" data-home-portrait="${escapeHtml(accent)}" href="${THOUGHTS_SITE_URL}">` : `<button class="public-entrance public-entrance-${accent}" data-home-portrait="${escapeHtml(accent)}" data-home-entrance="${escapeHtml(value)}">`}
+  <span class="public-entrance-slideshow ${wordSlides.length ? 'is-words' : ''}" aria-hidden="true">${wordSlides.length ? wordSlides.map((slide, index) => `<span class="portal-slide portal-word-slide ${index === 0 ? 'is-active' : ''}"><q>${quoteLetterMarkup(slide.words)}</q><small>— ${escapeHtml(slide.title.toUpperCase())}</small></span>`).join('') : slides.map((source, index) => `<img class="portal-slide ${index === 0 ? 'is-active' : ''}" src="${escapeHtml(source)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">`).join('')}</span>
+  <span class="public-entrance-marks" aria-hidden="true">${escapeHtml(marks)}</span>
+  <span class="public-entrance-kicker">${escapeHtml(kicker)}</span>
+  <strong>${escapeHtml(title)}</strong>
+  <span class="public-entrance-description">${escapeHtml(description)}</span>
+  <span class="public-entrance-footer"><em>${count} ${count === 1 ? 'work' : 'works'}</em><b>Enter <span>↗</span></b></span>
+${value === 'Thoughts' ? '</a>' : '</button>'}`;
 
 const renderHome = works => {
+  homePortalTimers.forEach(clearTimeout);
+  homePortalTimers = [];
   const updateTime = work => Date.parse(work.addedAt || '') || 0;
-  const gradeScore = work => {
-    const grade = String(workGrade(work)).trim().toUpperCase();
-    const numeric = Number.parseFloat(grade);
-    if (Number.isFinite(numeric)) return numeric;
-    const letter = grade.match(/^([ABCDF])([+-])?/);
-    if (!letter) return -Infinity;
-    return ({ A: 4, B: 3, C: 2, D: 1, F: 0 }[letter[1]] || 0) + (letter[2] === '+' ? .3 : letter[2] === '-' ? -.3 : 0);
-  };
   const recent = [...works].sort((left, right) => updateTime(right) - updateTime(left) || works.indexOf(right) - works.indexOf(left)).slice(0, 12);
-  const highestRated = works.filter(work => String(workGrade(work)).trim()).sort((left, right) => gradeScore(right) - gradeScore(left)).slice(0, 12);
   const latest = recent[0] || works[works.length - 1] || works[0];
-  const publicQuotes = works.flatMap(work => workQuotes(work).map(quote => ({ ...quote, work })));
+  const workById = new Map(works.map(work => [String(work.permanentWorkId || work.id), work]));
+  const exportedQuoteBook = Array.isArray(gallery?.quoteBook) ? gallery.quoteBook.map(quote => ({
+    ...quote,
+    work: workById.get(String(quote.permanentWorkId || quote.workId))
+  })).filter(quote => quote.text && quote.work) : [];
+  const publicQuotes = exportedQuoteBook.length
+    ? exportedQuoteBook
+    : works.flatMap(work => workQuotes(work).map(quote => ({ ...quote, work })));
   const quoteSignature = publicQuotes.map(quote => `${quote.text || quote.quote}|${quote.attribution || ''}|${quote.work?.id || ''}`).join('\n');
   if (quoteQueueSignature !== quoteSignature || !quoteQueue.length) {
     quoteQueueSignature = quoteSignature;
@@ -516,31 +647,230 @@ const renderHome = works => {
   }
   const featuredQuote = quoteQueue.shift();
   if (featuredQuote) lastQuoteText = String(featuredQuote.text || featuredQuote.quote);
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const searchResults = normalizedQuery ? works.filter(work => [
+    work.title, work.medium, work.type, work.description, work.text, work.catalogId,
+    ...(work.projects || []), ...(work.tags || []), ...workSubjects(work), ...(work.themes || []),
+    ...(work.scripture || []), ...(work.doctrine || []), ...(work.joshSpeak || [])
+  ].join(' ').toLowerCase().includes(normalizedQuery)) : [];
+  const artWorks = works.filter(isArtWork);
+  const videoWorks = works.filter(isVideoWork);
+  const featuredVideoWorks = videoWorks.filter(work => {
+    if (!youtubeVideoId(work)) return false;
+    const labels = [
+      work.title, work.description, work.text,
+      ...(work.projects || []), ...(work.tags || []), ...(work.subjects || []),
+      ...(work.collections || []), ...(work.themes || [])
+    ].filter(Boolean).join(' ');
+    return /(?:\bmake\s*ba\b|#makeba\b|\bsermon\b|\bsermons\b|\bpreach(?:ing|er|ed)?\b|\bhomiletic\b|pastor\s+josh\s+mcgary)/i.test(labels);
+  });
+  const thoughtWorks = works.filter(work => isWritingWork(work) || isTheologyWork(work) || isPoetryWork(work));
+  const audioWorks = works.filter(isMusicWork);
+  const playlistImages = playlistWorks => [...new Set(playlistWorks.map(work => {
+    if (work.image) return work.image;
+    if (String(work.media?.mimeType || '').startsWith('image/')) return workMediaSource(work);
+    const youtubeId = youtubeVideoId(work);
+    return youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : '';
+  }).filter(Boolean))].slice(0, 16);
+  const homeVideoLoops = [300, 301, 303, 304, 305, 308]
+    .map(number => ({ kind: 'video', source: `./assets/video-loops/makeba-${number}.mp4`, poster: '' }));
+  const thoughtWords = publicQuotes.map(quote => {
+    const words = String(quote.text || quote.quote || '').replace(/\s+/g, ' ').trim();
+    return words ? {
+      title: quote.work?.title || 'Quote Book',
+      words: words.length > 150 ? `${words.slice(0, 147).trim()}…` : words
+    } : null;
+  }).filter(Boolean).slice(0, 16);
+  const entrances = [
+    { value: 'Images', kicker: 'Drawing · painting · design · software', title: 'Art', description: 'Sketches, panels, design, objects, and visual systems.', count: artWorks.length, accent: 'art', marks: '◒', slides: playlistImages(artWorks) },
+    { value: 'Thoughts', kicker: 'Writing · transcripts · poetry', title: 'Thoughts', description: 'Ideas, arguments, stories, teachings, and language across time.', count: thoughtWorks.length, accent: 'thoughts', marks: 'Aa', wordSlides: thoughtWords },
+    { value: 'Video', kicker: 'MAKE BA · sermons', title: 'Video', description: 'MAKE BA and sermon video selections.', count: videoWorks.length, accent: 'video', marks: '▶', videoSlides: homeVideoLoops },
+    { value: 'Music', kicker: 'Music · voice · sound', title: 'Audio', description: 'Songs, performances, recordings, and experiments in sound.', count: audioWorks.length, accent: 'audio', marks: '∿', slides: playlistImages(audioWorks) }
+  ];
+  const portalSlideMarkup = entrance => entrance.wordSlides?.length
+    ? entrance.wordSlides.map((slide, index) => `<span class="portal-slide portal-word-slide ${index === 0 ? 'is-active' : ''}"><q>${quoteLetterMarkup(slide.words)}</q><small>— ${escapeHtml(slide.title.toUpperCase())}</small></span>`).join('')
+    : entrance.videoSlides?.length
+      ? entrance.videoSlides.map((slide, index) => slide.kind === 'youtube'
+        ? `<span class="portal-slide portal-video-slide ${index === 0 ? 'is-active' : ''}" data-video-kind="youtube" data-video-src="${escapeHtml(slide.source)}"${slide.poster ? ` style="--video-poster:url('${escapeHtml(slide.poster)}')"` : ''}><iframe title="" tabindex="-1" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe></span>`
+        : slide.kind === 'video'
+          ? `<span class="portal-slide portal-video-slide ${index === 0 ? 'is-active' : ''}" data-video-kind="video"><video src="${escapeHtml(slide.source)}" ${slide.poster ? `poster="${escapeHtml(slide.poster)}"` : ''} muted loop playsinline preload="auto"></video></span>`
+          : `<img class="portal-slide ${index === 0 ? 'is-active' : ''}" src="${escapeHtml(slide.source)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">`).join('')
+      : entrance.slides.map((source, index) => `<img class="portal-slide ${index === 0 ? 'is-active' : ''}" src="${escapeHtml(source)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">`).join('');
+  const initialPortal = entrances[Math.floor(Math.random() * entrances.length)]?.accent || 'art';
   const shelves = [
+    ...(normalizedQuery ? [[`Results for “${searchQuery.trim()}”`, searchResults]] : []),
     ['Recently added', recent],
-    ['Highest rated', highestRated, 'rated'],
     ['Images', works.filter(isImageWork)],
     ['Poetry', works.filter(isPoetryWork)],
     ['Music', works.filter(isMusicWork)],
     ['Video', works.filter(isVideoWork)],
     ['Writing', works.filter(work => !isPoetryWork(work) && (['writing', 'prose', 'essay', 'story', 'document'].includes(String(work.type || work.medium || '').toLowerCase()) || work.media?.mimeType === 'application/pdf' || work.mimeType === 'application/pdf'))]
   ].filter(([, shelfWorks]) => shelfWorks.length);
-  app.innerHTML = `<div class="shell home-shell">
+  app.innerHTML = `<div class="shell home-shell simple-public-home">
     ${renderTopbar()}
-    ${featuredQuote ? `<figure class="home-epigraph" data-epigraph>${epigraphMarkup(featuredQuote)}</figure>` : ''}
-    <section class="home-feature" aria-label="Latest addition">
-      <div class="home-feature-media">${workCardVisual(latest)}</div>
-      <div class="home-feature-shade"></div>
-      <div class="home-feature-copy"><p class="eyebrow">Latest addition</p><h1>${escapeHtml(latest.title)}</h1><p>${escapeHtml(latest.description || latest.medium || latest.type || 'The newest work in this portable collection.')}</p><button data-work="${escapeHtml(latest.id)}">View work <span>→</span></button></div>
-    </section>
-    <main class="home-shelves" id="collection">
-      ${shelves.map(([title, shelfWorks, variant]) => `<section class="home-shelf ${variant === 'rated' ? 'is-rated-shelf' : ''}"><header><h2>${escapeHtml(title)}</h2><span>${shelfWorks.length}</span></header><div class="home-shelf-track">${shelfWorks.map((work, index) => homeShelfCard(work, index, variant)).join('')}</div></section>`).join('')}
+    <main>
+      <img class="home-self-portrait" data-home-portrait="self" src="./assets/josh-self-portrait.png" alt="Self-portrait of Josh McGary seated with a sketchbook">
+      <section class="home-hover-gallery" aria-live="polite">
+        ${entrances.map(entrance => `<div class="home-hover-gallery-panel public-entrance-slideshow ${entrance.wordSlides?.length ? 'is-words' : ''} ${entrance.videoSlides?.length ? 'is-video' : ''}" data-home-panel="${escapeHtml(entrance.accent)}" aria-hidden="true">${portalSlideMarkup(entrance)}</div>`).join('')}
+      </section>
+      <section class="home-portal-stage" aria-live="polite">
+        ${entrances.map(entrance => `${entrance.value === 'Thoughts' ? `<a href="${THOUGHTS_SITE_URL}"` : `<button type="button" data-home-entrance="${escapeHtml(entrance.value)}"`} class="home-portal-panel" data-home-panel-trigger="${escapeHtml(entrance.accent)}" aria-label="Open ${escapeHtml(entrance.title)}"><strong class="home-portal-icon" aria-hidden="true">${escapeHtml(entrance.title)}</strong>${entrance.value === 'Thoughts' ? '</a>' : '</button>'}`).join('')}
+      </section>
     </main>
-    <button class="about-panel" id="about" data-open-profile><span class="eyebrow">About the collection</span><h2>${escapeHtml(gallery.profile?.name || 'The Artist')}</h2>${gallery.profile?.statement ? `<span>${escapeHtml(gallery.profile.statement)}</span>` : '<span>This portable collection was curated in The Archivist.</span>'}</button>
-    <footer><span>${works.length} ${works.length === 1 ? 'work' : 'works'} on this device</span>${gallery.profile?.contact ? `<a href="mailto:${encodeURIComponent(gallery.profile.contact)}">Contact</a>` : ''}</footer>
-    ${renderDock()}
   </div>`;
   bindActions();
+  requestAnimationFrame(() => requestAnimationFrame(fitHomeQuotes));
+  const portrait = document.querySelector('.home-self-portrait');
+  const portraitSources = [
+    './assets/josh-self-portrait.png',
+    './assets/josh-self-portrait-thoughts.png',
+    './assets/josh-self-portrait-art.png',
+    './assets/josh-self-portrait-video.png',
+    './assets/josh-self-portrait-audio.png'
+  ];
+  const setPortalVideoPlayback = (slide, playing, unload = false) => {
+    if (!slide?.classList.contains('portal-video-slide')) return;
+    const frame = slide.querySelector('iframe');
+    const video = slide.querySelector('video');
+    if (frame) {
+      const sendYouTubeCommand = command => frame.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: command, args: [] }), '*');
+      const startYouTube = () => {
+        sendYouTubeCommand('mute');
+        sendYouTubeCommand('playVideo');
+      };
+      if (playing) {
+        if (!frame.getAttribute('src')) {
+          frame.addEventListener('load', () => {
+            startYouTube();
+            setTimeout(startYouTube, 350);
+            setTimeout(startYouTube, 900);
+          }, { once: true });
+          frame.src = slide.dataset.videoSrc;
+        } else {
+          startYouTube();
+          setTimeout(startYouTube, 250);
+          setTimeout(startYouTube, 700);
+        }
+      } else if (frame.getAttribute('src')) {
+        sendYouTubeCommand(unload ? 'stopVideo' : 'pauseVideo');
+        if (unload) frame.removeAttribute('src');
+      }
+    }
+    if (video) {
+      video.muted = true;
+      if (playing) {
+        if (video.ended) video.currentTime = 0;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+        if (unload) video.currentTime = 0;
+      }
+    }
+  };
+  document.querySelectorAll('[data-home-panel="video"] video').forEach(video => {
+    video.muted = true;
+    video.load();
+  });
+  document.querySelectorAll('.public-entrance-slideshow').forEach((slideshow, index) => {
+    const images = [...slideshow.querySelectorAll('.portal-slide')];
+    if (images.length < 2) return;
+    const isWords = slideshow.classList.contains('is-words');
+    const isVideo = slideshow.classList.contains('is-video');
+    let currentIndex = 0;
+    const cycle = () => {
+      if (!slideshow.isConnected) return;
+      if (isVideo && !slideshow.classList.contains('is-active')) {
+        homePortalTimers.push(setTimeout(cycle, 2000));
+        return;
+      }
+      let nextIndex = Math.floor(Math.random() * images.length);
+      if (nextIndex === currentIndex) nextIndex = (nextIndex + 1) % images.length;
+      images[currentIndex].classList.remove('is-active');
+      setPortalVideoPlayback(images[currentIndex], false, isVideo);
+      images[nextIndex].classList.add('is-active');
+      setPortalVideoPlayback(images[nextIndex], slideshow.classList.contains('is-active'));
+      currentIndex = nextIndex;
+      homePortalTimers.push(setTimeout(cycle, isWords ? 9000 + Math.random() * 3000 : isVideo ? 9000 + Math.random() * 5000 : 2600 + Math.random() * 1800));
+    };
+    homePortalTimers.push(setTimeout(cycle, 700 + index * 520 + Math.random() * 600));
+  });
+  const activateHomePanel = accent => {
+    document.querySelectorAll('[data-home-panel]').forEach(panel => {
+      const active = panel.dataset.homePanel === accent;
+      const wasActive = panel.classList.contains('is-active');
+      if (active && !wasActive && panel.classList.contains('is-words')) {
+        const quote = panel.querySelector('.portal-word-slide.is-active');
+        if (quote) {
+          quote.classList.remove('is-active');
+          void quote.offsetWidth;
+          quote.classList.add('is-active');
+        }
+      }
+      panel.classList.toggle('is-active', active);
+      panel.setAttribute('aria-hidden', active ? 'false' : 'true');
+      panel.querySelectorAll('.portal-video-slide').forEach(slide => setPortalVideoPlayback(slide, active && slide.classList.contains('is-active')));
+    });
+    document.querySelectorAll('[data-home-panel-trigger]').forEach(trigger => trigger.classList.toggle('is-active', trigger.dataset.homePanelTrigger === accent));
+  };
+  const deactivateHomePanel = () => {
+    document.querySelectorAll('[data-home-panel]').forEach(panel => {
+      panel.classList.remove('is-active');
+      panel.setAttribute('aria-hidden', 'true');
+    });
+    document.querySelectorAll('[data-home-panel-trigger]').forEach(trigger => trigger.classList.remove('is-active'));
+    document.querySelector('.simple-public-home')?.classList.remove('is-gallery-active');
+  };
+  document.querySelectorAll('[data-home-panel-trigger]').forEach(trigger => {
+    trigger.addEventListener('pointerenter', () => {
+      activateHomePanel(trigger.dataset.homePanelTrigger);
+      document.querySelector('.simple-public-home')?.classList.add('is-gallery-active');
+    });
+    trigger.addEventListener('pointerleave', deactivateHomePanel);
+    trigger.addEventListener('focus', () => {
+      activateHomePanel(trigger.dataset.homePanelTrigger);
+      document.querySelector('.simple-public-home')?.classList.add('is-gallery-active');
+    });
+    trigger.addEventListener('blur', deactivateHomePanel);
+  });
+  let portraitSwapTimer;
+  let portraitFinishTimer;
+  let portraitZoneActive = false;
+  const spinPortrait = () => {
+    if (!portrait) return;
+    const currentSource = portrait.getAttribute('src');
+    const choices = portraitSources.filter(source => source !== currentSource);
+    const nextSource = choices[Math.floor(Math.random() * choices.length)];
+    clearTimeout(portraitSwapTimer);
+    clearTimeout(portraitFinishTimer);
+    portrait.classList.remove('is-coin-spinning');
+    void portrait.offsetWidth;
+    portrait.classList.add('is-coin-spinning');
+  portraitSwapTimer = setTimeout(() => {
+    portrait.src = nextSource;
+  }, 240);
+    portraitFinishTimer = setTimeout(() => portrait.classList.remove('is-coin-spinning'), 520);
+  };
+  portrait?.addEventListener('pointermove', event => {
+    const bounds = portrait.getBoundingClientRect();
+    const normalizedX = (event.clientX - bounds.left) / bounds.width;
+    const normalizedY = (event.clientY - bounds.top) / bounds.height;
+    const insideCenter = normalizedX >= .24 && normalizedX <= .76 && normalizedY >= .13 && normalizedY <= .87;
+    portrait.style.cursor = insideCenter ? 'pointer' : 'default';
+    if (insideCenter && !portraitZoneActive) spinPortrait();
+    portraitZoneActive = insideCenter;
+  });
+  portrait?.addEventListener('pointerleave', () => {
+    portraitZoneActive = false;
+    portrait.style.cursor = 'default';
+  });
+  document.querySelector('[data-home-search]')?.addEventListener('input', event => {
+    searchQuery = event.target.value;
+    const cursor = searchQuery.length;
+    renderHome(works);
+    const input = document.querySelector('[data-home-search]');
+    input?.focus(); input?.setSelectionRange(cursor, cursor);
+  });
+  document.querySelector('[data-clear-home-search]')?.addEventListener('click', () => { searchQuery = ''; renderHome(works); });
   document.querySelector('[data-epigraph]')?.addEventListener('click', event => {
     const trigger = event.target.closest('[data-quote-work]');
     const sourceWork = works.find(work => String(work.id) === String(trigger?.dataset.quoteWork));
@@ -559,6 +889,87 @@ const renderHome = works => {
       epigraph.classList.remove('is-changing');
     }, 260);
   }, 9000);
+};
+
+const renderPublicSection = works => {
+  clearInterval(searchPromptTimer);
+  const labels = { Images: 'Art', Video: 'Video', Music: 'Audio' };
+  const descriptions = {
+    Images: '',
+    Video: '',
+    Music: 'Songs, recordings, performances, voice, and experiments in sound.'
+  };
+  const sectionWorks = works.filter(work => matchesCategory(work, activeType));
+  const visible = currentCollectionWorks();
+  const hasCardPreview = work => Boolean(work.image || (String(work.media?.mimeType || '').startsWith('image/') && workMediaSource(work)));
+  const previewable = activeType === 'Images' ? visible.filter(hasCardPreview) : visible;
+  const compareWorkDate = (left, right) => Date.parse(right.date || '') - Date.parse(left.date || '') || Date.parse(right.addedAt || '') - Date.parse(left.addedAt || '') || String(left.title || '').localeCompare(String(right.title || ''));
+  const years = [...new Set(sectionWorks.map(work => String(work.date || work.addedAt || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)))].sort((left, right) => right.localeCompare(left));
+  const ages = [...new Set(sectionWorks.map(workAge).filter(Boolean))].sort((left, right) => Number(left) - Number(right));
+  const ageMenu = `<nav class="public-age-menu" aria-label="Filter ${labels[activeType]} by age"><span>Age</span>${['All', ...ages].map(age => `<button class="${activePublicAge === age ? 'is-active' : ''}" data-public-age="${escapeHtml(age)}">${escapeHtml(age)}</button>`).join('')}</nav>`;
+  const workYear = work => String(work.date || work.addedAt || '').slice(0, 4);
+  const uniqueRails = years.map(year => ({ key: `year:${year}`, title: year, items: previewable.filter(work => workYear(work) === year).sort(compareWorkDate) })).filter(rail => rail.items.length);
+  const catalogueWorks = [...visible].sort((left, right) => String(left.title || '').localeCompare(String(right.title || '')) || compareWorkDate(left, right));
+  const catalogueYears = [...new Set(catalogueWorks.map(work => workYear(work) || 'Undated'))].sort((left, right) => {
+    if (left === 'Undated') return 1;
+    if (right === 'Undated') return -1;
+    return right.localeCompare(left);
+  });
+  const catalogueGroups = catalogueYears.map(year => ({
+    year,
+    works: catalogueWorks.filter(work => (workYear(work) || 'Undated') === year)
+  }));
+  const collectionMatches = work => {
+    if (!activePublicCollection || activePublicCollection === 'all') return true;
+    if (activePublicCollection.startsWith('year:')) return workYear(work) === activePublicCollection.slice(5);
+    return true;
+  };
+  const activeRail = uniqueRails.find(rail => rail.key === activePublicCollection);
+  if (activePublicCollection) {
+    const collectionTitle = activePublicCollection.startsWith('year:') ? activePublicCollection.slice(5) : activeRail?.title || 'Collection';
+    const yearWorks = sectionWorks.filter(collectionMatches).sort(compareWorkDate);
+    const gridWorks = previewable.filter(collectionMatches).sort(compareWorkDate);
+    const yearTagCounts = new Map();
+    yearWorks.forEach(work => [...workSubjects(work), ...(work.tags || []), ...(work.themes || []), ...(work.projects || [])].filter(Boolean).forEach(term => {
+      const clean = String(term).replace(/^\[|\]$/g, '').replace(/^#/, '').replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
+      const key = clean.toLocaleLowerCase();
+      if (clean.length > 1 && !['none', 'n/a', 'uncategorized', 'unclassified', 'unknown'].includes(key)) {
+        const previous = yearTagCounts.get(key);
+        yearTagCounts.set(key, { label: previous?.label || clean, count: (previous?.count || 0) + 1 });
+      }
+    }));
+    const yearTags = [...yearTagCounts.values()].filter(({ count }) => count > 1).sort((left, right) => right.count - left.count || left.label.localeCompare(right.label)).slice(0, 60);
+    const yearIndex = [...gridWorks].sort((left, right) => String(left.title || '').localeCompare(String(right.title || '')));
+    app.innerHTML = `<div class="public-section-shell public-grid-shell">
+      ${renderTopbar()}
+      <main>
+        <a class="public-grid-back" href="${escapeHtml(publicCollectionHref(''))}" data-close-public-collection>← ${labels[activeType]}</a>
+        <header class="public-grid-intro"><p>${gridWorks.length} ${gridWorks.length === 1 ? 'work' : 'works'}</p><h1>${escapeHtml(collectionTitle)}</h1></header>
+        <label class="public-section-search"><span>Search collection</span><input type="search" value="${escapeHtml(searchQuery)}" placeholder="Title, subject, medium, year…" data-search></label>
+        ${ageMenu}
+        <section class="public-card-catalogue"><button class="public-disclosure" data-disclosure aria-expanded="false" aria-controls="year-index"><span>${collectionTitle} index</span><em>${yearIndex.length} cards</em></button><div id="year-index" hidden>${yearIndex.map(work => `<button data-work="${escapeHtml(work.id)}"><strong>${escapeHtml(work.title)}</strong><span>${escapeHtml(work.medium || work.type || 'Artwork')}</span><em>${escapeHtml(work.catalogId || '')}</em></button>`).join('')}</div></section>
+        <section class="public-tag-cloud"><button class="public-disclosure" data-disclosure aria-expanded="false" aria-controls="year-subjects"><span>Subjects in ${escapeHtml(collectionTitle)}</span><em>${yearTags.length} recurring terms</em></button><div id="year-subjects" hidden>${yearTags.map(({ label, count }) => `<button data-index-term="${escapeHtml(label)}" style="--tag-weight:${Math.min(2.2, .85 + count / 8)}"><span>${escapeHtml(label)}</span><em>${count}</em></button>`).join('')}</div></section>
+        <div class="public-work-grid">${gridWorks.map((work, index) => homeShelfCard(work, index)).join('')}</div>
+        ${gridWorks.length ? '' : `<p class="public-section-empty">No works in this collection match the current search.</p>`}
+      </main>
+      <footer><button data-home>Josh McGary</button><span>${labels[activeType]} · ${escapeHtml(collectionTitle)}</span></footer>
+    </div>`;
+    bindActions();
+    return;
+  }
+  const publishedCount = gallery?.stats?.sectionCounts?.[activeType === 'Images' ? 'art' : activeType === 'Video' ? 'video' : 'audio'] || sectionWorks.length;
+  app.innerHTML = `<div class="public-section-shell ${activeType === 'Video' ? 'has-video-hero' : ''}">
+    ${renderTopbar()}
+    <main>
+      <header class="public-section-intro"><p>${publishedCount} ${publishedCount === 1 ? 'work' : 'works'}</p><h1>${labels[activeType]}</h1><figure class="public-hover-preview ${activeType === 'Video' ? 'is-visible' : ''}" data-hover-preview aria-hidden="${activeType === 'Video' ? 'false' : 'true'}">${activeType === 'Video' ? '<video src="./assets/video-loops/sermon-suffering-mid.mp4" muted loop autoplay playsinline preload="auto" aria-label="Muted sermon preview from Suffering is not removed by salvation"></video>' : ''}</figure><span class="public-preview-title" data-preview-title aria-live="polite"></span>${descriptions[activeType] ? `<span>${descriptions[activeType]}</span>` : ''}</header>
+      <div class="public-search-cluster"><label class="public-section-search"><span>Search ${labels[activeType]}</span><input type="search" value="${escapeHtml(searchQuery)}" placeholder="" data-search data-cycling-search></label><button class="public-catalogue-toggle" data-disclosure aria-expanded="false" aria-controls="complete-catalogue" aria-label="Open complete card catalogue">▼</button></div>
+      ${ageMenu}
+      <section class="public-card-catalogue public-card-catalogue-years public-inline-catalogue"><div id="complete-catalogue" hidden>${catalogueGroups.map(group => `<section><header><a href="${escapeHtml(publicCollectionHref(`year:${group.year}`))}" data-public-collection="year:${escapeHtml(group.year)}"><strong>${escapeHtml(group.year)}</strong><em>${group.works.length}</em><span>Open year →</span></a></header><div>${group.works.map(work => `<button data-work="${escapeHtml(work.id)}"><strong>${escapeHtml(work.title)}</strong><span>${escapeHtml(work.medium || work.type || 'Artwork')}</span><em>${escapeHtml(work.catalogId || '')}</em></button>`).join('')}</div></section>`).join('')}</div></section>
+      <div class="public-section-rails">${uniqueRails.map((rail, railIndex) => `<section class="public-section-rail"><header><a class="public-rail-title" href="${escapeHtml(publicCollectionHref(rail.key))}" data-public-collection="${escapeHtml(rail.key)}"><h2>${escapeHtml(rail.title)}</h2><span>${rail.items.length}</span><em>View all →</em></a><nav><button data-rail-scroll="back" data-rail="${railIndex}" aria-label="Scroll ${escapeHtml(rail.title)} backward">←</button><button data-rail-scroll="forward" data-rail="${railIndex}" aria-label="Scroll ${escapeHtml(rail.title)} forward">→</button></nav></header><div data-rail-track="${railIndex}">${rail.items.map((work, index) => homeShelfCard(work, index)).join('')}</div></section>`).join('')}${visible.length ? '' : `<p class="public-section-empty">No ${labels[activeType].toLowerCase()} matches this search.</p>`}</div>
+    </main>
+    <footer><button data-home>Josh McGary</button><span>${labels[activeType]}</span></footer>
+  </div>`;
+  bindActions();
 };
 
 const profileScore = key => {
@@ -707,6 +1118,10 @@ const renderGallery = () => {
     renderHome(works);
     return;
   }
+  if (['Images', 'Video', 'Music'].includes(activeType)) {
+    renderPublicSection(works);
+    return;
+  }
   if (activeType === 'Profile') {
     renderProfile(works);
     return;
@@ -728,7 +1143,6 @@ const renderGallery = () => {
   const updateTime = work => Date.parse(work.addedAt || '') || 0;
   const categoryShelves = [
     ['Recently added', [...filteredWorks].sort((a, b) => updateTime(b) - updateTime(a)).slice(0, 16)],
-    ['Highest rated', [...filteredWorks].filter(work => String(workGrade(work)).trim()).sort((a, b) => gradeScore(b) - gradeScore(a)).slice(0, 16), 'rated'],
     ...projects.filter(project => project !== 'All').map(project => [project, filteredWorks.filter(work => work.projects?.includes(project))])
   ].filter(([, shelfWorks]) => shelfWorks.length);
   const years = categoryWorks.map(work => String(work.date || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)).map(Number).sort();
@@ -777,9 +1191,8 @@ const renderGallery = () => {
       ${categoryShelves.map(([title, shelfWorks, variant]) => `<section class="home-shelf ${variant === 'rated' ? 'is-rated-shelf' : ''}"><header><h2>${escapeHtml(title)}</h2><span>${shelfWorks.length}</span></header><div class="home-shelf-track">${shelfWorks.map((work, index) => homeShelfCard(work, index, variant)).join('')}</div></section>`).join('')}
       ${filteredWorks.length ? '' : '<div class="no-results"><strong>No works found</strong><span>Try another search or project.</span></div>'}
     </main>
-    <button class="about-panel" id="about" data-open-profile><span class="eyebrow">About the collection</span><h2>${escapeHtml(gallery.profile?.name || 'The Artist')}</h2>${gallery.profile?.statement ? `<span>${escapeHtml(gallery.profile.statement)}</span>` : '<span>This portable collection was curated in The Archivist.</span>'}</button>
+    <button class="about-panel" id="about" data-open-profile><span class="eyebrow">About the collection</span><h2>${escapeHtml(gallery.profile?.name || 'The Artist')}</h2>${gallery.profile?.statement ? `<span>${escapeHtml(gallery.profile.statement)}</span>` : '<span>A public collection of art, language, and sound.</span>'}</button>
     <footer><span>${categoryWorks.length} ${categoryWorks.length === 1 ? 'work' : 'works'} in ${activeType === 'All' ? 'the collection' : escapeHtml(activeType)}</span>${gallery.profile?.contact ? `<a href="mailto:${encodeURIComponent(gallery.profile.contact)}">Contact</a>` : ''}</footer>
-    ${renderDock()}
   </div>`;
   bindActions();
 };
@@ -798,7 +1211,9 @@ const renderWork = work => {
       <button class="detail-close" data-back aria-label="Close card and return to gallery">×</button>
       <div class="card-motion" data-card-motion><div class="detail-card ${detailSide === 'metadata' ? 'is-flipped' : ''}" data-detail-card>
         <section class="detail-face detail-front">${workDetailFront(work)}${workExternalUrl(work) ? `<a class="external-launch" href="${escapeHtml(sourceLaunchUrl(work))}">${escapeHtml(sourceLaunchLabel(work))}<span>↗</span></a>` : ''}</section>
-        <section class="detail-face detail-back">
+        <section class="detail-face detail-back"><div class="detail-back-layout">
+          <div class="detail-back-preview">${workCardVisual(work)}</div>
+          <div class="detail-back-info">
           <p class="eyebrow">${escapeHtml(work.projects?.join(' · ') || 'Selected work')}</p>
           <h1>${escapeHtml(work.title)}</h1>
           <dl>
@@ -807,27 +1222,71 @@ const renderWork = work => {
             ${work.type ? `<div><dt>Artwork type</dt><dd>${escapeHtml(work.type)}</dd></div>` : ''}
             ${work.dimensions ? `<div><dt>Dimensions</dt><dd>${escapeHtml(work.dimensions)}</dd></div>` : ''}
             ${work.catalogId ? `<div><dt>Catalog</dt><dd>${escapeHtml(work.catalogId)}</dd></div>` : ''}
-            ${workGrade(work) ? `<div><dt>Grade</dt><dd>${escapeHtml(workGrade(work))}</dd></div>` : ''}
             ${work.identity ? `<div><dt>Identity</dt><dd>${escapeHtml(work.identity)}</dd></div>` : ''}
             ${work.duration ? `<div><dt>Duration</dt><dd>${escapeHtml(work.duration)}</dd></div>` : ''}
             ${workExternalUrl(work) ? `<div><dt>Source</dt><dd><a class="metadata-source-link" href="${escapeHtml(sourceLaunchUrl(work))}">${escapeHtml(sourceLaunchLabel(work))} ↗</a></dd></div>` : ''}
             ${work.projects?.length ? `<div><dt>Project</dt><dd>${escapeHtml(work.projects.join(', '))}</dd></div>` : ''}
             ${work.tags?.length ? `<div><dt>Tags</dt><dd>${escapeHtml(work.tags.map(tag => `#${tag}`).join(' '))}</dd></div>` : ''}
           </dl>
-          ${work.critique ? `<section class="critique-card"><span>Archivist critique</span><p>${escapeHtml(work.critique)}</p></section>` : ''}
+          ${work.description ? `<section class="work-wiki-card"><span>About this work</span><p>${escapeHtml(work.description)}</p></section>` : ''}
+          ${work.critique ? `<section class="critique-card"><span>AI critique</span><p>${escapeHtml(work.critique)}</p></section>` : ''}
           ${work.text ? `<section class="transcription-card"><span>${isPoetryWork(work) ? 'Transcription' : 'Writing'}</span><p>${escapeHtml(work.text)}</p></section>` : ''}
-          ${work.description ? `<p class="description">${escapeHtml(work.description)}</p>` : ''}
-        </section>
+          </div>
+        </div></section>
       </div></div>
     </div>
     <div class="card-slider-wrap"><span>Next</span><div class="card-slider" role="slider" tabindex="0" aria-label="Pull left for next or right for previous" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" data-card-slider><span class="card-slider-track"><i data-slider-progress></i><b data-slider-thumb></b></span></div><span>Previous</span></div>
     <p class="swipe-hint">${workExternalUrl(work) ? 'Hold the preview to open its source app' : work.media?.mimeType === 'application/pdf' ? 'Hold to expand · swipe sideways to browse' : 'Tap the card to turn it over'}</p>
-    ${renderDock()}
   </article>`;
   const stage = document.querySelector('[data-swipe-stage]');
   const cardMotion = document.querySelector('[data-card-motion]');
   const card = document.querySelector('[data-detail-card]');
   hydratePdfReader(work);
+  const detailFront = document.querySelector('.detail-front');
+  const detailImage = detailFront?.querySelector(':scope > img');
+  if (detailFront && detailImage) {
+    const lens = document.createElement('span');
+    lens.className = 'detail-magnifier';
+    const lensImage = document.createElement('img');
+    lensImage.alt = '';
+    lensImage.src = detailImage.currentSrc || detailImage.src;
+    lens.appendChild(lensImage);
+    detailFront.appendChild(lens);
+    const updateArtInspection = event => {
+      if (event.pointerType === 'touch' || !detailImage.naturalWidth || !detailImage.naturalHeight) return;
+      const frame = detailFront.getBoundingClientRect();
+      const normalizedX = Math.max(-1, Math.min(1, ((event.clientX - frame.left) / frame.width - .5) * 2));
+      const normalizedY = Math.max(-1, Math.min(1, ((event.clientY - frame.top) / frame.height - .5) * 2));
+      detailImage.style.transform = `perspective(1200px) rotateX(${-normalizedY * 5}deg) rotateY(${normalizedX * 5}deg) scale(.985)`;
+
+      const containScale = Math.min(frame.width / detailImage.naturalWidth, frame.height / detailImage.naturalHeight);
+      const shownWidth = detailImage.naturalWidth * containScale;
+      const shownHeight = detailImage.naturalHeight * containScale;
+      const shownLeft = (frame.width - shownWidth) / 2;
+      const shownTop = (frame.height - shownHeight) / 2;
+      const imageX = event.clientX - frame.left - shownLeft;
+      const imageY = event.clientY - frame.top - shownTop;
+      if (imageX < 0 || imageY < 0 || imageX > shownWidth || imageY > shownHeight) {
+        lens.classList.remove('is-visible');
+        return;
+      }
+      const radius = Math.min(156.4, Math.max(108.8, frame.width * .1275));
+      const zoom = 2.25;
+      lens.style.setProperty('--lens-size', `${radius * 2}px`);
+      lens.style.left = `${shownLeft + imageX - radius}px`;
+      lens.style.top = `${shownTop + imageY - radius}px`;
+      lensImage.style.width = `${shownWidth * zoom}px`;
+      lensImage.style.height = `${shownHeight * zoom}px`;
+      lensImage.style.left = `${radius - imageX * zoom}px`;
+      lensImage.style.top = `${radius - imageY * zoom}px`;
+      lens.classList.add('is-visible');
+    };
+    detailFront.addEventListener('pointermove', updateArtInspection);
+    detailFront.addEventListener('pointerleave', () => {
+      detailImage.style.transform = '';
+      lens.classList.remove('is-visible');
+    });
+  }
   const goToWork = (target, direction) => {
     if (!target || !cardMotion) return;
     cardMotion.style.transition = 'transform .2s ease, opacity .2s ease';
@@ -988,12 +1447,87 @@ const renderWork = work => {
 };
 
 const bindActions = () => {
+  clearInterval(artHeroCycleTimer);
+  artHeroCycleTimer = null;
+  const publicShell = document.querySelector('.public-section-shell');
+  const hoverPreview = document.querySelector('[data-hover-preview]');
+  const heroTitle = document.querySelector('[data-preview-title]');
+  const artHeroWorks = activeType === 'Images'
+    ? (gallery?.works || []).filter(work => isArtWork(work) && Boolean(work.image || (String(work.media?.mimeType || '').startsWith('image/') && workMediaSource(work))))
+    : [];
+  const randomizeArtMotion = preview => {
+    if (!preview) return;
+    const direction = Math.random() < .5 ? -1 : 1;
+    const verticalDirection = Math.random() < .5 ? -1 : 1;
+    preview.style.setProperty('--hero-pan-start-x', `${direction * -7}%`);
+    preview.style.setProperty('--hero-pan-mid-x', `${direction * 1.5}%`);
+    preview.style.setProperty('--hero-pan-end-x', `${direction * 8}%`);
+    preview.style.setProperty('--hero-pan-start-y', `${verticalDirection * -3 - 4}px`);
+    preview.style.setProperty('--hero-pan-mid-y', `${verticalDirection * 5 - 8}px`);
+    preview.style.setProperty('--hero-pan-end-y', `${verticalDirection * 11 - 10}px`);
+    preview.style.setProperty('--hero-zoom-start', String(1.035 + Math.random() * .025));
+    preview.style.setProperty('--hero-zoom-mid', String(1.12 + Math.random() * .035));
+    preview.style.setProperty('--hero-zoom-end', String(1.22 + Math.random() * .065));
+  };
+  let artHeroIndex = Math.max(0, artHeroWorks.findIndex(work => String(work.id) === String(publicShell?.dataset.heroWork)));
+  const showArtHero = (work, { immediate = false } = {}) => {
+    if (!hoverPreview || !work || publicShell?.classList.contains('has-open-catalogue')) return;
+    const replace = () => {
+      randomizeArtMotion(hoverPreview);
+      hoverPreview.innerHTML = artHeroMarkup(work);
+      if (heroTitle) {
+        heroTitle.textContent = work.title || 'Untitled';
+        void heroTitle.offsetWidth;
+        heroTitle.classList.add('is-visible');
+      }
+      hoverPreview.setAttribute('aria-label', `Featured artwork: ${work.title || 'Untitled'}`);
+      hoverPreview.setAttribute('aria-hidden', 'false');
+      void hoverPreview.offsetWidth;
+      hoverPreview.classList.add('is-visible');
+      publicShell?.classList.add('has-cycling-hero');
+      if (publicShell) publicShell.dataset.heroWork = String(work.id || '');
+    };
+    if (immediate || !hoverPreview.childElementCount) return replace();
+    hoverPreview.classList.remove('is-visible');
+    heroTitle?.classList.remove('is-visible');
+    setTimeout(replace, 420);
+  };
+  const startArtHeroCycle = () => {
+    clearInterval(artHeroCycleTimer);
+    if (!artHeroWorks.length || !hoverPreview || publicShell?.classList.contains('has-open-catalogue')) return;
+    showArtHero(artHeroWorks[artHeroIndex % artHeroWorks.length], { immediate: true });
+    artHeroCycleTimer = setInterval(() => {
+      artHeroIndex = (artHeroIndex + 1) % artHeroWorks.length;
+      showArtHero(artHeroWorks[artHeroIndex]);
+    }, 6500);
+  };
+  document.querySelectorAll('[data-disclosure]').forEach(button => button.addEventListener('click', () => {
+    const panel = document.getElementById(button.getAttribute('aria-controls'));
+    if (!panel) return;
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!expanded));
+    if (button.classList.contains('public-catalogue-toggle')) button.setAttribute('aria-label', expanded ? 'Open complete card catalogue' : 'Close complete card catalogue');
+    panel.hidden = expanded;
+    const disclosure = panel.closest('.public-card-catalogue, .public-tag-cloud');
+    disclosure?.classList.toggle('is-open', !expanded);
+    if (disclosure?.classList.contains('public-card-catalogue-years')) {
+      document.querySelector('.public-section-shell')?.classList.toggle('has-open-catalogue', !expanded);
+      publicShell?.classList.toggle('has-cycling-hero', expanded);
+      clearInterval(artHeroCycleTimer);
+      if (expanded) {
+        const preview = document.querySelector('[data-hover-preview]');
+        if (preview) { preview.replaceChildren(); preview.classList.remove('is-visible'); preview.removeAttribute('data-preview-work'); preview.setAttribute('aria-hidden', 'true'); }
+        if (heroTitle) { heroTitle.textContent = ''; heroTitle.classList.remove('is-visible'); }
+        startArtHeroCycle();
+      } else if (hoverPreview) { hoverPreview.replaceChildren(); hoverPreview.classList.remove('is-visible'); }
+    }
+  }));
   document.querySelector('[data-version-code]')?.remove();
   const versionCode = document.createElement('span');
   versionCode.className = 'version-code';
   versionCode.dataset.versionCode = '';
   versionCode.textContent = `${DOCENT_BUILD} · ${gallery?.payloadVersion || 'G?'}`;
-  versionCode.title = `Docent interface ${DOCENT_BUILD}; gallery payload ${gallery?.payloadVersion || 'legacy'}`;
+  versionCode.title = `Archive interface ${DOCENT_BUILD}; catalogue payload ${gallery?.payloadVersion || 'legacy'}`;
   document.body.appendChild(versionCode);
   hydratePdfCardCovers();
   document.querySelectorAll('[data-import]').forEach(button => button.addEventListener('click', () => packageInput.click()));
@@ -1004,6 +1538,101 @@ const bindActions = () => {
       galleryScrollY = window.scrollY; detailExpanded = false; detailSide = 'image'; renderWork(work);
     }
   }));
+  const startCardVideo = button => {
+    const videoId = button?.dataset.hoverVideo;
+    const art = button?.querySelector('.home-shelf-art');
+    if (!videoId || !art || art.querySelector('iframe')) return;
+    const frame = document.createElement('iframe');
+    frame.className = 'card-hover-video';
+    frame.title = '';
+    frame.tabIndex = -1;
+    frame.allow = 'autoplay; encrypted-media';
+    frame.src = `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${encodeURIComponent(videoId)}&playsinline=1&rel=0&modestbranding=1&origin=${encodeURIComponent(location.origin)}`;
+    const onPlayerMessage = event => {
+      if (event.source !== frame.contentWindow) return;
+      let message = event.data;
+      try { if (typeof message === 'string') message = JSON.parse(message); } catch { return; }
+      if (message?.event === 'onStateChange' && Number(message.info) === 1) frame.classList.add('is-ready');
+    };
+    frame._playerMessageHandler = onPlayerMessage;
+    window.addEventListener('message', onPlayerMessage);
+    frame.addEventListener('load', () => {
+      const command = func => frame.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*');
+      frame.contentWindow?.postMessage(JSON.stringify({ event: 'listening', id: videoId }), '*');
+      command('mute');
+      command('playVideo');
+      setTimeout(() => command('playVideo'), 900);
+    }, { once: true });
+    art.appendChild(frame);
+    button.classList.add('is-video-playing');
+  };
+  const stopCardVideo = button => {
+    const frame = button?.querySelector('.card-hover-video');
+    if (frame?._playerMessageHandler) window.removeEventListener('message', frame._playerMessageHandler);
+    frame?.remove();
+    button?.classList.remove('is-video-playing');
+  };
+  document.querySelectorAll('[data-hover-video]').forEach(button => {
+    button.addEventListener('pointerenter', () => startCardVideo(button));
+    button.addEventListener('pointerleave', () => stopCardVideo(button));
+    button.addEventListener('focus', () => startCardVideo(button));
+    button.addEventListener('blur', () => stopCardVideo(button));
+  });
+  const showHoverPreview = button => {
+    if (!hoverPreview || !button || !publicShell?.classList.contains('has-open-catalogue')) return;
+    const work = gallery.works.find(candidate => String(candidate.id) === button.dataset.work);
+    if (!work) return;
+    if (hoverPreview.dataset.previewWork === String(work.id) && hoverPreview.classList.contains('is-visible')) return;
+    clearTimeout(hoverPreview._swapTimer);
+    const reveal = () => {
+      randomizeArtMotion(hoverPreview);
+      hoverPreview.innerHTML = artHeroMarkup(work);
+      if (heroTitle) {
+        heroTitle.textContent = work.title || 'Untitled';
+        void heroTitle.offsetWidth;
+        heroTitle.classList.add('is-visible');
+      }
+      hoverPreview.dataset.previewWork = String(work.id);
+      hoverPreview.setAttribute('aria-label', `Preview of ${work.title || 'artwork'}`);
+      hoverPreview.setAttribute('aria-hidden', 'false');
+      void hoverPreview.offsetWidth;
+      hoverPreview.classList.add('is-visible');
+    };
+    if (hoverPreview.childElementCount) {
+      hoverPreview.classList.remove('is-visible');
+      heroTitle?.classList.remove('is-visible');
+      hoverPreview._swapTimer = setTimeout(reveal, 420);
+    } else reveal();
+  };
+  publicShell?.addEventListener('pointerover', event => showHoverPreview(event.target.closest('[data-work]')));
+  publicShell?.addEventListener('focusin', event => showHoverPreview(event.target.closest('[data-work]')));
+  const artTitle = activeType === 'Images' ? document.querySelector('.public-section-intro h1') : null;
+  if (artTitle) {
+    artTitle.style.fontFamily = ART_DISPLAY_FONTS[artTitleFontIndex];
+    artTitle.dataset.fontIndex = String(artTitleFontIndex);
+  }
+  let lastArtPointerTime = 0;
+  let lastArtFont = artTitleFontIndex;
+  artTitle?.addEventListener('pointermove', event => {
+    const elapsed = Math.max(1, event.timeStamp - lastArtPointerTime);
+    lastArtPointerTime = event.timeStamp;
+    const speed = Math.hypot(event.movementX, event.movementY) / elapsed;
+    if (speed < .72 || artTitle.classList.contains('is-coin-spinning')) return;
+    let nextFont = Math.floor(Math.random() * ART_DISPLAY_FONTS.length);
+    if (nextFont === lastArtFont) nextFont = (nextFont + 1) % ART_DISPLAY_FONTS.length;
+    clearTimeout(artTitle._fontSwapTimer);
+    artTitle.classList.add('is-coin-spinning');
+    artTitle._fontSwapTimer = setTimeout(() => {
+      lastArtFont = nextFont;
+      artTitleFontIndex = nextFont;
+      artTitle.dataset.fontIndex = String(nextFont);
+      artTitle.style.fontFamily = ART_DISPLAY_FONTS[nextFont];
+    }, 450);
+    artTitle.addEventListener('animationend', () => {
+      artTitle.classList.remove('is-coin-spinning');
+    }, { once: true });
+  });
+  startArtHeroCycle();
   document.querySelector('[data-back]')?.addEventListener('click', () => {
     if (detailExpanded) {
       detailExpanded = false;
@@ -1037,7 +1666,12 @@ const bindActions = () => {
     citationViewer.setAttribute('aria-hidden', 'false');
   }));
   citationViewer?.querySelectorAll('[data-citation-close]').forEach(button => button.addEventListener('click', closeCitation));
-  document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', () => { if (gallery) { activeType = 'All'; activeProject = 'All'; activeTag = 'All'; activeSubject = 'All'; searchQuery = ''; renderGallery(); } window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', () => { if (gallery) { activeType = 'All'; activeProject = 'All'; activeTag = 'All'; activeSubject = 'All'; activeYear = 'All'; activePublicAge = 'All'; activePublicCollection = ''; searchQuery = ''; renderGallery(); } window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  document.querySelectorAll('[data-home-entrance]').forEach(button => button.addEventListener('click', () => {
+    activeType = button.dataset.homeEntrance;
+    activeProject = 'All'; activeTag = 'All'; activeSubject = 'All'; activeYear = 'All'; activePublicAge = 'All'; activePublicCollection = ''; searchQuery = '';
+    renderGallery(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }));
   document.querySelectorAll('[data-search-nav]').forEach(button => button.addEventListener('click', () => {
     openGalleryTarget('[data-search]', { focus: true });
   }));
@@ -1092,24 +1726,83 @@ const bindActions = () => {
     activeProject = 'All';
     activeTag = 'All';
     activeSubject = 'All';
+    activeYear = 'All';
+    activePublicAge = 'All';
+    activePublicCollection = '';
     searchQuery = '';
     artMenuOpen = false;
     renderGallery();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }));
   document.querySelector('[data-search]')?.addEventListener('input', event => {
-    searchQuery = event.target.value;
-    const cursor = searchQuery.length;
-    renderGallery();
-    const input = document.querySelector('[data-search]');
-    input?.focus();
-    input?.setSelectionRange(cursor, cursor);
+    const value = event.target.value;
+    const cursor = event.target.selectionStart ?? value.length;
+    clearTimeout(searchRenderTimer);
+    searchRenderTimer = setTimeout(() => {
+      searchQuery = value;
+      renderGallery();
+      const input = document.querySelector('[data-search]');
+      input?.focus();
+      input?.setSelectionRange(cursor, cursor);
+    }, value ? 140 : 0);
   });
+  document.querySelectorAll('[data-year]').forEach(button => button.addEventListener('click', () => {
+    activeYear = button.dataset.year;
+    renderGallery();
+  }));
+  document.querySelectorAll('[data-public-age]').forEach(button => button.addEventListener('click', () => {
+    activePublicAge = button.dataset.publicAge;
+    activePublicCollection = '';
+    activeYear = 'All';
+    renderGallery();
+  }));
+  document.querySelectorAll('[data-public-collection]').forEach(button => button.addEventListener('click', event => {
+    event.preventDefault();
+    activePublicCollection = button.dataset.publicCollection;
+    activeYear = 'All'; searchQuery = '';
+    renderGallery(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }));
+  document.querySelector('[data-close-public-collection]')?.addEventListener('click', event => {
+    event.preventDefault();
+    activePublicCollection = '';
+    activeYear = 'All'; searchQuery = '';
+    renderGallery(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  document.querySelectorAll('[data-index-term]').forEach(button => button.addEventListener('click', () => {
+    searchQuery = button.dataset.indexTerm;
+    activeProject = 'All'; activeTag = 'All'; activeSubject = 'All';
+    renderGallery();
+  }));
+  document.querySelectorAll('[data-rail-scroll]').forEach(button => button.addEventListener('click', () => {
+    const track = document.querySelector(`[data-rail-track="${button.dataset.rail}"]`);
+    track?.scrollBy({ left: (button.dataset.railScroll === 'forward' ? 1 : -1) * Math.max(320, track.clientWidth * .82), behavior: 'smooth' });
+  }));
+  const cyclingSearch = document.querySelector('[data-cycling-search]');
+  if (cyclingSearch && !cyclingSearch.value) {
+    const prompts = activeType === 'Images'
+      ? ['self portraits', 'sketches from 2023', 'final character designs', 'Batman drawings', 'digital art about identity']
+      : activeType === 'Video'
+        ? ['animations', 'short films', 'video work from 2022', 'performances']
+        : ['songs about faith', 'live recordings', 'music from 2020', 'voice experiments'];
+    let promptIndex = 0;
+    let characterIndex = 0;
+    let deleting = false;
+    let pauseTicks = 0;
+    searchPromptTimer = setInterval(() => {
+      if (!cyclingSearch.isConnected || cyclingSearch.value) return;
+      const prompt = prompts[promptIndex];
+      if (pauseTicks) { pauseTicks -= 1; return; }
+      characterIndex += deleting ? -1 : 1;
+      cyclingSearch.placeholder = prompt.slice(0, Math.max(0, characterIndex));
+      if (!deleting && characterIndex >= prompt.length) { deleting = true; pauseTicks = 12; }
+      if (deleting && characterIndex <= 0) { deleting = false; promptIndex = (promptIndex + 1) % prompts.length; pauseTicks = 3; }
+    }, 85);
+  }
   document.querySelectorAll('[data-project]').forEach(button => button.addEventListener('click', () => { activeProject = button.dataset.project; renderGallery(); }));
   document.querySelectorAll('[data-type]').forEach(button => button.addEventListener('click', () => { activeType = button.dataset.type; renderGallery(); }));
   document.querySelectorAll('[data-tag]').forEach(button => button.addEventListener('click', () => { activeTag = button.dataset.tag; renderGallery(); }));
   document.querySelectorAll('[data-subject]').forEach(button => button.addEventListener('click', () => { activeSubject = button.dataset.subject; renderGallery(); }));
-  document.querySelector('[data-clear-filters]')?.addEventListener('click', () => { activeProject = 'All'; activeTag = 'All'; activeSubject = 'All'; searchQuery = ''; renderGallery(); });
+  document.querySelector('[data-clear-filters]')?.addEventListener('click', () => { activeProject = 'All'; activeTag = 'All'; activeSubject = 'All'; activeYear = 'All'; searchQuery = ''; renderGallery(); });
   const installButton = document.querySelector('[data-install]');
   if (installButton && deferredInstall) {
     installButton.hidden = false;
@@ -1138,7 +1831,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=62', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=113', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
@@ -1152,8 +1845,34 @@ if (oauthCode) {
   } catch (error) { alert(error.message); }
 }
 
-gallery = await readStoredGallery();
-gallery ? renderGallery() : renderEmpty();
+const pageParameters = new URLSearchParams(location.search);
+const previewMode = pageParameters.get('preview') === '1';
+const previewSection = pageParameters.get('section');
+if (['Images', 'Video', 'Music'].includes(previewSection)) activeType = previewSection;
+activePublicCollection = pageParameters.get('collection') || '';
+if (previewMode) app.innerHTML = '<main class="empty"><p class="eyebrow">Josh McGary</p><h1>Opening the archive…</h1></main>';
+
+gallery = previewMode ? null : await readStoredGallery();
+if (previewMode) {
+  try {
+    const response = await fetch('./preview-gallery.json?v=81', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Preview catalogue returned ${response.status}.`);
+    let preview = await response.json();
+    if (Array.isArray(preview.previewShards) && preview.previewShards.length) {
+      const shardPayloads = await Promise.all(preview.previewShards.map(async descriptor => {
+        const shardResponse = await fetch(`./preview-shards/${encodeURIComponent(descriptor.file)}`, { cache: 'no-store' });
+        if (!shardResponse.ok) throw new Error(`Preview segment ${descriptor.id} returned ${shardResponse.status}.`);
+        return shardResponse.json();
+      }));
+      preview = { ...preview, works: shardPayloads.flatMap(shard => shard.works || []) };
+    }
+    if (validPackage(preview)) gallery = preview;
+  } catch (error) {
+    app.innerHTML = `<main class="empty"><p class="eyebrow">Preview error</p><h1>Unable to open the archive</h1><p class="intro">${escapeHtml(error.message)}</p></main>`;
+  }
+}
+if (gallery) renderGallery();
+else if (!previewMode) renderEmpty();
 if (connectFromQr) {
   history.replaceState({}, '', location.pathname);
   const existingDropbox = await readValue(DROPBOX_TOKEN);

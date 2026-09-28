@@ -1,7 +1,7 @@
 {
-  "name": "The Docent by The Archivist",
-  "short_name": "The Docent",
-  "description": "A private, offline portfolio companion for The Archivist.",
+  "name": "Josh McGary Archive",
+  "short_name": "Josh McGary",
+  "description": "The public archive of Josh McGary's art, thoughts, and audio.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
