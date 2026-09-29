@@ -72,9 +72,10 @@ updateVisualViewport();
 const validPackage = value => Boolean(value && ['the-archivist.docent-gallery', 'the-archivist.curator-gallery', 'the-archivist.gallery'].includes(value.schema) && value.schemaVersion === 1 && Array.isArray(value.works));
 const validManifest = value => Boolean(value?.schema === 'the-archivist.docent-manifest' && value.schemaVersion === 1 && Array.isArray(value.shards));
 const validShard = value => Boolean(value?.schema === 'the-archivist.docent-shard' && value.schemaVersion === 1 && Array.isArray(value.works));
-const isImageWork = work => ['drawing', 'image', 'photography', 'painting', 'illustration', 'sculpture'].includes(String(work.type || work.medium || '').toLowerCase());
-const isMusicWork = work => ['music', 'audio', 'song', 'sound', 'album', 'recording'].includes(String(work.type || work.medium || '').toLowerCase()) || String(work.mimeType || '').startsWith('audio/');
-const isVideoWork = work => ['video', 'film', 'animation', 'motion'].includes(String(work.type || work.medium || '').toLowerCase()) || String(work.mimeType || '').startsWith('video/');
+const hasMediaFamily = (work, families) => [work.type, work.medium].some(value => families.includes(String(value || '').toLowerCase()));
+const isImageWork = work => hasMediaFamily(work, ['drawing', 'image', 'photography', 'painting', 'illustration', 'sculpture']);
+const isMusicWork = work => hasMediaFamily(work, ['music', 'audio', 'song', 'sound', 'album', 'recording']) || String(work.mimeType || '').startsWith('audio/');
+const isVideoWork = work => hasMediaFamily(work, ['video', 'film', 'animation', 'motion']) || String(work.mimeType || '').startsWith('video/');
 const isArtWork = work => isImageWork(work) || ['visual', 'digital art', 'graphic design', 'panel art', 'comic', 'software'].includes(String(work.type || work.medium || '').toLowerCase());
 const isVisualWork = work => isArtWork(work) || isVideoWork(work);
 const isPoetryWork = work => ['poetry', 'poem'].includes(String(work.type || work.medium || '').toLowerCase());
@@ -1838,7 +1839,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=119', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=120', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
