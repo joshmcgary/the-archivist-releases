@@ -1924,11 +1924,7 @@ const renderPublicHomeProgressively = async completeGallery => {
   ];
   for (const includesWork of stages) {
     if (includesWork === stages[0]) {
-      const newestArt = allWorks
-        .filter(isArtWork)
-        .sort((left, right) => Number(right.order ?? -1) - Number(left.order ?? -1))
-        .slice(0, 24);
-      await Promise.all(newestArt.map(work => hydratePublicWork(work).catch(() => work)));
+      await hydrateNewestPublicArt(allWorks);
       allWorks = gallery.works || allWorks;
     }
     allWorks.forEach(work => {
@@ -1965,6 +1961,13 @@ const hydratePublicWork = async work => {
   gallery.works = gallery.works.map(candidate => String(candidate.id) === String(work.id) ? merged : candidate);
   return merged;
 };
+const hydrateNewestPublicArt = async works => {
+  const newestArt = works
+    .filter(isArtWork)
+    .sort((left, right) => Number(right.order ?? -1) - Number(left.order ?? -1))
+    .slice(0, 24);
+  await Promise.all(newestArt.map(work => hydratePublicWork(work).catch(() => work)));
+};
 if (previewMode) app.innerHTML = '<main class="empty"><p class="eyebrow">Josh McGary</p><h1>Opening the archive…</h1></main>';
 
 const publicArchiveHost = /(^|\.)joshmcgary\.com$/i.test(location.hostname);
@@ -1983,7 +1986,10 @@ if (previewMode || !gallery) {
   }
 }
 if (gallery && progressivePublicHome) await renderPublicHomeProgressively(gallery);
-else if (gallery) renderGallery();
+else if (gallery) {
+  if (publicArchiveHost && activeType === 'Images') await hydrateNewestPublicArt(gallery.works || []);
+  renderGallery();
+}
 else if (!previewMode) renderEmpty();
 if (connectFromQr) {
   history.replaceState({}, '', location.pathname);
