@@ -969,6 +969,7 @@ const renderPublicSection = works => {
       <footer><button data-home>Josh McGary</button><span>${labels[activeType]} · ${escapeHtml(collectionTitle)}</span></footer>
     </div>`;
     bindActions();
+    if (activeType === 'Images' && publicArchiveHost) hydrateVisiblePublicCards();
     return;
   }
   const publishedCount = gallery?.stats?.sectionCounts?.[activeType === 'Images' ? 'art' : activeType === 'Video' ? 'video' : 'audio'] || sectionWorks.length;
@@ -1849,7 +1850,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=132', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=133', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
