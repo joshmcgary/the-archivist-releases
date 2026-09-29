@@ -2,7 +2,7 @@ const UPSTREAM = 'https://the-curator-archivist.lucidknight.chatgpt.site/api/doc
 
 export const onRequestGet = async ({ params }) => {
   const path = Array.isArray(params.path) ? params.path.join('/') : String(params.path || '');
-  if (!['manifest.json', 'index.json'].includes(path) && !/^shards\/[0-9a-f]{2}\.json$/i.test(path)) {
+  if (!['manifest.json', 'index.json'].includes(path) && !/^indexes\/[a-zA-Z0-9._-]+\.json$/i.test(path) && !/^shards\/[0-9a-f]{2}\.json$/i.test(path)) {
     return new Response('Not found', { status: 404 });
   }
 

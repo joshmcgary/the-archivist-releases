@@ -1894,7 +1894,8 @@ const loadPublicCorpus = async () => {
   if (!response.ok) throw new Error(`Public catalogue returned ${response.status}.`);
   const manifest = await response.json();
   if (!validManifest(manifest)) throw new Error('The public catalogue manifest is incomplete.');
-  const indexResponse = await fetch(`${PUBLIC_CORPUS_ENDPOINT}/index.json?v=${encodeURIComponent(manifest.corpusVersion || '')}`, { cache: 'no-store' });
+  const indexPath = String(manifest.index?.path || '/The_Docent/index.json').replace(/^\/The_Docent\//, '');
+  const indexResponse = await fetch(`${PUBLIC_CORPUS_ENDPOINT}/${indexPath}`, { cache: 'no-store' });
   if (!indexResponse.ok) throw new Error(`Public catalogue index returned ${indexResponse.status}.`);
   const index = await indexResponse.json();
   if (!validPackage(index)) throw new Error('The public catalogue index is incomplete.');
