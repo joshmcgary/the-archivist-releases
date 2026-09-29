@@ -12,8 +12,15 @@ const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
 const DROPBOX_MANIFEST_PATH = '/The_Docent/manifest.json';
 const DOCENT_MANIFEST = 'docent-manifest';
 const DOCENT_SHARD_PREFIX = 'docent-shard:';
-const DOCENT_BUILD = 'ARCHIVE-86';
-const THOUGHTS_SITE_URL = 'https://josh-mcgary-thoughts.lucidknight.chatgpt.site/#/';
+const PUBLIC_CORPUS_ENDPOINT = 'https://the-curator-archivist.lucidknight.chatgpt.site/api/docent';
+const DOCENT_BUILD = 'ARCHIVE-87';
+const PUBLIC_SITE_URLS = {
+  home: 'https://joshmcgary.com/',
+  Images: 'https://art.joshmcgary.com/',
+  Thoughts: 'https://thoughts.joshmcgary.com/',
+  Video: 'https://video.joshmcgary.com/',
+  Music: 'https://audio.joshmcgary.com/'
+};
 const MAX_DOCENT_PACKAGE_BYTES = 80 * 1024 * 1024;
 
 const app = document.querySelector('#app');
@@ -517,12 +524,12 @@ const formatSync = value => {
 
 const renderTopbar = () => {
   return `<header class="archive-header">
-    <button class="archive-wordmark" data-home aria-label="Josh McGary dot com — return home"><strong><span>Josh</span><span>McGary.com</span></strong></button>
+    <a class="archive-wordmark" href="${PUBLIC_SITE_URLS.home}" aria-label="Josh McGary dot com — return home"><strong><span>Josh</span><span>McGary.com</span></strong></a>
     <nav aria-label="Archive sections">
-      <button class="${activeType === 'Images' ? 'is-active' : ''}" data-menu-category="Images">Art</button>
-      <button class="${activeType === 'Video' ? 'is-active' : ''}" data-menu-category="Video">Video</button>
-      <a href="${THOUGHTS_SITE_URL}">Thoughts</a>
-      <button class="${activeType === 'Music' ? 'is-active' : ''}" data-menu-category="Music">Audio</button>
+      <a class="${activeType === 'Images' ? 'is-active' : ''}" href="${PUBLIC_SITE_URLS.Images}">Art</a>
+      <a class="${activeType === 'Video' ? 'is-active' : ''}" href="${PUBLIC_SITE_URLS.Video}">Video</a>
+      <a class="${activeType === 'Thoughts' ? 'is-active' : ''}" href="${PUBLIC_SITE_URLS.Thoughts}">Thoughts</a>
+      <a class="${activeType === 'Music' ? 'is-active' : ''}" href="${PUBLIC_SITE_URLS.Music}">Audio</a>
     </nav>
   </header>`;
 };
@@ -617,14 +624,14 @@ const publicCollectionHref = key => {
   return `${location.pathname}?${parameters.toString()}`;
 };
 
-const publicEntranceCard = ({ value, kicker, title, description, count, accent, marks, slides = [], wordSlides = [] }) => `${value === 'Thoughts' ? `<a class="public-entrance public-entrance-${accent}" data-home-portrait="${escapeHtml(accent)}" href="${THOUGHTS_SITE_URL}">` : `<button class="public-entrance public-entrance-${accent}" data-home-portrait="${escapeHtml(accent)}" data-home-entrance="${escapeHtml(value)}">`}
+const publicEntranceCard = ({ value, kicker, title, description, count, accent, marks, slides = [], wordSlides = [] }) => `<a class="public-entrance public-entrance-${accent}" data-home-portrait="${escapeHtml(accent)}" href="${PUBLIC_SITE_URLS[value]}">
   <span class="public-entrance-slideshow ${wordSlides.length ? 'is-words' : ''}" aria-hidden="true">${wordSlides.length ? wordSlides.map((slide, index) => `<span class="portal-slide portal-word-slide ${index === 0 ? 'is-active' : ''}"><q>${quoteLetterMarkup(slide.words)}</q><small>— ${escapeHtml(slide.title.toUpperCase())}</small></span>`).join('') : slides.map((source, index) => `<img class="portal-slide ${index === 0 ? 'is-active' : ''}" src="${escapeHtml(source)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">`).join('')}</span>
   <span class="public-entrance-marks" aria-hidden="true">${escapeHtml(marks)}</span>
   <span class="public-entrance-kicker">${escapeHtml(kicker)}</span>
   <strong>${escapeHtml(title)}</strong>
   <span class="public-entrance-description">${escapeHtml(description)}</span>
   <span class="public-entrance-footer"><em>${count} ${count === 1 ? 'work' : 'works'}</em><b>Enter <span>↗</span></b></span>
-${value === 'Thoughts' ? '</a>' : '</button>'}`;
+</a>`;
 
 const renderHome = works => {
   homePortalTimers.forEach(clearTimeout);
@@ -714,7 +721,7 @@ const renderHome = works => {
         ${entrances.map(entrance => `<div class="home-hover-gallery-panel public-entrance-slideshow ${entrance.wordSlides?.length ? 'is-words' : ''} ${entrance.videoSlides?.length ? 'is-video' : ''}" data-home-panel="${escapeHtml(entrance.accent)}" aria-hidden="true">${portalSlideMarkup(entrance)}</div>`).join('')}
       </section>
       <section class="home-portal-stage" aria-live="polite">
-        ${entrances.map(entrance => `${entrance.value === 'Thoughts' ? `<a href="${THOUGHTS_SITE_URL}"` : `<button type="button" data-home-entrance="${escapeHtml(entrance.value)}"`} class="home-portal-panel" data-home-panel-trigger="${escapeHtml(entrance.accent)}" aria-label="Open ${escapeHtml(entrance.title)}"><strong class="home-portal-icon" aria-hidden="true">${escapeHtml(entrance.title)}</strong>${entrance.value === 'Thoughts' ? '</a>' : '</button>'}`).join('')}
+        ${entrances.map(entrance => `<a href="${PUBLIC_SITE_URLS[entrance.value]}" class="home-portal-panel" data-home-panel-trigger="${escapeHtml(entrance.accent)}" aria-label="Open ${escapeHtml(entrance.title)}"><strong class="home-portal-icon" aria-hidden="true">${escapeHtml(entrance.title)}</strong></a>`).join('')}
       </section>
     </main>
   </div>`;
@@ -1831,7 +1838,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=113', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=117', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
@@ -1849,26 +1856,60 @@ const pageParameters = new URLSearchParams(location.search);
 const previewMode = pageParameters.get('preview') === '1';
 const previewSection = pageParameters.get('section');
 if (['Images', 'Video', 'Music'].includes(previewSection)) activeType = previewSection;
+const hostnameSection = {
+  'art.joshmcgary.com': 'Images',
+  'video.joshmcgary.com': 'Video',
+  'audio.joshmcgary.com': 'Music',
+  'thoughts.joshmcgary.com': 'Thoughts'
+}[location.hostname];
+if (hostnameSection) activeType = hostnameSection;
 activePublicCollection = pageParameters.get('collection') || '';
+const loadBundledGallery = async () => {
+  const response = await fetch('./preview-gallery.json?v=117', { cache: 'no-store' });
+  if (!response.ok) throw new Error(`Preview catalogue returned ${response.status}.`);
+  let preview = await response.json();
+  if (Array.isArray(preview.previewShards) && preview.previewShards.length) {
+    const shardPayloads = await Promise.all(preview.previewShards.map(async descriptor => {
+      const shardResponse = await fetch(`./preview-shards/${encodeURIComponent(descriptor.file)}`, { cache: 'no-store' });
+      if (!shardResponse.ok) throw new Error(`Preview segment ${descriptor.id} returned ${shardResponse.status}.`);
+      return shardResponse.json();
+    }));
+    preview = { ...preview, works: shardPayloads.flatMap(shard => shard.works || []) };
+  }
+  if (!validPackage(preview)) throw new Error('The bundled public catalogue is incomplete.');
+  return preview;
+};
+const loadPublicCorpus = async () => {
+  const response = await fetch(`${PUBLIC_CORPUS_ENDPOINT}/manifest.json`, { cache: 'no-store' });
+  if (!response.ok) throw new Error(`Public catalogue returned ${response.status}.`);
+  const manifest = await response.json();
+  if (!validManifest(manifest)) throw new Error('The public catalogue manifest is incomplete.');
+  const shardPayloads = await Promise.all(manifest.shards.map(async descriptor => {
+    const shardResponse = await fetch(`${PUBLIC_CORPUS_ENDPOINT}/shards/${encodeURIComponent(descriptor.id)}.json?v=${encodeURIComponent(descriptor.fingerprint || manifest.corpusVersion || '')}`, { cache: 'no-store' });
+    if (!shardResponse.ok) throw new Error(`Public catalogue segment ${descriptor.id} returned ${shardResponse.status}.`);
+    const shard = await shardResponse.json();
+    if (!validShard(shard)) throw new Error(`Public catalogue segment ${descriptor.id} is incomplete.`);
+    return shard;
+  }));
+  return {
+    ...manifest,
+    schema: 'the-archivist.docent-gallery',
+    works: shardPayloads.flatMap(shard => shard.works || [])
+  };
+};
 if (previewMode) app.innerHTML = '<main class="empty"><p class="eyebrow">Josh McGary</p><h1>Opening the archive…</h1></main>';
 
-gallery = previewMode ? null : await readStoredGallery();
-if (previewMode) {
+const publicArchiveHost = /(^|\.)joshmcgary\.com$/i.test(location.hostname);
+gallery = previewMode || publicArchiveHost ? null : await readStoredGallery();
+if (previewMode || !gallery) {
   try {
-    const response = await fetch('./preview-gallery.json?v=81', { cache: 'no-store' });
-    if (!response.ok) throw new Error(`Preview catalogue returned ${response.status}.`);
-    let preview = await response.json();
-    if (Array.isArray(preview.previewShards) && preview.previewShards.length) {
-      const shardPayloads = await Promise.all(preview.previewShards.map(async descriptor => {
-        const shardResponse = await fetch(`./preview-shards/${encodeURIComponent(descriptor.file)}`, { cache: 'no-store' });
-        if (!shardResponse.ok) throw new Error(`Preview segment ${descriptor.id} returned ${shardResponse.status}.`);
-        return shardResponse.json();
-      }));
-      preview = { ...preview, works: shardPayloads.flatMap(shard => shard.works || []) };
-    }
-    if (validPackage(preview)) gallery = preview;
+    gallery = publicArchiveHost ? await loadPublicCorpus() : await loadBundledGallery();
   } catch (error) {
-    app.innerHTML = `<main class="empty"><p class="eyebrow">Preview error</p><h1>Unable to open the archive</h1><p class="intro">${escapeHtml(error.message)}</p></main>`;
+    try {
+      gallery = await loadBundledGallery();
+    } catch (fallbackError) {
+      app.innerHTML = `<main class="empty"><p class="eyebrow">Preview error</p><h1>Unable to open the archive</h1><p class="intro">${escapeHtml(fallbackError.message || error.message)}</p></main>`;
+    }
   }
 }
 if (gallery) renderGallery();
