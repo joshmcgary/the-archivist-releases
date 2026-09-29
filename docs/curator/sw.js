@@ -1,5 +1,5 @@
-const CACHE = 'josh-mcgary-archive-v130';
-const SHELL = ['./', './index.html', './styles.css?v=116', './app.js?v=130', './manifest.webmanifest', './docent-icon-180.png', './docent-icon-192.png', './docent-icon-maskable-512.png', './vendor/pdf.min.mjs', './vendor/pdf.worker.min.mjs'];
+const CACHE = 'josh-mcgary-archive-v131';
+const SHELL = ['./', './index.html', './styles.css?v=116', './app.js?v=131', './manifest.webmanifest', './docent-icon-180.png', './docent-icon-192.png', './docent-icon-maskable-512.png', './vendor/pdf.min.mjs', './vendor/pdf.worker.min.mjs'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)));

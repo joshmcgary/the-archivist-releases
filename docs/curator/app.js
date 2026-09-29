@@ -911,8 +911,7 @@ const renderPublicSection = works => {
   };
   const sectionWorks = works.filter(work => matchesCategory(work, activeType));
   const visible = currentCollectionWorks();
-  const hasCardPreview = work => Boolean(work.image || (String(work.media?.mimeType || '').startsWith('image/') && workMediaSource(work)));
-  const previewable = activeType === 'Images' ? visible.filter(hasCardPreview) : visible;
+  const previewable = visible;
   const compareWorkDate = (left, right) => Date.parse(right.date || '') - Date.parse(left.date || '') || Date.parse(right.addedAt || '') - Date.parse(left.addedAt || '') || String(left.title || '').localeCompare(String(right.title || ''));
   const years = [...new Set(sectionWorks.map(work => String(work.date || work.addedAt || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)))].sort((left, right) => right.localeCompare(left));
   const ages = [...new Set(sectionWorks.map(workAge).filter(Boolean))].sort((left, right) => Number(left) - Number(right));
@@ -985,6 +984,7 @@ const renderPublicSection = works => {
     <footer><button data-home>Josh McGary</button><span>${labels[activeType]}</span></footer>
   </div>`;
   bindActions();
+  if (activeType === 'Images' && publicArchiveHost) hydrateVisiblePublicCards();
 };
 
 const profileScore = key => {
@@ -1923,10 +1923,6 @@ const renderPublicHomeProgressively = async completeGallery => {
     () => true
   ];
   for (const includesWork of stages) {
-    if (includesWork === stages[0]) {
-      await hydrateNewestPublicArt(allWorks);
-      allWorks = gallery.works || allWorks;
-    }
     allWorks.forEach(work => {
       const id = String(work.permanentWorkId || work.id);
       if (!stagedIds.has(id) && includesWork(work)) {
@@ -1961,12 +1957,25 @@ const hydratePublicWork = async work => {
   gallery.works = gallery.works.map(candidate => String(candidate.id) === String(work.id) ? merged : candidate);
   return merged;
 };
-const hydrateNewestPublicArt = async works => {
-  const newestArt = works
-    .filter(isArtWork)
-    .sort((left, right) => Number(right.order ?? -1) - Number(left.order ?? -1))
-    .slice(0, 24);
-  await Promise.all(newestArt.map(work => hydratePublicWork(work).catch(() => work)));
+const hydrateVisiblePublicCards = () => {
+  if (!('IntersectionObserver' in window)) return;
+  const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const button = entry.target;
+    observer.unobserve(button);
+    const work = gallery.works.find(candidate => String(candidate.id) === button.dataset.work);
+    if (!work || work.image || work.media) return;
+    hydratePublicWork(work).then(complete => {
+      if (complete === work) return;
+      document.querySelectorAll(`[data-work="${CSS.escape(String(work.id))}"] .home-shelf-art`).forEach(art => {
+        art.innerHTML = workCardVisual(complete);
+      });
+    }).catch(() => {});
+  }), { rootMargin: '240px' });
+  document.querySelectorAll('.home-shelf-card[data-work]').forEach(button => {
+    const work = gallery.works.find(candidate => String(candidate.id) === button.dataset.work);
+    if (work?.shardId && !work.image && !work.media) observer.observe(button);
+  });
 };
 if (previewMode) app.innerHTML = '<main class="empty"><p class="eyebrow">Josh McGary</p><h1>Opening the archive…</h1></main>';
 
@@ -1987,7 +1996,6 @@ if (previewMode || !gallery) {
 }
 if (gallery && progressivePublicHome) await renderPublicHomeProgressively(gallery);
 else if (gallery) {
-  if (publicArchiveHost && activeType === 'Images') await hydrateNewestPublicArt(gallery.works || []);
   renderGallery();
 }
 else if (!previewMode) renderEmpty();
