@@ -1904,6 +1904,30 @@ const loadPublicCorpus = async () => {
     })
   };
 };
+const nextPublicPaint = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+const renderPublicHomeProgressively = async completeGallery => {
+  const allWorks = completeGallery.works || [];
+  const stagedWorks = [];
+  const stagedIds = new Set();
+  const stages = [
+    work => isArtWork(work),
+    work => isVideoWork(work),
+    work => isWritingWork(work) || isTheologyWork(work) || isPoetryWork(work),
+    () => true
+  ];
+  for (const includesWork of stages) {
+    allWorks.forEach(work => {
+      const id = String(work.permanentWorkId || work.id);
+      if (!stagedIds.has(id) && includesWork(work)) {
+        stagedIds.add(id);
+        stagedWorks.push(work);
+      }
+    });
+    gallery = { ...completeGallery, works: [...stagedWorks] };
+    renderHome(gallery.works);
+    await nextPublicPaint();
+  }
+};
 const hydratePublicWork = async work => {
   if (!work?.shardId || work.image || work.media) return work;
   let shardPromise = publicShardCache.get(work.shardId);
@@ -1929,7 +1953,9 @@ const hydratePublicWork = async work => {
 if (previewMode) app.innerHTML = '<main class="empty"><p class="eyebrow">Josh McGary</p><h1>Opening the archive…</h1></main>';
 
 const publicArchiveHost = /(^|\.)joshmcgary\.com$/i.test(location.hostname);
+const progressivePublicHome = publicArchiveHost && activeType === 'All';
 gallery = previewMode || publicArchiveHost ? null : await readStoredGallery();
+if (progressivePublicHome) renderHome([]);
 if (previewMode || !gallery) {
   try {
     gallery = publicArchiveHost ? await loadPublicCorpus() : await loadBundledGallery();
@@ -1941,7 +1967,8 @@ if (previewMode || !gallery) {
     }
   }
 }
-if (gallery) renderGallery();
+if (gallery && progressivePublicHome) await renderPublicHomeProgressively(gallery);
+else if (gallery) renderGallery();
 else if (!previewMode) renderEmpty();
 if (connectFromQr) {
   history.replaceState({}, '', location.pathname);
