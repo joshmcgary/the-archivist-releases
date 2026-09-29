@@ -12,7 +12,7 @@ const LEGACY_DROPBOX_PATH = '/The_Curator_Gallery_Latest.json';
 const DROPBOX_MANIFEST_PATH = '/The_Docent/manifest.json';
 const DOCENT_MANIFEST = 'docent-manifest';
 const DOCENT_SHARD_PREFIX = 'docent-shard:';
-const PUBLIC_CORPUS_ENDPOINT = 'https://the-curator-archivist.lucidknight.chatgpt.site/api/docent';
+const PUBLIC_CORPUS_ENDPOINT = '/api/docent';
 const DOCENT_BUILD = 'ARCHIVE-87';
 const PUBLIC_SITE_URLS = {
   home: 'https://joshmcgary.com/',
