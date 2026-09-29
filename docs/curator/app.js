@@ -704,7 +704,7 @@ const renderHome = works => {
         : slide.kind === 'video'
           ? `<span class="portal-slide portal-video-slide ${index === 0 ? 'is-active' : ''}" data-video-kind="video"><video src="${escapeHtml(slide.source)}" ${slide.poster ? `poster="${escapeHtml(slide.poster)}"` : ''} muted loop playsinline preload="auto"></video></span>`
           : `<img class="portal-slide ${index === 0 ? 'is-active' : ''}" src="${escapeHtml(slide.source)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">`).join('')
-      : entrance.slides.map((source, index) => `<img class="portal-slide ${index === 0 ? 'is-active' : ''}" src="${escapeHtml(source)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">`).join('');
+      : (entrance.slides || []).map((source, index) => `<img class="portal-slide ${index === 0 ? 'is-active' : ''}" src="${escapeHtml(source)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">`).join('');
   const initialPortal = entrances[Math.floor(Math.random() * entrances.length)]?.accent || 'art';
   const shelves = [
     ...(normalizedQuery ? [[`Results for “${searchQuery.trim()}”`, searchResults]] : []),
