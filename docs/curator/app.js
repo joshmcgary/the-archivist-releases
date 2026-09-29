@@ -918,7 +918,7 @@ const renderPublicSection = works => {
   const ageMenu = `<nav class="public-age-menu" aria-label="Filter ${labels[activeType]} by age"><span>Age</span>${['All', ...ages].map(age => `<button class="${activePublicAge === age ? 'is-active' : ''}" data-public-age="${escapeHtml(age)}">${escapeHtml(age)}</button>`).join('')}</nav>`;
   const workYear = work => String(work.date || work.addedAt || '').slice(0, 4);
   const accessionTime = work => Date.parse(work.addedAt || work.metadata?.addedAt || '') || 0;
-  const latestAdded = [...previewable].sort((left, right) => accessionTime(right) - accessionTime(left) || compareWorkDate(left, right)).slice(0, 24);
+  const latestAdded = [...previewable].sort((left, right) => Number(right.order ?? -1) - Number(left.order ?? -1) || accessionTime(right) - accessionTime(left) || compareWorkDate(left, right)).slice(0, 24);
   const uniqueRails = [
     { key: '', title: 'Latest Added', items: latestAdded, latest: true },
     ...years.map(year => ({ key: `year:${year}`, title: year, items: previewable.filter(work => workYear(work) === year).sort(compareWorkDate) }))
