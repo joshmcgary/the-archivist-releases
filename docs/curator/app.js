@@ -72,6 +72,7 @@ updateVisualViewport();
 const validPackage = value => Boolean(value && ['the-archivist.docent-gallery', 'the-archivist.curator-gallery', 'the-archivist.gallery'].includes(value.schema) && value.schemaVersion === 1 && Array.isArray(value.works));
 const validManifest = value => Boolean(value?.schema === 'the-archivist.docent-manifest' && value.schemaVersion === 1 && Array.isArray(value.shards));
 const validShard = value => Boolean(value?.schema === 'the-archivist.docent-shard' && value.schemaVersion === 1 && Array.isArray(value.works));
+const publicShardCache = new Map();
 const hasMediaFamily = (work, families) => [work.type, work.medium].some(value => families.includes(String(value || '').toLowerCase()));
 const isImageWork = work => hasMediaFamily(work, ['drawing', 'image', 'photography', 'painting', 'illustration', 'sculpture']);
 const isMusicWork = work => hasMediaFamily(work, ['music', 'audio', 'song', 'sound', 'album', 'recording']) || String(work.mimeType || '').startsWith('audio/');
@@ -1544,6 +1545,9 @@ const bindActions = () => {
     const work = gallery.works.find(candidate => String(candidate.id) === button.dataset.work);
     if (work) {
       galleryScrollY = window.scrollY; detailExpanded = false; detailSide = 'image'; renderWork(work);
+      hydratePublicWork(work).then(complete => {
+        if (complete !== work) renderWork(complete);
+      }).catch(() => {});
     }
   }));
   const startCardVideo = button => {
@@ -1839,7 +1843,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=120', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=121', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
@@ -1885,18 +1889,42 @@ const loadPublicCorpus = async () => {
   if (!response.ok) throw new Error(`Public catalogue returned ${response.status}.`);
   const manifest = await response.json();
   if (!validManifest(manifest)) throw new Error('The public catalogue manifest is incomplete.');
-  const shardPayloads = await Promise.all(manifest.shards.map(async descriptor => {
-    const shardResponse = await fetch(`${PUBLIC_CORPUS_ENDPOINT}/shards/${encodeURIComponent(descriptor.id)}.json?v=${encodeURIComponent(descriptor.fingerprint || manifest.corpusVersion || '')}`, { cache: 'no-store' });
-    if (!shardResponse.ok) throw new Error(`Public catalogue segment ${descriptor.id} returned ${shardResponse.status}.`);
-    const shard = await shardResponse.json();
-    if (!validShard(shard)) throw new Error(`Public catalogue segment ${descriptor.id} is incomplete.`);
-    return shard;
-  }));
+  const indexResponse = await fetch(`${PUBLIC_CORPUS_ENDPOINT}/index.json?v=${encodeURIComponent(manifest.corpusVersion || '')}`, { cache: 'no-store' });
+  if (!indexResponse.ok) throw new Error(`Public catalogue index returned ${indexResponse.status}.`);
+  const index = await indexResponse.json();
+  if (!validPackage(index)) throw new Error('The public catalogue index is incomplete.');
+  const bundled = await loadBundledGallery().catch(() => null);
+  const bundledMedia = new Map((bundled?.works || []).map(work => [String(work.id), work]));
   return {
     ...manifest,
     schema: 'the-archivist.docent-gallery',
-    works: shardPayloads.flatMap(shard => shard.works || [])
+    works: index.works.map(work => {
+      const prior = bundledMedia.get(String(work.id));
+      return { ...work, image: work.image || prior?.image || null, media: work.media || prior?.media || null };
+    })
   };
+};
+const hydratePublicWork = async work => {
+  if (!work?.shardId || work.image || work.media) return work;
+  let shardPromise = publicShardCache.get(work.shardId);
+  if (!shardPromise) {
+    shardPromise = fetch(`${PUBLIC_CORPUS_ENDPOINT}/shards/${encodeURIComponent(work.shardId)}.json`, { cache: 'force-cache' })
+      .then(response => {
+        if (!response.ok) throw new Error(`Public catalogue segment ${work.shardId} returned ${response.status}.`);
+        return response.json();
+      })
+      .then(shard => {
+        if (!validShard(shard)) throw new Error(`Public catalogue segment ${work.shardId} is incomplete.`);
+        return shard;
+      });
+    publicShardCache.set(work.shardId, shardPromise);
+  }
+  const shard = await shardPromise;
+  const complete = shard.works.find(candidate => String(candidate.id) === String(work.id));
+  if (!complete) return work;
+  const merged = { ...work, ...complete, shardId: work.shardId };
+  gallery.works = gallery.works.map(candidate => String(candidate.id) === String(work.id) ? merged : candidate);
+  return merged;
 };
 if (previewMode) app.innerHTML = '<main class="empty"><p class="eyebrow">Josh McGary</p><h1>Opening the archive…</h1></main>';
 
