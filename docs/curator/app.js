@@ -902,6 +902,7 @@ const renderHome = works => {
 
 const renderPublicSection = works => {
   clearInterval(searchPromptTimer);
+  const normalizedQuery = searchQuery.trim().toLowerCase();
   const labels = { Images: 'Art', Video: 'Video', Music: 'Audio' };
   const descriptions = {
     Images: '',
