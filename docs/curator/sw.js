@@ -1,4 +1,4 @@
-const CACHE = 'josh-mcgary-archive-v131';
+const CACHE = 'josh-mcgary-archive-v132';
 const SHELL = ['./', './index.html', './styles.css?v=116', './app.js?v=131', './manifest.webmanifest', './docent-icon-180.png', './docent-icon-192.png', './docent-icon-maskable-512.png', './vendor/pdf.min.mjs', './vendor/pdf.worker.min.mjs'];
 
 self.addEventListener('install', event => {

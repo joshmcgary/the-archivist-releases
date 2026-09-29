@@ -1849,7 +1849,7 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=121', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=132', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
@@ -1900,15 +1900,10 @@ const loadPublicCorpus = async () => {
   if (!indexResponse.ok) throw new Error(`Public catalogue index returned ${indexResponse.status}.`);
   const index = await indexResponse.json();
   if (!validPackage(index)) throw new Error('The public catalogue index is incomplete.');
-  const bundled = await loadBundledGallery().catch(() => null);
-  const bundledMedia = new Map((bundled?.works || []).map(work => [String(work.id), work]));
   return {
     ...manifest,
     schema: 'the-archivist.docent-gallery',
-    works: index.works.map(work => {
-      const prior = bundledMedia.get(String(work.id));
-      return { ...work, image: work.image || prior?.image || null, media: work.media || prior?.media || null };
-    })
+    works: index.works
   };
 };
 const nextPublicPaint = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
