@@ -1961,7 +1961,7 @@ const hydratePublicWork = async work => {
   const shard = await shardPromise;
   const complete = shard.works.find(candidate => String(candidate.id) === String(work.id));
   if (!complete) return work;
-  const merged = { ...work, ...complete, shardId: work.shardId };
+  const merged = { ...work, ...complete, order: work.order, shardId: work.shardId };
   gallery.works = gallery.works.map(candidate => String(candidate.id) === String(work.id) ? merged : candidate);
   return merged;
 };
