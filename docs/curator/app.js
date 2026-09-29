@@ -1913,7 +1913,7 @@ const loadPublicCorpus = async () => {
 };
 const nextPublicPaint = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 const renderPublicHomeProgressively = async completeGallery => {
-  const allWorks = completeGallery.works || [];
+  let allWorks = completeGallery.works || [];
   const stagedWorks = [];
   const stagedIds = new Set();
   const stages = [
@@ -1923,6 +1923,14 @@ const renderPublicHomeProgressively = async completeGallery => {
     () => true
   ];
   for (const includesWork of stages) {
+    if (includesWork === stages[0]) {
+      const newestArt = allWorks
+        .filter(isArtWork)
+        .sort((left, right) => Number(right.order ?? -1) - Number(left.order ?? -1))
+        .slice(0, 24);
+      await Promise.all(newestArt.map(work => hydratePublicWork(work).catch(() => work)));
+      allWorks = gallery.works || allWorks;
+    }
     allWorks.forEach(work => {
       const id = String(work.permanentWorkId || work.id);
       if (!stagedIds.has(id) && includesWork(work)) {
