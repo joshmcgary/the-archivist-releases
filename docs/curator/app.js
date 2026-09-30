@@ -59,6 +59,41 @@ let searchPromptTimer = null;
 let artTitleFontIndex = 0;
 
 const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+const workUrl = work => {
+  const url = new URL(location.href);
+  ['code', 'state', 'connect', 'preview'].forEach(parameter => url.searchParams.delete(parameter));
+  url.searchParams.set('work', String(work?.permanentWorkId || work?.id || ''));
+  if (activeType && activeType !== 'All') url.searchParams.set('section', activeType);
+  else url.searchParams.delete('section');
+  url.searchParams.delete('collection');
+  url.hash = '';
+  return url;
+};
+const canonicalWorkUrl = work => {
+  const publicHost = /(^|\.)joshmcgary\.com$/i.test(location.hostname);
+  const url = new URL(publicHost ? PUBLIC_SITE_URLS.home : location.origin);
+  url.searchParams.set('work', String(work?.permanentWorkId || work?.id || ''));
+  return url;
+};
+const syncWorkUrl = (work, mode = 'replace') => {
+  const url = workUrl(work);
+  history[mode === 'push' ? 'pushState' : 'replaceState']({ workId: String(work?.id || '') }, '', `${url.pathname}${url.search}`);
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.rel = 'canonical';
+    document.head.appendChild(canonical);
+  }
+  canonical.href = canonicalWorkUrl(work).href;
+  return url.href;
+};
+const clearWorkUrl = (mode = 'replace') => {
+  const url = new URL(location.href);
+  url.searchParams.delete('work');
+  history[mode === 'push' ? 'pushState' : 'replaceState']({}, '', `${url.pathname}${url.search}`);
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) canonical.href = new URL(url.pathname, url.origin).href;
+};
 const quoteLetterMarkup = value => `“${String(value || '').toUpperCase()}”`.split(/(\s+)/).map(token => /\s+/.test(token)
   ? token
   : `<span class="quote-word">${Array.from(token).map(character => `<span class="quote-letter" style="--letter-delay:${(Math.random() * .45).toFixed(2)}s;--letter-x:${((Math.random() - .5) * 3).toFixed(1)}px;--letter-y:${((Math.random() - .5) * 3).toFixed(1)}px;--letter-blur:${(.5 + Math.random() * .8).toFixed(1)}px">${escapeHtml(character)}</span>`).join('')}</span>`).join('');
@@ -130,6 +165,18 @@ const isWritingWork = work => {
   const labels = [work.type, work.medium, ...(work.projects || []), ...(work.collections || []), ...(work.tags || [])]
     .map(value => String(value || '').toLowerCase());
   return labels.some(label => ['writing', 'prose', 'essay', 'story', 'document', 'theology', 'commentary', 'bible thoughts'].includes(label));
+};
+const viewerForWork = work => {
+  if (isVideoWork(work)) return 'Video';
+  if (isArtWork(work)) return 'Images';
+  if (isMusicWork(work)) return 'Music';
+  if (isWritingWork(work) || isTheologyWork(work) || isPoetryWork(work) || work.text) return 'Thoughts';
+  const channels = new Set((work.channels || []).map(channel => String(channel).toLowerCase()));
+  if (channels.has('video')) return 'Video';
+  if (channels.has('art')) return 'Images';
+  if (channels.has('audio')) return 'Music';
+  if (channels.has('thoughts')) return 'Thoughts';
+  return 'All';
 };
 const BIBLE_BOOKS = ['Genesis','Exodus','Leviticus','Numbers','Deuteronomy','Joshua','Judges','Ruth','1 Samuel','2 Samuel','1 Kings','2 Kings','1 Chronicles','2 Chronicles','Ezra','Nehemiah','Esther','Job','Psalms','Proverbs','Ecclesiastes','Song of Solomon','Isaiah','Jeremiah','Lamentations','Ezekiel','Daniel','Hosea','Joel','Amos','Obadiah','Jonah','Micah','Nahum','Habakkuk','Zephaniah','Haggai','Zechariah','Malachi','Matthew','Mark','Luke','John','Acts','Romans','1 Corinthians','2 Corinthians','Galatians','Ephesians','Philippians','Colossians','1 Thessalonians','2 Thessalonians','1 Timothy','2 Timothy','Titus','Philemon','Hebrews','James','1 Peter','2 Peter','1 John','2 John','3 John','Jude','Revelation'];
 const bibleBookOrder = name => {
@@ -1213,15 +1260,16 @@ const renderGallery = () => {
   bindActions();
 };
 
-const renderWork = work => {
+const renderWork = (work, { urlMode = 'replace' } = {}) => {
   setCardViewLock(true);
+  syncWorkUrl(work, urlMode);
   const works = currentCollectionWorks();
   const index = works.findIndex(candidate => String(candidate.id) === String(work.id));
   const previous = index > 0 ? works[index - 1] : works[works.length - 1];
   const next = index < works.length - 1 ? works[index + 1] : works[0];
   app.innerHTML = `<article class="work-view ${detailExpanded ? 'is-full-bleed' : ''}">
     ${renderTopbar()}
-    <header class="detail-nav"><label class="detail-search"><input type="search" placeholder="Search this collection…" aria-label="Search this collection from card view" data-detail-search><span class="detail-search-results" data-detail-results hidden></span></label><span>${index + 1} / ${works.length}</span><div><button data-previous aria-label="Previous work">←</button><button data-next aria-label="Next work">→</button></div></header>
+    <header class="detail-nav"><label class="detail-search"><input type="search" placeholder="Search this collection…" aria-label="Search this collection from card view" data-detail-search><span class="detail-search-results" data-detail-results hidden></span></label><span>${index + 1} / ${works.length}</span><div class="detail-actions"><button data-copy-link aria-label="Copy permanent link to ${escapeHtml(work.title)}">Copy link</button><button data-previous aria-label="Previous work">←</button><button data-next aria-label="Next work">→</button></div></header>
     <h1 class="detail-title">${escapeHtml(work.title)}</h1>
     <div class="work-stage" data-swipe-stage>
       <button class="detail-close" data-back aria-label="Close card and return to gallery">×</button>
@@ -1459,6 +1507,17 @@ const renderWork = work => {
   });
   document.querySelector('[data-previous]')?.addEventListener('click', () => goToWork(previous, 1));
   document.querySelector('[data-next]')?.addEventListener('click', () => goToWork(next, -1));
+  document.querySelector('[data-copy-link]')?.addEventListener('click', async event => {
+    const button = event.currentTarget;
+    const url = canonicalWorkUrl(work).href;
+    try {
+      await navigator.clipboard.writeText(url);
+      button.textContent = 'Link copied';
+      setTimeout(() => { if (button.isConnected) button.textContent = 'Copy link'; }, 1800);
+    } catch {
+      window.prompt('Copy this permanent link:', url);
+    }
+  });
   bindActions();
 };
 
@@ -1551,7 +1610,7 @@ const bindActions = () => {
   document.querySelectorAll('[data-work]').forEach(button => button.addEventListener('click', () => {
     const work = gallery.works.find(candidate => String(candidate.id) === button.dataset.work);
     if (work) {
-      galleryScrollY = window.scrollY; detailExpanded = false; detailSide = 'image'; renderWork(work);
+      galleryScrollY = window.scrollY; detailExpanded = false; detailSide = 'image'; renderWork(work, { urlMode: 'push' });
       hydratePublicWork(work).then(complete => {
         if (complete !== work) renderWork(complete);
       }).catch(() => {});
@@ -1659,6 +1718,7 @@ const bindActions = () => {
       document.querySelector('[data-back]')?.setAttribute('aria-label', 'Close card and return to gallery');
       return;
     }
+    clearWorkUrl();
     renderGallery();
     requestAnimationFrame(() => window.scrollTo({ top: galleryScrollY, behavior: 'instant' }));
   });
@@ -1867,7 +1927,8 @@ if (oauthCode) {
 const pageParameters = new URLSearchParams(location.search);
 const previewMode = pageParameters.get('preview') === '1';
 const previewSection = pageParameters.get('section');
-if (['Images', 'Video', 'Music'].includes(previewSection)) activeType = previewSection;
+const requestedWorkId = pageParameters.get('work');
+if (['Images', 'Video', 'Music', 'Thoughts', 'Writing', 'Poetry', 'Theology'].includes(previewSection)) activeType = previewSection;
 const hostnameSection = {
   'art.joshmcgary.com': 'Images',
   'video.joshmcgary.com': 'Video',
@@ -1995,6 +2056,28 @@ else if (gallery) {
   renderGallery();
 }
 else if (!previewMode) renderEmpty();
+if (gallery && requestedWorkId) {
+  const requestedWork = gallery.works.find(work => String(work.permanentWorkId || work.id) === requestedWorkId || String(work.id) === requestedWorkId);
+  if (requestedWork) {
+    if (/^(?:www\.)?joshmcgary\.com$/i.test(location.hostname)) activeType = viewerForWork(requestedWork);
+    detailExpanded = false;
+    detailSide = 'image';
+    renderWork(requestedWork);
+    hydratePublicWork(requestedWork).then(complete => {
+      if (complete !== requestedWork) renderWork(complete);
+    }).catch(() => {});
+  }
+}
+window.addEventListener('popstate', () => {
+  if (!gallery) return;
+  const workId = new URLSearchParams(location.search).get('work');
+  const work = workId && gallery.works.find(candidate => String(candidate.permanentWorkId || candidate.id) === workId || String(candidate.id) === workId);
+  if (work) {
+    if (/^(?:www\.)?joshmcgary\.com$/i.test(location.hostname)) activeType = viewerForWork(work);
+    renderWork(work);
+  }
+  else renderGallery();
+});
 if (connectFromQr) {
   history.replaceState({}, '', location.pathname);
   const existingDropbox = await readValue(DROPBOX_TOKEN);
