@@ -13,7 +13,7 @@ const DROPBOX_MANIFEST_PATH = '/The_Docent/manifest.json';
 const DOCENT_MANIFEST = 'docent-manifest';
 const DOCENT_SHARD_PREFIX = 'docent-shard:';
 const PUBLIC_CORPUS_ENDPOINT = '/api/docent';
-const DOCENT_BUILD = 'ARCHIVE-87';
+const DOCENT_BUILD = 'ARCHIVE-88';
 const PUBLIC_SITE_URLS = {
   home: 'https://joshmcgary.com/',
   Images: 'https://art.joshmcgary.com/',
@@ -1016,7 +1016,7 @@ const renderPublicSection = works => {
       <footer><button data-home>Josh McGary</button><span>${labels[activeType]} · ${escapeHtml(collectionTitle)}</span></footer>
     </div>`;
     bindActions();
-    if (activeType === 'Images' && publicArchiveHost) hydrateVisiblePublicCards();
+    if (publicArchiveHost) hydrateVisiblePublicCards();
     return;
   }
   const publishedCount = gallery?.stats?.sectionCounts?.[activeType === 'Images' ? 'art' : activeType === 'Video' ? 'video' : 'audio'] || sectionWorks.length;
@@ -1032,7 +1032,7 @@ const renderPublicSection = works => {
     <footer><button data-home>Josh McGary</button><span>${labels[activeType]}</span></footer>
   </div>`;
   bindActions();
-  if (activeType === 'Images' && publicArchiveHost) hydrateVisiblePublicCards();
+  if (publicArchiveHost) hydrateVisiblePublicCards();
 };
 
 const profileScore = key => {
