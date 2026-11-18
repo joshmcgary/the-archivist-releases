@@ -1,0 +1,4476 @@
+{
+  "schema": "joshmcgary.music-video-database",
+  "schemaVersion": 1,
+  "scope": "Public music-related YouTube videos from configured playlist and channel video sources. Official DistroKid Releases are separate discography evidence and are not represented here.",
+  "updatedAt": "2026-11-03T06:16:33.951Z",
+  "sources": [
+    {
+      "kind": "playlist",
+      "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+      "title": "Original Bootlegs @ ABF",
+      "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u"
+    },
+    {
+      "kind": "playlist",
+      "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+      "title": "Covers",
+      "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh"
+    },
+    {
+      "kind": "playlist",
+      "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+      "title": "Home Movies",
+      "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS"
+    },
+    {
+      "kind": "playlist",
+      "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+      "title": "Concerts & Shows",
+      "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY"
+    },
+    {
+      "kind": "playlist",
+      "id": "PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+      "title": "Covers & Songs We Love",
+      "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd"
+    },
+    {
+      "kind": "channel",
+      "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "title": "The Theory Of",
+      "handle": "@thetheoryof",
+      "url": "https://www.youtube.com/@thetheoryof/videos"
+    },
+    {
+      "kind": "channel",
+      "id": "UCTn1-GAB8omM21fAgUohygg",
+      "title": "Josh McGary Music",
+      "handle": "@joshsmusic",
+      "url": "https://www.youtube.com/@joshsmusic/videos"
+    }
+  ],
+  "stats": {
+    "sourceRows": 254,
+    "videos": 139,
+    "approved": 134,
+    "needsReview": 5,
+    "pendingSourceDate": 0
+  },
+  "videos": [
+    {
+      "videoId": "eIAc9zksw_k",
+      "title": "Great is Your Faithfulness",
+      "url": "https://www.youtube.com/watch?v=eIAc9zksw_k",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2025-02-22",
+      "publishDate": "2025-02-22",
+      "duration": 249,
+      "description": "A redux of \"Great is Thy Faithfullness\"",
+      "thumbnail": "https://i.ytimg.com/vi/eIAc9zksw_k/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBzgWAAoAKigIMCAAQARhYIEsoZTAP&rs=AOn4CLByHDGlWSV58WdK5IaifJr7lZBQ8w",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 1
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "d4nBpbTDRbE",
+      "title": "Adding Cello to Raise the Sail",
+      "url": "https://www.youtube.com/watch?v=d4nBpbTDRbE",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 39,
+      "description": "Adding Cello to Raise the Sail",
+      "thumbnail": "https://i.ytimg.com/vi/d4nBpbTDRbE/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFQoSjAP&rs=AOn4CLC8LjVuv_x4z6Ki0seynzrDzusIDA",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 8
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "BE704D_CD34",
+      "title": "Adding Piano to Raise the Sail",
+      "url": "https://www.youtube.com/watch?v=BE704D_CD34",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 26,
+      "description": "Adding Piano to Raise the Sail",
+      "thumbnail": "https://i.ytimg.com/vi/BE704D_CD34/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFUoTzAP&rs=AOn4CLC8ANXMwiQtw9jTpvo3Fbri617P7g",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 7
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "1cIbE1LGt3c",
+      "title": "Adding Primary piano to Raise the Sail",
+      "url": "https://www.youtube.com/watch?v=1cIbE1LGt3c",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 69,
+      "description": "Adding Primary piano to Raise the Sail",
+      "thumbnail": "https://i.ytimg.com/vi/1cIbE1LGt3c/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFYoSTAP&rs=AOn4CLBNb7SWdri86ErTujiegoBArm4cvw",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 6
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "u732w6iFRvw",
+      "title": "Alibi Bridge Practice",
+      "url": "https://www.youtube.com/watch?v=u732w6iFRvw",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 118,
+      "description": "Practice for Mite Nite 2022",
+      "thumbnail": "https://i.ytimg.com/vi/u732w6iFRvw/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFEoQzAP&rs=AOn4CLCKsVUGiGALi0ENhYblVHFhRJvDDQ",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 5
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Fdhu7zuPxRo",
+      "title": "Alibi Practice",
+      "url": "https://www.youtube.com/watch?v=Fdhu7zuPxRo",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 244,
+      "description": "Practice for Mite Nite 2022",
+      "thumbnail": "https://i.ytimg.com/vi/Fdhu7zuPxRo/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBzgWAAoAKigIMCAAQARhlIE8oTDAP&rs=AOn4CLCPGU6j12T2T5K9A7Z-sG-jFX5CNQ",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 2
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "_SoiaEFT8h4",
+      "title": "Imposter",
+      "url": "https://www.youtube.com/watch?v=_SoiaEFT8h4",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 222,
+      "description": "Live from Mite Nite 2022",
+      "thumbnail": "https://i.ytimg.com/vi/_SoiaEFT8h4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhyIE0oQjAP&rs=AOn4CLCkr6oyL_LA7qPVoFfjJPydglJ4VA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 3
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 10
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "F0Qn6qe34Zc",
+      "title": "Linda",
+      "url": "https://www.youtube.com/watch?v=F0Qn6qe34Zc",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 221,
+      "description": "Live from Mite Nite 2022",
+      "thumbnail": "https://i.ytimg.com/vi/F0Qn6qe34Zc/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFYoSDAP&rs=AOn4CLA4GttZhkGuONYpvcKRF0v0FL4xiw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 2
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 9
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "yr-iRa1gxkM",
+      "title": "Medusa Practice",
+      "url": "https://www.youtube.com/watch?v=yr-iRa1gxkM",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 211,
+      "description": "Practice for Mite Nite 2022",
+      "thumbnail": "https://i.ytimg.com/vi/yr-iRa1gxkM/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFYoTzAP&rs=AOn4CLCAnOtB7carfnjCwqh2eIihFxWC2Q",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 3
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "M0TJfTkcS7w",
+      "title": "Stranded Live",
+      "url": "https://www.youtube.com/watch?v=M0TJfTkcS7w",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 188,
+      "description": "Stranded from Mite Nite 2022",
+      "thumbnail": "https://i.ytimg.com/vi/M0TJfTkcS7w/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gSAAugCigIMCAAQARhlIFQoUDAP&rs=AOn4CLDS82ycVISGidLGFWaA2tlV9V5dlQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 1
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 1
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "gGNHWbyJyk0",
+      "title": "Unrequited Practice",
+      "url": "https://www.youtube.com/watch?v=gGNHWbyJyk0",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2024-11-01",
+      "publishDate": "2024-11-01",
+      "duration": 210,
+      "description": "Practice for Mite Nite 2022",
+      "thumbnail": "https://i.ytimg.com/vi/gGNHWbyJyk0/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFgoTTAP&rs=AOn4CLBR_memhefIb9-vEwtdPWmVIB0NGA",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 4
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "bXZTzdq2zts",
+      "title": "Army of Voices 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=bXZTzdq2zts",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 199,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/bXZTzdq2zts/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEEoJDAP&rs=AOn4CLDta7okFD8qbamVLdMgZkDSzRLUqQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 12
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 13
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "n1lY89qzE7c",
+      "title": "Baby 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=n1lY89qzE7c",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 149,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/n1lY89qzE7c/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_ID8oITAP&rs=AOn4CLDbjjw22U6B06sBl3yVxdVFH8YE9g",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 11
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 12
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "vsSZvCPE5L0",
+      "title": "Child of Affliction 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=vsSZvCPE5L0",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 212,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/vsSZvCPE5L0/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEAoIzAP&rs=AOn4CLDQHxelMjdGyk11B9rj6YebKanlCw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 10
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 8
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "cJC-XSVjaA8",
+      "title": "Child of Forgiveness 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=cJC-XSVjaA8",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 165,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/cJC-XSVjaA8/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEAoIjAP&rs=AOn4CLA1tPJRMvCUXeFe_903UFTgp_gI3w",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 32
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 9
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 11
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Ih2ZAt4E_E0",
+      "title": "Child of Promise 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=Ih2ZAt4E_E0",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 187,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/Ih2ZAt4E_E0/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEAoIzAP&rs=AOn4CLBd23mlKBEIJl5-Wu7SXZqHjxKwyg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 35
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 8
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 7
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "zSoTuO3FFO0",
+      "title": "Faithful and True 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=zSoTuO3FFO0",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 130,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/zSoTuO3FFO0/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEAoIzAP&rs=AOn4CLBvhgpwYbYwGaCfjlIUsaKdYiQlJw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 33
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 7
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 10
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "nAssDup_zMY",
+      "title": "Gift of Magi Worship the King 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=nAssDup_zMY",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 230,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/nAssDup_zMY/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEEoIzAP&rs=AOn4CLCImvI6YmlAPB7oOwhBABnpIO6uDg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 36
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 6
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 5
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "NvlFY5POfcc",
+      "title": "Immanuel Has Come 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=NvlFY5POfcc",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 369,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/NvlFY5POfcc/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEAoJDAP&rs=AOn4CLDioHqBlcFhczBCfJSOmnXnPi0YkA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 5
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 2
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "cOse-m5Yi3c",
+      "title": "Joy Has Filled the Earth 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=cOse-m5Yi3c",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 125,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/cOse-m5Yi3c/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEEoIzAP&rs=AOn4CLDffbXcO_B0aFaW__k1DxSW-HwwcQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 34
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 4
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 9
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "aSAveZEuozI",
+      "title": "Ponderings 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=aSAveZEuozI",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 225,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/aSAveZEuozI/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_ID4oITAP&rs=AOn4CLCeX43z_SGW5oWzWxvIlgtTf39mAA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 3
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 4
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "FqjP1u9Q_6I",
+      "title": "The Humble King 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=FqjP1u9Q_6I",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 217,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/FqjP1u9Q_6I/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEEoJDAP&rs=AOn4CLCdL2Pbk4Bvvg7KE7_qBRcngFichA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 37
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 2
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 3
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "gQW57qJMweQ",
+      "title": "There's No Room 2022   HD 1080p",
+      "url": "https://www.youtube.com/watch?v=gQW57qJMweQ",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-12-12",
+      "publishDate": "2022-12-12",
+      "duration": 153,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/gQW57qJMweQ/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEEoJDAP&rs=AOn4CLCKrIRritE5UnamPf_n4pBpD1IGow",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 1
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 6
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "7lzGJxJbwDc",
+      "title": "Hide Away 3.25.22",
+      "url": "https://www.youtube.com/watch?v=7lzGJxJbwDc",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2022-04-08",
+      "publishDate": "2022-04-08",
+      "duration": 217,
+      "description": "\"Hide Away,\" by The Theory Of, from the album ,\"Overture.\"",
+      "thumbnail": "https://i.ytimg.com/vi/7lzGJxJbwDc/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBZF7DyE7oH8aQ4HLyNLNX_NJn7pQ",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 11
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "rFkSqNMf2F8",
+      "title": "Walls 3.16.22",
+      "url": "https://www.youtube.com/watch?v=rFkSqNMf2F8",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2022-04-01",
+      "publishDate": "2022-04-01",
+      "duration": 119,
+      "description": "\"Walls,\" by The Theory Of. Performed on 3.16.22, from the album Overture.",
+      "thumbnail": "https://i.ytimg.com/vi/rFkSqNMf2F8/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBny1XXNw4w0gDLM5eIxVatH9Y3-w",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 12
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "HpCYJQeXHsQ",
+      "title": "I Don't Love You",
+      "url": "https://www.youtube.com/watch?v=HpCYJQeXHsQ",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2022-03-11",
+      "publishDate": "2022-03-11",
+      "duration": 177,
+      "description": "a cover of \"I Don't Love You,\" by My Chemical Romance",
+      "thumbnail": "https://i.ytimg.com/vi/HpCYJQeXHsQ/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhkIGQoZDAP&rs=AOn4CLC9FhUvz3HXSTiKPMJKjc5azyFkbg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "title": "Covers & Songs We Love",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "position": 4
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 13
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "KstnrJPgvHA",
+      "title": "Devil Takes Care of His Own",
+      "url": "https://www.youtube.com/watch?v=KstnrJPgvHA",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2022-03-05",
+      "publishDate": "2022-03-05",
+      "duration": 153,
+      "description": "A quick little cover of \"Devil Takes Care of His Own,\" by Band of Skulls.",
+      "thumbnail": "https://i.ytimg.com/vi/KstnrJPgvHA/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLBv1mE46o2DA_m3jstUhnb7HbtGeg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "title": "Covers & Songs We Love",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "position": 5
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 14
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "SVRUkjgqw3g",
+      "title": "Cough Syrup 2.24.22",
+      "url": "https://www.youtube.com/watch?v=SVRUkjgqw3g",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2022-02-25",
+      "publishDate": "2022-02-25",
+      "duration": 260,
+      "description": "A cover of \"Cough Syrup,\" by Young the Giant.",
+      "thumbnail": "https://i.ytimg.com/vi/SVRUkjgqw3g/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFooTTAP&rs=AOn4CLAs5h7T5-WMf9uJVYWwwwOgolj6GA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "title": "Covers & Songs We Love",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "position": 1
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 16
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "g8dzjAthBy0",
+      "title": "It's Too Late",
+      "url": "https://www.youtube.com/watch?v=g8dzjAthBy0",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2022-02-25",
+      "publishDate": "2022-02-25",
+      "duration": 169,
+      "description": "\"It's Too Late,\" by Carole King",
+      "thumbnail": "https://i.ytimg.com/vi/g8dzjAthBy0/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLACQ_bPM23ISXVFQlD4sTLwkl0Z-w",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "title": "Covers & Songs We Love",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "position": 7
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 15
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "faS_4ohiFU0",
+      "title": "I'm Not Okay (I Promise)",
+      "url": "https://www.youtube.com/watch?v=faS_4ohiFU0",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2022-02-11",
+      "publishDate": "2022-02-11",
+      "duration": 226,
+      "description": "a cover of \"I'm not okay (I Promise),\" by My Chemical Romance",
+      "thumbnail": "https://i.ytimg.com/vi/faS_4ohiFU0/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLBFpsyzjg-blmJV7ziwHcjirZB3Rg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "title": "Covers & Songs We Love",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "position": 6
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 17
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "uN9PtjTWdbc",
+      "title": "Homeward Bound 2.4.22",
+      "url": "https://www.youtube.com/watch?v=uN9PtjTWdbc",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2022-02-05",
+      "publishDate": "2022-02-05",
+      "duration": 178,
+      "description": "This is a cover of \"Homeward Bound\" by Simon & Garfunkel",
+      "thumbnail": "https://i.ytimg.com/vi/uN9PtjTWdbc/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhsIGwobDAP&rs=AOn4CLCpXfZtsr5Pee_97ktMDjy3NqsNxQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "title": "Covers & Songs We Love",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "position": 2
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 18
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "nqa_D7ArMBc",
+      "title": "Time is Running Out 1.28.22",
+      "url": "https://www.youtube.com/watch?v=nqa_D7ArMBc",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2022-01-29",
+      "publishDate": "2022-01-29",
+      "duration": 262,
+      "description": "An acoustic cover of \"Time is Running Out\" by Muse.",
+      "thumbnail": "https://i.ytimg.com/vi/nqa_D7ArMBc/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLAa1mWyOUnjAhmoraDkpIioZ2TjUw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "title": "Covers & Songs We Love",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSEgpKEr7D7jOr28UO4fRMd",
+          "position": 3
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 19
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "RRg5XaiN2Qo",
+      "title": "Josh sings Rather than Dream to Olivia",
+      "url": "https://www.youtube.com/watch?v=RRg5XaiN2Qo",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-01-22",
+      "publishDate": "2022-01-22",
+      "duration": 88,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/RRg5XaiN2Qo/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBtgiAAoAPigIMCAAQARhyIEwoOzAP&rs=AOn4CLBFqo1VBtU--4rMmuI2ZXbv7oAgKA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 13
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 14
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "needs-review",
+      "reviewReasons": [
+        "possible-family-clip"
+      ],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "aImQkDy15lk",
+      "title": "Josh teaches Sophia how to roll",
+      "url": "https://www.youtube.com/watch?v=aImQkDy15lk",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-01-22",
+      "publishDate": "2022-01-22",
+      "duration": 22,
+      "description": "Sophia tries to cover Taylor Swift's roll.",
+      "thumbnail": "https://i.ytimg.com/vi/aImQkDy15lk/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBhAOAAtAFigIMCAAQARhKIGUoUzAP&rs=AOn4CLApdzM2amTz2v_D6oqk3SYkXRXvUw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 15
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "needs-review",
+      "reviewReasons": [
+        "possible-family-clip"
+      ],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "DXyHhyTqJ8c",
+      "title": "Josh teaches Sophia How to Roll part 2",
+      "url": "https://www.youtube.com/watch?v=DXyHhyTqJ8c",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-01-22",
+      "publishDate": "2022-01-22",
+      "duration": 29,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/DXyHhyTqJ8c/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBhAOAAtAFigIMCAAQARhVIFsoZTAP&rs=AOn4CLBJTzIo7fHbgh4185uJOr2obUxDQA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 14
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "needs-review",
+      "reviewReasons": [
+        "possible-family-clip"
+      ],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "uM2hCP0EKpA",
+      "title": "Sophia Raps",
+      "url": "https://www.youtube.com/watch?v=uM2hCP0EKpA",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2022-01-22",
+      "publishDate": "2022-01-22",
+      "duration": 176,
+      "description": "Sophia raps over Josh's Christmas song.",
+      "thumbnail": "https://i.ytimg.com/vi/uM2hCP0EKpA/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBlAOAAtAFigIMCAAQARhlIFcoTDAP&rs=AOn4CLAukkU-WvzrzTBgP65h0eLpNPmHUg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 16
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 15
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "needs-review",
+      "reviewReasons": [
+        "possible-family-clip"
+      ],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "GtOy7v30dIE",
+      "title": "Army of Voices / ABF Bootlegs / Christmas 2021",
+      "url": "https://www.youtube.com/watch?v=GtOy7v30dIE",
+      "channel": "ABF Music",
+      "channelId": "UConebLzSvXXhpbQiwFWZNHw",
+      "uploadDate": "2021-12-23",
+      "publishDate": "2021-12-23",
+      "duration": 230,
+      "description": "An Original Song by Heidi Parker.\nPerformed by Feast With Ravens on December 19th, 2021. Bootlegged from the ABF's Christmas Service. Check @ABFPDX for more.",
+      "thumbnail": "https://i.ytimg.com/vi/GtOy7v30dIE/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDkugaomXtxG2dLxWXgjfPfuiKfUg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 18
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Nu2wHrRgYiE",
+      "title": "Gift of Magi / ABF Bootlegs / Christmas 2021",
+      "url": "https://www.youtube.com/watch?v=Nu2wHrRgYiE",
+      "channel": "ABF Music",
+      "channelId": "UConebLzSvXXhpbQiwFWZNHw",
+      "uploadDate": "2021-12-23",
+      "publishDate": "2021-12-23",
+      "duration": 228,
+      "description": "An Original Song by Josh McGary and Heidi Parker.\nPerformed by Josh McGary, Heidi Parker, Colin Sakewitz, and Isaiah Castillo on December 19th, 2021. Bootlegged from the ABF's Christmas Service. Check @ABFPDX for more.",
+      "thumbnail": "https://i.ytimg.com/vi/Nu2wHrRgYiE/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBh0A7SI93Ar2MLFKbuTLXs_Oxs7Q",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 30
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "OSrjibPJ9m8",
+      "title": "Ponderings / ABF Bootlegs / Christmas 2021",
+      "url": "https://www.youtube.com/watch?v=OSrjibPJ9m8",
+      "channel": "ABF Music",
+      "channelId": "UConebLzSvXXhpbQiwFWZNHw",
+      "uploadDate": "2021-12-23",
+      "publishDate": "2021-12-23",
+      "duration": 263,
+      "description": "An Original Song by Dylan Herring and Bethany Sakewitz.\nPerformed by Dylan Herring, Heidi Parker, and Josh McGary, on December 19th, 2021. Bootlegged from the ABF's Christmas Service. Check @ABFPDX for more.",
+      "thumbnail": "https://i.ytimg.com/vi/OSrjibPJ9m8/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBVglzFqEnQCsjdB8UZSn84hOgF5Q",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 17
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "f7K_bmxS0mg",
+      "title": "The Humble King / ABF Bootlegs  / Christmas 2021",
+      "url": "https://www.youtube.com/watch?v=f7K_bmxS0mg",
+      "channel": "ABF Music",
+      "channelId": "UConebLzSvXXhpbQiwFWZNHw",
+      "uploadDate": "2021-12-23",
+      "publishDate": "2021-12-23",
+      "duration": 231,
+      "description": "An Original Song by Josh McGary.\nPerformed by Josh McGary, Colin Sakewitz, and Isaiah Castillo on December 19th, 2021. Bootlegged from the ABF's Christmas Service. Check @ABFPDX for more.",
+      "thumbnail": "https://i.ytimg.com/vi/f7K_bmxS0mg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAI6PvaDroULqHcny132PGXRx7Hkw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 31
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "ULCB-RnLePQ",
+      "title": "There's No Room / ABF Bootleg / Christmas 2021",
+      "url": "https://www.youtube.com/watch?v=ULCB-RnLePQ",
+      "channel": "ABF Music",
+      "channelId": "UConebLzSvXXhpbQiwFWZNHw",
+      "uploadDate": "2021-12-23",
+      "publishDate": "2021-12-23",
+      "duration": 154,
+      "description": "An Original Song by Jasmin Pierzina.\nPerformed by Jasmin Pierzina, Josh McGary, Sophia McGary, Colin Sakewitz, and Isaiah Castillo, on December 19th, 2021. Bootlegged from the ABF's Christmas Service. Check @ABFPDX for more.",
+      "thumbnail": "https://i.ytimg.com/vi/ULCB-RnLePQ/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAg5b31nwo82pTSOq7AGGQHk9AYFw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 20
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Vv4YW06Olg0",
+      "title": "22 / ABF Bootlegs / Easter 2021",
+      "url": "https://www.youtube.com/watch?v=Vv4YW06Olg0",
+      "channel": "ABF Music",
+      "channelId": "UConebLzSvXXhpbQiwFWZNHw",
+      "uploadDate": "2021-04-12",
+      "publishDate": "2021-04-12",
+      "duration": 419,
+      "description": "An Original Song by Josh McGary.\nPerformed by Josh McGary April 4th, 2021. Bootlegged from the ABF Worship Service. Check @ABFPDX for more.",
+      "thumbnail": "https://i.ytimg.com/vi/Vv4YW06Olg0/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLA6LPwpyPP2UlkEfswWrmUz8AhCug",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 28
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "qlraY0yoKwQ",
+      "title": "Behind The Stone / ABF Bootleg / Easter 2021",
+      "url": "https://www.youtube.com/watch?v=qlraY0yoKwQ",
+      "channel": "ABF Music",
+      "channelId": "UConebLzSvXXhpbQiwFWZNHw",
+      "uploadDate": "2021-04-12",
+      "publishDate": "2021-04-12",
+      "duration": 273,
+      "description": "An Original Song by Heidi Parker and Justine Browning.\nPerformed by Josh McGary April 4th, 2021. Bootlegged from the ABF Worship Service. Check @ABFPDX for more.",
+      "thumbnail": "https://i.ytimg.com/vi/qlraY0yoKwQ/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCjSHeN6sZ4uozom_CR-s2Y2NIWUw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 19
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "iukhW4_scpw",
+      "title": "Life Again / ABF Bootleg / Easter 2021",
+      "url": "https://www.youtube.com/watch?v=iukhW4_scpw",
+      "channel": "ABF Music",
+      "channelId": "UConebLzSvXXhpbQiwFWZNHw",
+      "uploadDate": "2021-04-12",
+      "publishDate": "2021-04-12",
+      "duration": 350,
+      "description": "An Original Song by Josh McGary.\nPerformed by Josh McGary April 4th, 2021. Bootlegged from the ABF Worship Service. Check @ABFPDX for more.",
+      "thumbnail": "https://i.ytimg.com/vi/iukhW4_scpw/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCeG4bJ8hRWXp2dLyJiOmKSruC4Xw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 29
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "ozuqJjQ7TNU",
+      "title": "Our King / ABF Bootlegs / 2/21/21",
+      "url": "https://www.youtube.com/watch?v=ozuqJjQ7TNU",
+      "channel": "Tiffany perry",
+      "channelId": "UCdDf-wZO1dtNWQXLtfH1pDA",
+      "uploadDate": "2021-02-22",
+      "publishDate": "2021-02-22",
+      "duration": 134,
+      "description": "An Original Song by Tiffany Perry.\nPerformed by Josh McGary February 21st, 2021. Bootlegged from the ABF Worship Service. Check @ABFPDX for more.",
+      "thumbnail": "https://i.ytimg.com/vi/ozuqJjQ7TNU/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCUOuCJVXbT58IdNTZ25ChGBqiaog",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 34
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "4qQHB3cto94",
+      "title": "My Messiah / Home Movies / 2012",
+      "url": "https://www.youtube.com/watch?v=4qQHB3cto94",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-12-30",
+      "publishDate": "2020-12-30",
+      "duration": 145,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/4qQHB3cto94/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLChM1sacn3h0KEaz0-8k7m42RTHjQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 22
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 16
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "RHFY1CO6luE",
+      "title": "Rest On Me / Home Movies / 2012",
+      "url": "https://www.youtube.com/watch?v=RHFY1CO6luE",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-12-30",
+      "publishDate": "2020-12-30",
+      "duration": 188,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/RHFY1CO6luE/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCpQmpExY8nek-HCapazNryN81d1w",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 21
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 17
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "hJCvmLP9dqQ",
+      "title": "Christmas Song / Singles",
+      "url": "https://www.youtube.com/watch?v=hJCvmLP9dqQ",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-12-21",
+      "publishDate": "2020-12-21",
+      "duration": 201,
+      "description": "The music video for the single, \"Christmas Song.\"",
+      "thumbnail": "https://i.ytimg.com/vi/hJCvmLP9dqQ/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFcoVDAP&rs=AOn4CLDFrf5JMycJ0X9_BQ6zHa8y1qmuBw",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 20
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "5giuhOYkv3U",
+      "title": "The Story / Home Movies",
+      "url": "https://www.youtube.com/watch?v=5giuhOYkv3U",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-12-19",
+      "publishDate": "2020-12-19",
+      "duration": 113,
+      "description": "Just messing around with Belinda Carlisle's The Story.",
+      "thumbnail": "https://i.ytimg.com/vi/5giuhOYkv3U/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDERAdMlaB70XfYpyQqvFLgy1S7pw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 23
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 18
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "JnHvCNmtkao",
+      "title": "Baby / Covers",
+      "url": "https://www.youtube.com/watch?v=JnHvCNmtkao",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-10-19",
+      "publishDate": "2020-10-19",
+      "duration": 212,
+      "description": "A cover of Justin Bieber's \"Baby,\" for a friend's wedding.",
+      "thumbnail": "https://i.ytimg.com/vi/JnHvCNmtkao/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCjlUTs68oZJHvb9QjWKslahjPrMw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 28
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 29
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 25
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "ZYMYH0E6fuA",
+      "title": "Love You Like a Love Song / Covers",
+      "url": "https://www.youtube.com/watch?v=ZYMYH0E6fuA",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-10-19",
+      "publishDate": "2020-10-19",
+      "duration": 229,
+      "description": "A cover of Selena Gomez's \"Love you Like a Love Song,\" for a friend's wedding.",
+      "thumbnail": "https://i.ytimg.com/vi/ZYMYH0E6fuA/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCEQZiAPVNLxW8LbF1XrSj9X3Q-Ng",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 31
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 26
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 21
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "nULxcdrHWkw",
+      "title": "My Doorbell / Covers",
+      "url": "https://www.youtube.com/watch?v=nULxcdrHWkw",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-10-19",
+      "publishDate": "2020-10-19",
+      "duration": 292,
+      "description": "A cover of The White Stripes' \"My Doorbell,\" for a friend's wedding.",
+      "thumbnail": "https://i.ytimg.com/vi/nULxcdrHWkw/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDw-Ys_fn6Z7-jEUkHnveSFaCMROA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 32
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 25
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 20
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "mZjloROQjWM",
+      "title": "My Sharona / Covers",
+      "url": "https://www.youtube.com/watch?v=mZjloROQjWM",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-10-19",
+      "publishDate": "2020-10-19",
+      "duration": 218,
+      "description": "A cover of The Knacks' \"My Sharona,\" for a friend's wedding.",
+      "thumbnail": "https://i.ytimg.com/vi/mZjloROQjWM/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBG_T09MRYI6-TJuapjwm3msAPs1w",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 30
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 27
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 22
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "CpYmQpTAqdA",
+      "title": "Not Your Fault / Covers",
+      "url": "https://www.youtube.com/watch?v=CpYmQpTAqdA",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-10-19",
+      "publishDate": "2020-10-19",
+      "duration": 244,
+      "description": "A cover of AWOL Nation's \"Not Your Fault,\" for a friend's wedding.",
+      "thumbnail": "https://i.ytimg.com/vi/CpYmQpTAqdA/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLATuwdp2nqzrmrpc_--HQDlC9s8Fg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 33
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 24
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 19
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "qKHG1aYyauE",
+      "title": "Smells Like Teen Spirit / Covers",
+      "url": "https://www.youtube.com/watch?v=qKHG1aYyauE",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-10-19",
+      "publishDate": "2020-10-19",
+      "duration": 359,
+      "description": "A cover of Nirvana's \"Smells Like Teen Spirit,\" for a friend's wedding.",
+      "thumbnail": "https://i.ytimg.com/vi/qKHG1aYyauE/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBYB8yGjC-kXj4_UzAogCAUXc7h4w",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 27
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 30
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 24
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "wfAJkamIVso",
+      "title": "Teenage Dirtbag / Covers",
+      "url": "https://www.youtube.com/watch?v=wfAJkamIVso",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-10-19",
+      "publishDate": "2020-10-19",
+      "duration": 268,
+      "description": "A cover of Wheatus' \"Teenage Dirtbag,\" for a friend's wedding.",
+      "thumbnail": "https://i.ytimg.com/vi/wfAJkamIVso/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDmRX23RdzK338mNcfYjGgi9ThFJA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 29
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 28
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 23
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "6j6r-jUzWD8",
+      "title": "22 / Shows / September 3rd, 2020",
+      "url": "https://www.youtube.com/watch?v=6j6r-jUzWD8",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-09-06",
+      "publishDate": "2020-09-06",
+      "duration": 356,
+      "description": "\"22\"\nAn acoustic version of \"22\" by Josh McGary. Recorded Live at Kalama on September 3rd, 2020 during a private family & friends session.",
+      "thumbnail": "https://i.ytimg.com/vi/6j6r-jUzWD8/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD7q0rOV6noCbm71cIqVn6D2VSEaA",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 26
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "wt_NjADAZNg",
+      "title": "In All Things / Shows / September 3rd, 2020",
+      "url": "https://www.youtube.com/watch?v=wt_NjADAZNg",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-09-06",
+      "publishDate": "2020-09-06",
+      "duration": 270,
+      "description": "\"In All Things\"\nAn Acoustic version of \"In All Things\" by Josh McGary. Recorded Live at Kalama on September 3rd, 2020 during a private family & friends session.",
+      "thumbnail": "https://i.ytimg.com/vi/wt_NjADAZNg/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBzwwKHB_Alli0E3o9Sdwa7sBnYYQ",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 27
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "59vTwB0iftQ",
+      "title": "A State of Constant Sorrow",
+      "url": "https://www.youtube.com/watch?v=59vTwB0iftQ",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-09-05",
+      "publishDate": "2020-09-05",
+      "duration": 265,
+      "description": "\"A State of Constant Sorrow\"\nAn Acoustic version of \"A State of Constant Sorrow\" by The Theory Of. Recorded Live at Kalama on September 3rd, 2020 during a private family & friends session.",
+      "thumbnail": "https://i.ytimg.com/vi/59vTwB0iftQ/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLB6o272lm8fSFH6cQygaNvE_llzIg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 8
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 25
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "oFX4vLcu1v8",
+      "title": "Dark Days",
+      "url": "https://www.youtube.com/watch?v=oFX4vLcu1v8",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-09-05",
+      "publishDate": "2020-09-05",
+      "duration": 250,
+      "description": "\"Dark Days\"\nAn acoustic version of \"Dark Days\" by The Theory Of. Recorded Live at Kalama on September 3rd, 2020 during a private family & friends session.",
+      "thumbnail": "https://i.ytimg.com/vi/oFX4vLcu1v8/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLC-E-fQvwh_gvWZR_5NWB6SlOJDVA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 7
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 24
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "VmCV8PuI8Ug",
+      "title": "Red",
+      "url": "https://www.youtube.com/watch?v=VmCV8PuI8Ug",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-09-05",
+      "publishDate": "2020-09-05",
+      "duration": 200,
+      "description": "\"Red\"\nAn Acoustic version of \"Red\" by The Theory Of. Recorded Live at Kalama on September 3rd, 2020 during a private family & friends session.",
+      "thumbnail": "https://i.ytimg.com/vi/VmCV8PuI8Ug/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAMmuBZre8xDzK5UnlqKDjM_9dFgQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 6
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 23
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "kdUiRzNKNWY",
+      "title": "Stranded",
+      "url": "https://www.youtube.com/watch?v=kdUiRzNKNWY",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-09-05",
+      "publishDate": "2020-09-05",
+      "duration": 174,
+      "description": "\"Stranded\"\nAn Acoustic version of \"Stranded\" by The Theory Of. Recorded Live at Kalama on September 3rd, 2020 during a private family & friends session.",
+      "thumbnail": "https://i.ytimg.com/vi/kdUiRzNKNWY/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDxae4Y16lX43pEPWR99mwi1iEHvg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 9
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 26
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "fhGEbL93nIE",
+      "title": "The Long Game",
+      "url": "https://www.youtube.com/watch?v=fhGEbL93nIE",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-09-05",
+      "publishDate": "2020-09-05",
+      "duration": 347,
+      "description": "\"The Long Game\"\nAn acoustic version of \"The Long Game\" by The Theory Of. Recorded Live at Kalama on September 3rd, 2020 during a private family & friends session.",
+      "thumbnail": "https://i.ytimg.com/vi/fhGEbL93nIE/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBc0hcXWAndaH2i7YLucyOfNFlaMw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 5
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 22
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "uGwmTj-TO18",
+      "title": "True",
+      "url": "https://www.youtube.com/watch?v=uGwmTj-TO18",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-09-05",
+      "publishDate": "2020-09-05",
+      "duration": 238,
+      "description": "\"True\"\nAn Acoustic cover of \"True\" by Spandau Ballet. Recorded Live at Kalama on September 3rd, 2020 during a private family & friends session.",
+      "thumbnail": "https://i.ytimg.com/vi/uGwmTj-TO18/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCtRd1QwXIBWuzp4-T4XLQH2kmKcg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 4
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 21
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "2hi12VJ_nNI",
+      "title": "A State of Constant Sorrow / Home Videos / June 27th, 2020",
+      "url": "https://www.youtube.com/watch?v=2hi12VJ_nNI",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-08-17",
+      "publishDate": "2020-08-17",
+      "duration": 36,
+      "description": "Josh and Joseph cover @thetheoryof 's \"A State of Constant Sorrow.\"",
+      "thumbnail": "https://i.ytimg.com/vi/2hi12VJ_nNI/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAjZh2-K8xDkfKf-36XjlnpEycG4Q",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 32
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 29
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "bRaNQt_mw9w",
+      "title": "Be Exalted oh God / ABF Bootlegs / August 16th, 2020",
+      "url": "https://www.youtube.com/watch?v=bRaNQt_mw9w",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-08-17",
+      "publishDate": "2020-08-17",
+      "duration": 238,
+      "description": "Be Exalted oh God / ABF Bootlegs / August 16th, 2020\n\nCover of the Maranatha! classic \"Be Exalted Oh God,\" bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/bRaNQt_mw9w/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBNvjt3ZIfWPqbRO4NlfPTCLV4L1g",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 25
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 33
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "24pYf3nXMmI",
+      "title": "Home Movies",
+      "url": "https://www.youtube.com/watch?v=24pYf3nXMmI",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-08-17",
+      "publishDate": "2020-08-17",
+      "duration": 14,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/24pYf3nXMmI/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLA5ImNBYOo3-zR_I02N4VagwNBQJQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 31
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 28
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "needs-review",
+      "reviewReasons": [
+        "possible-family-clip"
+      ],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "yFvYVNkalmU",
+      "title": "Shout His Name / ABF Bootlegs / August 16th, 2020",
+      "url": "https://www.youtube.com/watch?v=yFvYVNkalmU",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-08-17",
+      "publishDate": "2020-08-17",
+      "duration": 176,
+      "description": "Shout His Name / ABF Bootlegs / August 16th, 2020\n\nA cover of the Feast With Ravens original, \"Shout His Name,\" bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/yFvYVNkalmU/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBLuGxTr_HHfTt7WNobxcSEv0bYLA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 26
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 32
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "bCBOkSuaKvY",
+      "title": "Take This Life / ABF Bootlegs / August 16th, 2020",
+      "url": "https://www.youtube.com/watch?v=bCBOkSuaKvY",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-08-17",
+      "publishDate": "2020-08-17",
+      "duration": 223,
+      "description": "Take This Life / ABF Bootlegs / August 16th, 2020\n\nan original song by Josh McGary. Background vocals by Jasmin Pierzina. Bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/bCBOkSuaKvY/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD1dwWPLHZd8Cxf9CZOuA4RKSoRfQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 27
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 31
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "jvTtaZf427s",
+      "title": "THE SINGLES",
+      "url": "https://www.youtube.com/watch?v=jvTtaZf427s",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-17",
+      "publishDate": "2020-08-17",
+      "duration": 18,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/jvTtaZf427s/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLB52S1rHSbjmFjrSAn3afBt8ywMZQ",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 27
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "-AV5DjZcvxI",
+      "title": "Up / Home Videos / August 16th, 2020",
+      "url": "https://www.youtube.com/watch?v=-AV5DjZcvxI",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-08-17",
+      "publishDate": "2020-08-17",
+      "duration": 159,
+      "description": "Josh & Joseph Cover \"Up\" by Sing Street.",
+      "thumbnail": "https://i.ytimg.com/vi/-AV5DjZcvxI/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBjAKAAuADigIMCAAQARhlIFgoRjAP&rs=AOn4CLBdJpA5O5RDOLeQzceSOT0Mbt_MIQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "title": "Home Movies",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbeojU6JyNL3fydxmnClAvDS",
+          "position": 33
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 30
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Dt9RdCqnZ8s",
+      "title": "CONCERTS & SHOWS",
+      "url": "https://www.youtube.com/watch?v=Dt9RdCqnZ8s",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 12,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/Dt9RdCqnZ8s/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLC0O5ImN-eI2Qgdgeb6_Rmvd4r0Nw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 17
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "njVQ0OP8DiI",
+      "title": "CONCERTS & SHOWS",
+      "url": "https://www.youtube.com/watch?v=njVQ0OP8DiI",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 13,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/njVQ0OP8DiI/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLB7v6B8VJ8z86Z9zmuGUBQkOlcNLw",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 29
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "BiCEd-Hhr44",
+      "title": "PRACTICE / Build",
+      "url": "https://www.youtube.com/watch?v=BiCEd-Hhr44",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 320,
+      "description": "Here's a clip of us practicing \"Build\" in preparation for our show at Goose Hollow.",
+      "thumbnail": "https://i.ytimg.com/vi/BiCEd-Hhr44/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCcy87SWY_uNeCjugUB30L2367fVQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 11
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 37
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "kB4S7WNUcYk",
+      "title": "PRACTICE / Dark Days",
+      "url": "https://www.youtube.com/watch?v=kB4S7WNUcYk",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 312,
+      "description": "Here's our practice of \"Dark Days\" in preparation for our show at Goose Hollow.",
+      "thumbnail": "https://i.ytimg.com/vi/kB4S7WNUcYk/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBB-RAlH5pV8rR4kBl_LmsydNEusw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 10
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 36
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "wbIvyPyA67Q",
+      "title": "PRACTICE / State of Constant Sorrow",
+      "url": "https://www.youtube.com/watch?v=wbIvyPyA67Q",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 312,
+      "description": "Here's a sketch of \"State of Constant Sorrow\" in preparation for our show at Goose Hollow.",
+      "thumbnail": "https://i.ytimg.com/vi/wbIvyPyA67Q/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD7UYG8jG1jgVoVUZx3ClgAyHEUeg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 12
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 38
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "vgTqSkTs_NQ",
+      "title": "RECORDING SESSIONS",
+      "url": "https://www.youtube.com/watch?v=vgTqSkTs_NQ",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 9,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/vgTqSkTs_NQ/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBeYzOyBw3t4cdIT2ZTWiwsQy08Xw",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 31
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "D42xI3p0HwA",
+      "title": "SKETCH / Stranded",
+      "url": "https://www.youtube.com/watch?v=D42xI3p0HwA",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 166,
+      "description": "Here's a sketch of our song 'Stranded'",
+      "thumbnail": "https://i.ytimg.com/vi/D42xI3p0HwA/hqdefault.jpg?sqp=-oaymwE2COADEI4CSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBtgiAAoAPigIMCAAQARhlIF0oVDAP&rs=AOn4CLDMdnlLnz7WMHQ7eF8-1odzWuhOGg",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 28
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "nBtGNgNEZ4Y",
+      "title": "SKETCH / Sweet, Smart, and Dumb",
+      "url": "https://www.youtube.com/watch?v=nBtGNgNEZ4Y",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 96,
+      "description": "Here's a little clip of a song that Jasmin wrote recently. Enjoy",
+      "thumbnail": "https://i.ytimg.com/vi/nBtGNgNEZ4Y/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBTR0AqlZAnWWisOmwogDOb7V9uZg",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 35
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "zv__rMpcoDI",
+      "title": "SKETCH / The Problem in the Poetry",
+      "url": "https://www.youtube.com/watch?v=zv__rMpcoDI",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 270,
+      "description": "Here's a little clip of a song Jasmin wrote recently. Enjoy!",
+      "thumbnail": "https://i.ytimg.com/vi/zv__rMpcoDI/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBFmj8YdgeWq-mow2ldISaDqxtFmQ",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 33
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "c-Y9kPNElHI",
+      "title": "SKETCH / Think Less of Me",
+      "url": "https://www.youtube.com/watch?v=c-Y9kPNElHI",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 103,
+      "description": "Here's a little clip of a song Jasmin wrote recently. Enjoy!",
+      "thumbnail": "https://i.ytimg.com/vi/c-Y9kPNElHI/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAd65DeuajTo1IxkWowiXPXAmQQJA",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 34
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "qtEi2a3ksVE",
+      "title": "SKETCH / Yellow Street",
+      "url": "https://www.youtube.com/watch?v=qtEi2a3ksVE",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 78,
+      "description": "Here's a clip of a song of Josh's that he forgot about.",
+      "thumbnail": "https://i.ytimg.com/vi/qtEi2a3ksVE/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBvfg0nkn56DJ8Fq2Cim203UEouAQ",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 32
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "ErJyuZScYIE",
+      "title": "SKETCHES & DEMOS",
+      "url": "https://www.youtube.com/watch?v=ErJyuZScYIE",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-08-15",
+      "publishDate": "2020-08-15",
+      "duration": 9,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/ErJyuZScYIE/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCHgmTyxkdl7059Iws4SNIZYLZF6g",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 30
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "hq5nN37s2Qs",
+      "title": "The Body / ABF Bootlegs / June 21st, 2020",
+      "url": "https://www.youtube.com/watch?v=hq5nN37s2Qs",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-23",
+      "publishDate": "2020-07-23",
+      "duration": 187,
+      "description": "The Body / ABF Bootlegs / June 21st, 2020\n\nA bootlegged cover of Monte McGary's, \"The Body\" from ABF's worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/hq5nN37s2Qs/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAllh6d3xbkRUuVdf0OkwjpE2dLpg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 24
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 34
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "-qnNoZ_PiOs",
+      "title": "Every Heart / ABF Bootlegs / May 24th, 2020",
+      "url": "https://www.youtube.com/watch?v=-qnNoZ_PiOs",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-22",
+      "publishDate": "2020-07-22",
+      "duration": 278,
+      "description": "Every Heart / ABF Bootlegs / May 24th, 2020\n\nAn original song by Josh McGary, bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/-qnNoZ_PiOs/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCBqo111MZAnqsMK9OaxFUsTzCZpQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 21
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 40
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Q15CBgNXoiE",
+      "title": "For Eve / ABF Bootleg / May 10th, 2020",
+      "url": "https://www.youtube.com/watch?v=Q15CBgNXoiE",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-22",
+      "publishDate": "2020-07-22",
+      "duration": 233,
+      "description": "For Eve / ABF Bootleg / May 10th, 2020\n\nan original song by Josh McGary",
+      "thumbnail": "https://i.ytimg.com/vi/Q15CBgNXoiE/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDF-MSc5xa-1R0wc3MnpnMAYn4ZBw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 24
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 37
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "RERaBg4esVc",
+      "title": "In All Things / ABF Bootlegs / April 5th, 2020",
+      "url": "https://www.youtube.com/watch?v=RERaBg4esVc",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-22",
+      "publishDate": "2020-07-22",
+      "duration": 221,
+      "description": "In All Things / ABF Bootlegs / April 5th, 2020\n\nAn original song by Josh McGary, bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/RERaBg4esVc/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDJgOLg8Bt1LnR6igpZCL0-hsKYyA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 20
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 41
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "tXQJel0cnes",
+      "title": "Praise to our King / ABF Bootleg / April 19th, 2020",
+      "url": "https://www.youtube.com/watch?v=tXQJel0cnes",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-22",
+      "publishDate": "2020-07-22",
+      "duration": 272,
+      "description": "Praise to our King / ABF Bootleg / April 19th, 2020\n\nOriginal music by Josh McGary",
+      "thumbnail": "https://i.ytimg.com/vi/tXQJel0cnes/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDOmrqPeh0OfTGPmde9-RN4CTpBCg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 23
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 38
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "qZdpduioLz8",
+      "title": "Rest in Your Love / ABF Bootlegs / March 22nd, 2020",
+      "url": "https://www.youtube.com/watch?v=qZdpduioLz8",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-22",
+      "publishDate": "2020-07-22",
+      "duration": 249,
+      "description": "Rest in Your Love / ABF Bootlegs / March 22nd, 2020\n\nOriginal music by Josh McGary. Bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/qZdpduioLz8/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLC5D6r4RyWM1ZQjmg4uIewe2dY0ww",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 25
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 36
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "BoxpPaixd-8",
+      "title": "Rise / ABF Bootleg / March 29th, 2020",
+      "url": "https://www.youtube.com/watch?v=BoxpPaixd-8",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-22",
+      "publishDate": "2020-07-22",
+      "duration": 342,
+      "description": "Rise / ABF Bootleg / March 29th, 2020\n\nAn original song by Josh McGary",
+      "thumbnail": "https://i.ytimg.com/vi/BoxpPaixd-8/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLC8mxFCt3FOCeSBopTpY0dwWsEYfg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 22
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 39
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "o24HMxMVIfk",
+      "title": "To Our God / ABF Bootleg / April 12th, 2020",
+      "url": "https://www.youtube.com/watch?v=o24HMxMVIfk",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-22",
+      "publishDate": "2020-07-22",
+      "duration": 237,
+      "description": "To Our God / ABF Bootleg / July 19th, 2020\n\nAn original song by Josh McGary, bootlegged at an ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/o24HMxMVIfk/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDGwH5NF3j0V-aEWscEZ0KzF7Qq-Q",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 26
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 35
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "cjlzTRkWQBk",
+      "title": "22/ ABF Bootleg / May 17th, 2020",
+      "url": "https://www.youtube.com/watch?v=cjlzTRkWQBk",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-21",
+      "publishDate": "2020-07-21",
+      "duration": 333,
+      "description": "22/ ABF Bootleg / May 17th, 2020\n\nan original by Josh McGary, bootlegged at an ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/cjlzTRkWQBk/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCz0FCGEuwqlccjD8NT8klE9o6yHA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 16
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 47
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "sT5law-S-Cg",
+      "title": "All Hail the Power of Jesus Name (Redux) / ABF Bootlegs / May 17th, 2020",
+      "url": "https://www.youtube.com/watch?v=sT5law-S-Cg",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-21",
+      "publishDate": "2020-07-21",
+      "duration": 199,
+      "description": "All Hail the Power of Jesus Name (Redux) / ABF Bootlegs / May 17th, 2020\n\nAn original reworking of the Christian classic, \"All Hail the Power of Jesus' Name,\" bootlegged at the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/sT5law-S-Cg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDVBBHmKSUQ60qieBZL1b4RDLp6VA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 15
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 20
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 48
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "PSIrNQrl_tM",
+      "title": "And Can it Be (Redux) / ABF Bootlegs / May 10th, 2020",
+      "url": "https://www.youtube.com/watch?v=PSIrNQrl_tM",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-21",
+      "publishDate": "2020-07-21",
+      "duration": 266,
+      "description": "And Can it Be (Redux) / ABF Bootlegs / May 10th, 2020\n\nAn original version of the Christian classic, \"And Can it Be,\" bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/PSIrNQrl_tM/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLASNKwEAyxs3X4k79V_Ixs8gUNBrQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 14
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 19
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 49
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "gjFdaCjd3Hk",
+      "title": "Exiled / ABF Bootlegs / May 31st, 2020",
+      "url": "https://www.youtube.com/watch?v=gjFdaCjd3Hk",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-21",
+      "publishDate": "2020-07-21",
+      "duration": 207,
+      "description": "Exiled / ABF Bootlegs / May 31st, 2020\n\nAn original song by Josh McGary",
+      "thumbnail": "https://i.ytimg.com/vi/gjFdaCjd3Hk/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCqz1lTV0fSx67V_RszJIdsXNJkRw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 17
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 46
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "1ECdJWbJKII",
+      "title": "Just As I Am / ABF Bootlegs / May 24th, 2020",
+      "url": "https://www.youtube.com/watch?v=1ECdJWbJKII",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-21",
+      "publishDate": "2020-07-21",
+      "duration": 196,
+      "description": "A cover of the Christian classic hymn, \"Just as I am,\" bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/1ECdJWbJKII/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLApIVid5ckjT1Y8u5zcAUdIAbb-ag",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 22
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 44
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "BKkpW0yfcmk",
+      "title": "Rest On Me / ABF Bootlegs / June 14th, 2020",
+      "url": "https://www.youtube.com/watch?v=BKkpW0yfcmk",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-21",
+      "publishDate": "2020-07-21",
+      "duration": 356,
+      "description": "Rest On Me / ABF Bootlegs / June 14th, 2020\n\nAn original song by Josh McGary. Bootlegged at an ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/BKkpW0yfcmk/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDe0p-6PaycBRzSNXZ_EXU7IzA1Xg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 18
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 43
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "rZCDW_ibuMA",
+      "title": "Together (Oh Oh Oh) / ABF Bootlegs / May 24th, 2020",
+      "url": "https://www.youtube.com/watch?v=rZCDW_ibuMA",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-21",
+      "publishDate": "2020-07-21",
+      "duration": 227,
+      "description": "Together (Oh Oh Oh) / ABF Bootlegs / May 24th, 2020\n\nA cover of a Feast With Ravens original song, bootlegged from ABF's worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/rZCDW_ibuMA/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDcuvYxOf0eT08ncX6JiCvkM69mdg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 21
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 45
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "-BCZUwgqBRs",
+      "title": "What a Friend We Have in Jesus (Redux) / ABF Bootlegs / June 14th, 2020",
+      "url": "https://www.youtube.com/watch?v=-BCZUwgqBRs",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-21",
+      "publishDate": "2020-07-21",
+      "duration": 334,
+      "description": "What a Friend We Have in Jesus (Redux) / ABF Bootlegs / June 14th, 2020\n\nAn original version of \"What a Friend We Have in Jesus,\" bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/-BCZUwgqBRs/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBdxCsx_BJ9k0us9jeR1IGGXaj-wg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 19
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 23
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 42
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "6BHniUynI4A",
+      "title": "Be Thou My Vision (Redux) / ABF Bootlegs / March 29th, 2020",
+      "url": "https://www.youtube.com/watch?v=6BHniUynI4A",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 326,
+      "description": "Be Thou My Vision / ABF Bootlegs / March 29th, 2020\n\nAn original reworking of the Christian classic, \"Be Thou My Vision,\" from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/6BHniUynI4A/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAtiojuqVGXjT3ELNXmpLMRhop5Pg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 9
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 15
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 56
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "cxYJdyg9nmw",
+      "title": "Blessed Assurance / ABF Bootlegs / March 29th, 2020",
+      "url": "https://www.youtube.com/watch?v=cxYJdyg9nmw",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 253,
+      "description": "Blessed Assurance / ABF Bootlegs / March 29th, 2020\n\nA cover of the Christian hymn, \"Blessed Assurance,\" for the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/cxYJdyg9nmw/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBL9TMNRr7kHxTSPMrShfzlXoqyVQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 16
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 54
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "LiqA_qWawdM",
+      "title": "Great is Thy Faithfullness (Redux) / ABF Bootlegs / March 15th, 2020",
+      "url": "https://www.youtube.com/watch?v=LiqA_qWawdM",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 262,
+      "description": "Great is Thy Faithfullness (Redux) / ABF Bootlegs / March 15th, 2020\nAn original rendition of \"Great is thy Faithfullness,\" from an ABF Worship Service.",
+      "thumbnail": "https://i.ytimg.com/vi/LiqA_qWawdM/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLB395khhOGD8zmjFVVuRrmi4i9sSA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 5
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 12
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 60
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "ibh5bpcbHA8",
+      "title": "Holy Holy Holy (Redux) / ABF Bootleg / May 3rd, 2020",
+      "url": "https://www.youtube.com/watch?v=ibh5bpcbHA8",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 276,
+      "description": "Holy Holy Holy (Redux) / ABF Bootleg / May 3rd, 2020\n\nAn original reduxed version of the classic \"Holy, Holy, Holy,\" bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/ibh5bpcbHA8/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAo5Cjebcrv6NyT-jtBOmt2VjMfUw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 13
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 18
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 50
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Q8d2-RaCBVw",
+      "title": "I AM / ABF Bootleg / April 27th, 2020",
+      "url": "https://www.youtube.com/watch?v=Q8d2-RaCBVw",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 332,
+      "description": "I AM / ABF Bootleg / April 27th, 2020\n\nA Bootleg of an original song by Josh McGary during an ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/Q8d2-RaCBVw/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCQgD8mVW6BeXhAEOi_RBkB0RnTSA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 12
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 51
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "vJTHMwbhL6g",
+      "title": "It is Well With My Soul / ABF Bootleg / March 15th, 2020",
+      "url": "https://www.youtube.com/watch?v=vJTHMwbhL6g",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 167,
+      "description": "It is Well With My Soul / ABF Bootleg / March 15th, 2020\n\nA cover of the Christian classic, \"It is Well With My Soul,\" for an ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/vJTHMwbhL6g/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDomsiHPHwv981mI-RIyN0THapkKQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 13
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 59
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "_BKd7xt5iV0",
+      "title": "My Messiah / ABF Bootlegs / March 22nd, 2020",
+      "url": "https://www.youtube.com/watch?v=_BKd7xt5iV0",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 268,
+      "description": "My Messiah / ABF Bootlegs / March 22nd, 2020\n\nA rendition of Josh McGary's, \"My Messiah\" for an ABF Worship Service.",
+      "thumbnail": "https://i.ytimg.com/vi/_BKd7xt5iV0/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCBaIW0xDM2tRQVBPZVHPHHGfF_6A",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 7
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 57
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "6MrSSVexIeI",
+      "title": "Name Medley / ABF Bootlegs / April 26th, 2020",
+      "url": "https://www.youtube.com/watch?v=6MrSSVexIeI",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 321,
+      "description": "Name Medley / ABF Bootlegs / April 26th, 2020\n\nA bootleg of an original medley of \"There's Something About That Name,\" and \"Jesus Name Above All Names,\" for ABF's worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/6MrSSVexIeI/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBmPZ4xmsgYehr3Qpq4xm9krzDe_A",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 17
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 52
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "quxrR9VyAgE",
+      "title": "Stand Up / ABF Bootlegs / April 5th, 2020",
+      "url": "https://www.youtube.com/watch?v=quxrR9VyAgE",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 293,
+      "description": "Stand Up / ABF Bootlegs / April 5th, 2020\n\nA bootleg performance of Josh McGary's \"Stand Up,\" for ABF's worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/quxrR9VyAgE/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAbWZsQSnkuKJ3PtQnCvccYLe46pA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 10
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 55
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Grgto9HWN5M",
+      "title": "The Great White / ABF Bootlegs / March 15th, 2020",
+      "url": "https://www.youtube.com/watch?v=Grgto9HWN5M",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 477,
+      "description": "The Great White / ABF Bootlegs / March 15th, 2020\n\nA performance of Josh McGary's \"The Great White,\" from ABF's worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/Grgto9HWN5M/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAKv_LcJVtKEYJqNUYz2GqfombESA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 6
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 58
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Mm7PGGLt0T0",
+      "title": "With Me / ABF Bootlegs / April 5th, 2020",
+      "url": "https://www.youtube.com/watch?v=Mm7PGGLt0T0",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-15",
+      "publishDate": "2020-07-15",
+      "duration": 375,
+      "description": "With Me / ABF Bootlegs / April 5th, 2020\n\nan original piece by Josh McGary. Bootlegged from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/Mm7PGGLt0T0/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCmOrhsUjJ8kC-IwfWlDngj03jrhQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 11
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 53
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "AIsGxsEFb8U",
+      "title": "Consuming Fire / ABF Bootleg / July 12th, 2020",
+      "url": "https://www.youtube.com/watch?v=AIsGxsEFb8U",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-13",
+      "publishDate": "2020-07-13",
+      "duration": 258,
+      "description": "A bootleg of a cover of Third Day's \"Consuming Fire\" for the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/AIsGxsEFb8U/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCAIAXycxXVtUWc6T9T1uz7Ew1uAw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 10
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 62
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "oIuzYyi91aA",
+      "title": "Trust and Obey / ABF Bootleg / July 12th, 2020",
+      "url": "https://www.youtube.com/watch?v=oIuzYyi91aA",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-13",
+      "publishDate": "2020-07-13",
+      "duration": 229,
+      "description": "A bootleg of a cover of \"Trust and Obey' from the ABF worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/oIuzYyi91aA/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDS-jey7e83LUsVHvDhT8DduLoKNw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 11
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 61
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "sPL4NZ3gfKY",
+      "title": "A Mighty Fortress is Our God (Redux) / ABF Bootlegs / May 31st, 2020",
+      "url": "https://www.youtube.com/watch?v=sPL4NZ3gfKY",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-08",
+      "publishDate": "2020-07-08",
+      "duration": 322,
+      "description": "A Mighty Fortress is Our God (Redux) / ABF Bootlegs / May 31st, 2020\nA reduxed cover of \"A Mighty Fortress is our God,\" from ABF's worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/sPL4NZ3gfKY/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDhY8TnT6RaMk9XrOcL73tLI9qVbw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 4
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 9
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 63
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "wlpXd2sfP9c",
+      "title": "Amazing Grace (These Chains Are Gone) / ABF Bootleg / July 5th, 2020",
+      "url": "https://www.youtube.com/watch?v=wlpXd2sfP9c",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-08",
+      "publishDate": "2020-07-08",
+      "duration": 262,
+      "description": "Amazing Grace (These Chains Are Gone) / ABF Bootleg / July 5th, 2020\n\nA Cover of Chris Tomlin's Amazing Grace (These Chains Are Gone) for ABF's Worship Service",
+      "thumbnail": "https://i.ytimg.com/vi/wlpXd2sfP9c/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLA0d1MCu-O7MCUA0zdytGm6yB-0Bg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 7
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 66
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "pG8ZF5y4Vvo",
+      "title": "Be Still My Soul / ABF Bootlegs / July 5th, 2020",
+      "url": "https://www.youtube.com/watch?v=pG8ZF5y4Vvo",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-08",
+      "publishDate": "2020-07-08",
+      "duration": 297,
+      "description": "Be Still My Soul / ABF Bootlegs / July 5th, 2020\n\nA Cover of Be Still My Soul for ABF's Worship Service",
+      "thumbnail": "https://i.ytimg.com/vi/pG8ZF5y4Vvo/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAG5kZmxU8cdt7kFADlmp4e3fBaLw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 8
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 65
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "GjuR99ptTPo",
+      "title": "Becoming / ABF Bootleg / May 31st, 2020",
+      "url": "https://www.youtube.com/watch?v=GjuR99ptTPo",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-07-08",
+      "publishDate": "2020-07-08",
+      "duration": 474,
+      "description": "Becoming / ABF Bootleg / May 31st, 2020\nA Bootleg of Josh McGary's original song, \"Becoming,\" from ABF's worship service",
+      "thumbnail": "https://i.ytimg.com/vi/GjuR99ptTPo/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDgdGEvyl8dtDfDzCbMqk1z0idlKA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 3
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 64
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "MgOjGJas370",
+      "title": "Blessed be the Rock / ABF Bootleg / June 28th, 2020",
+      "url": "https://www.youtube.com/watch?v=MgOjGJas370",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-29",
+      "publishDate": "2020-06-29",
+      "duration": 156,
+      "description": "Blessed be the Rock / ABF Bootleg / June 28th, 2020\n\nA cover of \"Blessed be the Rock\" for ABF's worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/MgOjGJas370/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBHw-aEhUHyOdRzWo2Ef3Ud9EndAQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 5
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 68
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "icchCqOwq58",
+      "title": "Salvation Belongs To Our God / ABF Bootleg / June 28th, 2020",
+      "url": "https://www.youtube.com/watch?v=icchCqOwq58",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-29",
+      "publishDate": "2020-06-29",
+      "duration": 151,
+      "description": "Salvation Belongs To Our God / ABF Bootleg / June 28th, 2020\n\nA cover of \"Salvation Belongs to our God\" for ABF's worship service.",
+      "thumbnail": "https://i.ytimg.com/vi/icchCqOwq58/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAH9NPrkNuvEKNQUzega4QUxkQM0w",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 6
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 67
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "izsHjpF9SMo",
+      "title": "Sister /ABF Bootleg / June 21st, 2020",
+      "url": "https://www.youtube.com/watch?v=izsHjpF9SMo",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-22",
+      "publishDate": "2020-06-22",
+      "duration": 232,
+      "description": "A Bootleg of \"Sister,\" from ABF Weekly Sermon. This song was originally written and performed by Monte McGary.",
+      "thumbnail": "https://i.ytimg.com/vi/izsHjpF9SMo/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAhLyiDxZx_q_4wrKoQ_wpneOQLWw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 4
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 69
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "XlcGdM44v0Y",
+      "title": "A Song for the Peoples / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=XlcGdM44v0Y",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 307,
+      "description": "A Song for the Peoples / May 23rd, 2004\nA Bootleg of Rather than Dream's first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/XlcGdM44v0Y/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBqLzl_8DDgic0J_3BRjg6gQg4KgB&rs=AOn4CLDlAcwy_Sg6koSVyRibkb1fHXyCvw&usqp=CBU",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 79
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "oa0ypK_LBYU",
+      "title": "Back To Good / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=oa0ypK_LBYU",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 336,
+      "description": "Back to Good / May 23rd, 2004\nA Bootleg of Rather than Dream's cover of Matchbox 20's \"Back to Good\" during their first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/oa0ypK_LBYU/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDKYHlRV7ZrlvuIMtJqVcS7GUpTeA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 2
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 78
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "SCTL7nWm8n4",
+      "title": "Blue Rain / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=SCTL7nWm8n4",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 217,
+      "description": "Blue Rain / May 23rd, 2004\nA Bootleg from Rather than Dream's first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/SCTL7nWm8n4/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBqLzl_8DDgie0p_3BRjg6gQg4KgB&rs=AOn4CLCIVbGLGlC4C2NCB2IOzeFStQy3kQ&usqp=CBU",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 77
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "tW7krto5OPc",
+      "title": "Breakdown / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=tW7krto5OPc",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 284,
+      "description": "Breakdown / May 23rd, 2004\nA cover of Tom Petty's \"Breakdown\" from a bootleg of Rather than Dream's first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/tW7krto5OPc/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBA5WCDIm2qXfLYaBSFdtAQP3Kggw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 3
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 75
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "tPfRZbgzvhA",
+      "title": "Chasm / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=tPfRZbgzvhA",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 281,
+      "description": "Chasm / May 23rd, 2004\nA Bootleg from Rather than Dream's first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/tPfRZbgzvhA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBqLzl_8DDgjp05_3BRjg6gQg4KgB&rs=AOn4CLA7PR0Av23NxXH_WuHI8AdpCkhgYQ&usqp=CBU",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 76
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "UCNhmTdhc5Y",
+      "title": "If You Decide / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=UCNhmTdhc5Y",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 359,
+      "description": "If You Decide / May 23rd, 2004\nA Bootleg from Rather than Dream's first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/UCNhmTdhc5Y/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBqLzl_8DDgjX1J_3BRjg6gQg4KgB&rs=AOn4CLAVllJ5l_ZlC9kv_I1h2Wv7KUIc_Q&usqp=CBU",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 73
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "4vNTUPvVuZo",
+      "title": "Kannon Fodder / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=4vNTUPvVuZo",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 211,
+      "description": "Kannon Fodder / May 23rd, 2004\nA Bootleg from Rather than Dream's first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/4vNTUPvVuZo/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBqLzl_8DDgj_1Z_3BRjg6gQg4KgB&rs=AOn4CLA6z74hTmlCIlAZv8HOTfFqSgg7sQ&usqp=CBU",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 74
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "DRI8R3ODKKM",
+      "title": "Knightfall / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=DRI8R3ODKKM",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 261,
+      "description": "Knightfall / May 23rd, 2004\nA Bootleg from Rather than Dream's first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/DRI8R3ODKKM/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBqLzl_8DDgjO1p_3BRjg6gQg4KgB&rs=AOn4CLCTGPvstNQDAs712P0Ji1KwhNC6-A&usqp=CBU",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 72
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "0y8X1k66Bvc",
+      "title": "Lament / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=0y8X1k66Bvc",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 266,
+      "description": "Lament / May 23rd, 2004\nA Bootleg from Rather than Dream's first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/0y8X1k66Bvc/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBqLzl_8DDgjz15_3BRjg6gQg4KgB&rs=AOn4CLAK8gwA3c-_n29MDkq6AvU-IGgVQA&usqp=CBU",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 71
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "ieLZ4A3zhF8",
+      "title": "On Christ the Solid Rock (Redux) / ABF Bootlegs / June 14th, 2020",
+      "url": "https://www.youtube.com/watch?v=ieLZ4A3zhF8",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 216,
+      "description": "On Christ the Solid Rock (Redux) / ABF Bootlegs / June 14th, 2020",
+      "thumbnail": "https://i.ytimg.com/vi/ieLZ4A3zhF8/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD7LHQqkxKAvTyNpH63XvU-t7hPnQ",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 2
+        },
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "title": "Covers",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3Tbf8Ud0Vt5rcbgxgYviID7nh",
+          "position": 1
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 80
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "eUWXBb2PBg4",
+      "title": "Something Blue / May 23rd, 2004",
+      "url": "https://www.youtube.com/watch?v=eUWXBb2PBg4",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-15",
+      "publishDate": "2020-06-15",
+      "duration": 328,
+      "description": "Something Blue / May 23rd, 2004\nA Bootleg from Rather than Dream's first concert on May 23rd, 2004",
+      "thumbnail": "https://i.ytimg.com/vi/eUWXBb2PBg4/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBqLzl_8DDgjN2J_3BRjg6gQg4KgB&rs=AOn4CLAMSeKTb_U5ya89kysPt0acVazs1Q&usqp=CBU",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 70
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "m8nF9MryaHM",
+      "title": "We Stand Together / ABF Bootleg / June 7th, 2020",
+      "url": "https://www.youtube.com/watch?v=m8nF9MryaHM",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-06-14",
+      "publishDate": "2020-06-14",
+      "duration": 504,
+      "description": "We Stand Together / ABF Bootleg / June 7th, 2020",
+      "thumbnail": "https://i.ytimg.com/vi/m8nF9MryaHM/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAJLyFtEW10mPolQXNvv9bwk9N_bA",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "title": "Original Bootlegs @ ABF",
+          "url": "https://www.youtube.com/playlist?list=PL7qX0J6L3TbfRgXfDT-9dmM9c4aUU0U6u",
+          "position": 1
+        },
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 81
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "hlR3cBeRuYQ",
+      "title": "TTO Promo for Mite Nite",
+      "url": "https://www.youtube.com/watch?v=hlR3cBeRuYQ",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2020-05-11",
+      "publishDate": "2020-05-11",
+      "duration": 249,
+      "description": "A short promotional video for Mite Nite 2020",
+      "thumbnail": "https://i.ytimg.com/vi/hlR3cBeRuYQ/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDP2BmbWygbeZSoHARjwVWto5AKig",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 39
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "ydET_B-O3Ck",
+      "title": "Vanity / Mite Nite '20 Bootleg / January 25th, 2020",
+      "url": "https://www.youtube.com/watch?v=ydET_B-O3Ck",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-05-11",
+      "publishDate": "2020-05-11",
+      "duration": 305,
+      "description": "Vanity / Mite Nite '20 Bootleg / January 25th, 2020",
+      "thumbnail": "https://i.ytimg.com/vi/ydET_B-O3Ck/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBqLzl_8DDgjHmJb3BRjg6gQg4KgB&rs=AOn4CLCMcmsnp56s7Kimwj8wKkNZKbVvMQ&usqp=CBU",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 82
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "PmB-EBLv944",
+      "title": "Waiting For You / Mite Nite '20 / Bootleg / January 25th, 2020",
+      "url": "https://www.youtube.com/watch?v=PmB-EBLv944",
+      "channel": "Josh McGary",
+      "channelId": "UCTn1-GAB8omM21fAgUohygg",
+      "uploadDate": "2020-05-11",
+      "publishDate": "2020-05-11",
+      "duration": 327,
+      "description": "A Bootleg from Mite Nite 2020",
+      "thumbnail": "https://i.ytimg.com/vi/PmB-EBLv944/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDqaXuvEA3t5GjVDWgbr0yLueN8Rg",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCTn1-GAB8omM21fAgUohygg",
+          "title": "Josh McGary Music",
+          "url": "https://www.youtube.com/@joshsmusic/videos",
+          "position": 83
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "krELOmOaRLA",
+      "title": "Live at Goosehollow Pt. 1",
+      "url": "https://www.youtube.com/watch?v=krELOmOaRLA",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2019-10-08",
+      "publishDate": "2019-10-08",
+      "duration": 917,
+      "description": "A Quick weekend show at Goosehollow in Downtown in Portland.",
+      "thumbnail": "https://i.ytimg.com/vi/krELOmOaRLA/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAuem36yc6TuTtw-bWG_TFJlvRQ2g",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 16
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 40
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "pGdh1I0f3Jk",
+      "title": "BOOTLEG / Disturbed",
+      "url": "https://www.youtube.com/watch?v=pGdh1I0f3Jk",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2019-06-18",
+      "publishDate": "2019-06-18",
+      "duration": 297,
+      "description": "A bootlegged version of Disturbed, from Zion Lutheran's Summer Concert Series in Downtown PDX.",
+      "thumbnail": "https://i.ytimg.com/vi/pGdh1I0f3Jk/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD8Y52kpxOJi3TcOafiFCuCPEOfxw",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 15
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 41
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "AtH4BJlZ294",
+      "title": "ABF Christmas Service 2018",
+      "url": "https://www.youtube.com/watch?v=AtH4BJlZ294",
+      "channel": "ABFPDX",
+      "channelId": "UCfh6OUkawb9q80tilub243w",
+      "uploadDate": "2018-12-25",
+      "publishDate": "2018-12-25",
+      "duration": 212,
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/AtH4BJlZ294/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLABjmTj_Ena3eBWjLh0Xgfp23RdAg",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 14
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "rG1bgtXRNWU",
+      "title": "\"Disturbed\" by The Theory Of",
+      "url": "https://www.youtube.com/watch?v=rG1bgtXRNWU",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2018-02-24",
+      "publishDate": "2018-02-24",
+      "duration": 182,
+      "description": "Check out TTO's newest single \"Disturbed\".\n\nMake sure to follow us on Facebook, Instagram, and Spotify!",
+      "thumbnail": "https://i.ytimg.com/vi/rG1bgtXRNWU/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAtBvnuiLVlNHAK3DRaJOUHPZ3z3w",
+      "sources": [
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 42
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    },
+    {
+      "videoId": "Pj-GujPXlD0",
+      "title": "Repeat Offender (Outdoor School Demo)",
+      "url": "https://www.youtube.com/watch?v=Pj-GujPXlD0",
+      "channel": "The Theory Of",
+      "channelId": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+      "uploadDate": "2017-05-22",
+      "publishDate": "2017-05-22",
+      "duration": 191,
+      "description": "We wrote a song while being counselors at outdoor school!",
+      "thumbnail": "https://i.ytimg.com/vi/Pj-GujPXlD0/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBqMksphAb8fjoYq5CyL8OBcBS17w",
+      "sources": [
+        {
+          "kind": "playlist",
+          "id": "PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "title": "Concerts & Shows",
+          "url": "https://www.youtube.com/playlist?list=PLeuMZ_qr2zVSRbo4G3zb6zGC67lTW2ZmY",
+          "position": 13
+        },
+        {
+          "kind": "channel",
+          "id": "UCWqt5eQIvqfhOIJ64P9m-tQ",
+          "title": "The Theory Of",
+          "url": "https://www.youtube.com/@thetheoryof/videos",
+          "position": 43
+        }
+      ],
+      "humanApproval": null,
+      "publicationStatus": "approved",
+      "reviewReasons": [],
+      "firstSeenAt": "2026-11-03T06:12:28.382Z",
+      "lastSeenAt": "2026-11-03T06:16:33.951Z"
+    }
+  ]
+}

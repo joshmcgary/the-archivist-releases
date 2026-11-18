@@ -1,0 +1,82 @@
+{
+  "schema": "joshmcgary.being-human-overview-supplement",
+  "schemaVersion": 1,
+  "source": "https://docs.google.com/spreadsheets/d/1bx9z-UBw3Zz9TOgRZ6EmYMl9HAj2W-XrJ27XySbKRLQ/edit",
+  "records": [
+    {
+      "kind": "Video",
+      "database": "Being Human",
+      "videoId": "xAdLYStN35I",
+      "title": "1.1.6 | Why Human logic needs divine mystery",
+      "uploadDate": "2026-10-27",
+      "duration": "1:17",
+      "source": "https://www.youtube.com/watch?v=xAdLYStN35I",
+      "arc": "Being Human",
+      "tags": ["Being Human", "Classroom", "Derivative overview"],
+      "summary": "Derivative overview of Being Human lesson 1.1.6; not independent teacher evidence.",
+      "contentRole": "derivative-overview",
+      "evidenceStatus": "not-independent-teacher-evidence",
+      "productionStatus": "Published — YouTube"
+    },
+    {
+      "kind": "Video",
+      "database": "Being Human",
+      "videoId": "q-jeUSaDSC8",
+      "title": "1.1.5 | The Trinity in Truth",
+      "uploadDate": "2026-10-20",
+      "duration": "1:08",
+      "source": "https://www.youtube.com/watch?v=q-jeUSaDSC8",
+      "arc": "Being Human",
+      "tags": ["Being Human", "Classroom", "Derivative overview"],
+      "summary": "Derivative overview of Being Human lesson 1.1.5; not independent teacher evidence.",
+      "contentRole": "derivative-overview",
+      "evidenceStatus": "not-independent-teacher-evidence",
+      "productionStatus": "Published — YouTube"
+    },
+    {
+      "kind": "Video",
+      "database": "Being Human",
+      "videoId": "2PLwEepJjrM",
+      "title": "1.1.4 | Reality to Revelation",
+      "uploadDate": "2026-10-13",
+      "duration": "1:16",
+      "source": "https://www.youtube.com/watch?v=2PLwEepJjrM",
+      "arc": "Being Human",
+      "tags": ["Being Human", "Classroom", "Derivative overview"],
+      "summary": "Derivative overview of Being Human lesson 1.1.4; not independent teacher evidence.",
+      "contentRole": "derivative-overview",
+      "evidenceStatus": "not-independent-teacher-evidence",
+      "productionStatus": "Published — YouTube"
+    },
+    {
+      "kind": "Video",
+      "database": "Being Human",
+      "videoId": "YcWXMog3kQo",
+      "title": "1.1.3 | The Elephant Analogy and logic",
+      "uploadDate": "2026-10-06",
+      "duration": "1:11",
+      "source": "https://www.youtube.com/watch?v=YcWXMog3kQo",
+      "arc": "Being Human",
+      "tags": ["Being Human", "Classroom", "Derivative overview"],
+      "summary": "Derivative overview of Being Human lesson 1.1.3; not independent teacher evidence.",
+      "contentRole": "derivative-overview",
+      "evidenceStatus": "not-independent-teacher-evidence",
+      "productionStatus": "Published — YouTube"
+    },
+    {
+      "kind": "Video",
+      "database": "Being Human",
+      "videoId": "IippLqAZKhU",
+      "title": "1:1:1 | The Divine Blueprint Behind Human Cognition",
+      "uploadDate": "2026-09-14",
+      "duration": "1:09",
+      "source": "https://www.youtube.com/watch?v=IippLqAZKhU",
+      "arc": "Being Human",
+      "tags": ["Being Human", "Classroom", "Derivative overview"],
+      "summary": "Google Notebook breakdown of Being Human lesson 1.1.1; derivative overview, not independent teacher evidence.",
+      "contentRole": "derivative-overview",
+      "evidenceStatus": "not-independent-teacher-evidence",
+      "productionStatus": "Published — YouTube"
+    }
+  ]
+}

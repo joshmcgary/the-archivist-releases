@@ -1,3 +1,15 @@
+import { homeArtSelection, publicShardUrl } from './home-art.js';
+import { attachCardPreview } from './card-previews.js';
+import { mountTitleChroma } from './title-chroma.js';
+let titleChromaController;
+import { attachWordPressTags, explicitArtTagMatch } from './art-tags.js';
+import { applyArtImageCorrection, artBrowseWorks } from './art-display.js';
+let artDisplayRepairs = null;
+import { wordpressArtDefinitions } from './wordpress-categories.js';
+let wordpressCategoryFeed = null;
+let wordpressCategoryError = '';
+import { mountPortraitGallery } from './portrait-gallery.js';
+let portraitGalleryController;
 const DB_NAME = 'the-curator';
 const STORE = 'gallery';
 // Do not hydrate the pre-G7 monolithic gallery: it may contain full PDFs and
@@ -13,7 +25,7 @@ const DROPBOX_MANIFEST_PATH = '/The_Docent/manifest.json';
 const DOCENT_MANIFEST = 'docent-manifest';
 const DOCENT_SHARD_PREFIX = 'docent-shard:';
 const PUBLIC_CORPUS_ENDPOINT = '/api/docent';
-const DOCENT_BUILD = 'ARCHIVE-88';
+const INDEPENDENT_VIDEO_FEED = './video-feed.json';
 const PUBLIC_SITE_URLS = {
   home: 'https://joshmcgary.com/',
   Images: 'https://art.joshmcgary.com/',
@@ -45,6 +57,8 @@ let activePublicAge = 'All';
 let activeSubject = 'All';
 let activeYear = 'All';
 let activePublicCollection = '';
+let publicBrowseMode = 'type';
+let expandedBrowseGroups = new Set();
 let detailSide = 'image';
 let artMenuOpen = false;
 let galleryScrollY = 0;
@@ -107,11 +121,40 @@ updateVisualViewport();
 const validPackage = value => Boolean(value && ['the-archivist.docent-gallery', 'the-archivist.curator-gallery', 'the-archivist.gallery'].includes(value.schema) && value.schemaVersion === 1 && Array.isArray(value.works));
 const validManifest = value => Boolean(value?.schema === 'the-archivist.docent-manifest' && value.schemaVersion === 1 && Array.isArray(value.shards));
 const validShard = value => Boolean(value?.schema === 'the-archivist.docent-shard' && value.schemaVersion === 1 && Array.isArray(value.works));
+const validIndependentVideoFeed = value => Boolean(value?.schema === 'joshmcgary.independent-video-feed' && value.schemaVersion === 1 && Array.isArray(value.works));
 const publicShardCache = new Map();
 const hasMediaFamily = (work, families) => [work.type, work.medium].some(value => families.includes(String(value || '').toLowerCase()));
 const isImageWork = work => hasMediaFamily(work, ['drawing', 'image', 'photography', 'painting', 'illustration', 'sculpture']);
-const isMusicWork = work => hasMediaFamily(work, ['music', 'audio', 'song', 'sound', 'album', 'recording']) || String(work.mimeType || '').startsWith('audio/');
+const isMusicVideoWork = work => work.independentVideo?.origin === 'music-public-youtube-database' || (work.tags || []).some(tag => String(tag).toLowerCase() === 'music-related');
+const isMusicWork = work => hasMediaFamily(work, ['music', 'audio', 'song', 'sound', 'album', 'recording']) || String(work.mimeType || '').startsWith('audio/') || isMusicVideoWork(work);
 const isVideoWork = work => hasMediaFamily(work, ['video', 'film', 'animation', 'motion']) || String(work.mimeType || '').startsWith('video/');
+const withIndependentVideos = (catalogue, feed) => ({
+  ...catalogue,
+  works: [...(catalogue.works || []).filter(work => !isVideoWork(work)), ...feed.works.filter(isVideoWork)],
+  independentVideoFeed: { publishedAt: feed.publishedAt, stats: feed.stats }
+});
+// Official release tracks are audio records, not inferred music videos.
+const withOfficialAudio = (catalogue, database) => {
+  if (database?.schemaVersion !== 1 || !Array.isArray(database.releases) || !database.releases.length) throw new Error('Official audio catalogue is incomplete.');
+  const tracks = new Map();
+  for (const release of database.releases) for (const track of release.tracks || []) {
+    if (!/^[\w-]{11}$/.test(track.videoId || '') || tracks.has(track.videoId)) continue;
+    const artist = release.channel === '@thetheoryof' ? 'The Theory Of' : release.channel === '@joshsmusic' ? 'Josh McGary Music' : release.channel;
+    tracks.set(track.videoId, {
+      id: `audio-youtube-${track.videoId}`, title: track.title, type: 'Music', medium: 'Audio Recording',
+      sourceIdentity: artist, projects: [artist], collections: [release.title],
+      date: track.declaredReleaseDate || '',
+      externalUrl: `https://www.youtube.com/watch?v=${track.videoId}`,
+      image: `https://img.youtube.com/vi/${track.videoId}/hqdefault.jpg`,
+      description: `${artist} · ${release.title}. Official YouTube release track. ${track.mediaProvenance || 'Per-track description not verified.'} ${track.declaredReleaseDate ? 'Date is source-declared for this track.' : 'Original track release date not verified.'}`,
+      officialAudio: { videoId: track.videoId, playlistUrl: release.playlistUrl, channel: release.channel, observedAt: database.observedAt, declaredReleaseDate: track.declaredReleaseDate || null, releaseDeclaredDate: release.declaredReleaseDate || null, descriptionChecked: Boolean(track.descriptionChecked), mediaProvenance: track.mediaProvenance || '' }
+    });
+  }
+  if (!tracks.size) throw new Error('Official audio catalogue contains no valid tracks.');
+  // Deduplicate by source identity, never by title (different performances matter).
+  const existingIds = new Set(catalogue.works.map(youtubeVideoId).filter(Boolean));
+  return { ...catalogue, works: [...catalogue.works, ...[...tracks.values()].filter(work => !existingIds.has(work.officialAudio.videoId))] };
+};
 const isArtWork = work => isImageWork(work) || ['visual', 'digital art', 'graphic design', 'panel art', 'comic', 'software'].includes(String(work.type || work.medium || '').toLowerCase());
 const isVisualWork = work => isArtWork(work) || isVideoWork(work);
 const isPoetryWork = work => ['poetry', 'poem'].includes(String(work.type || work.medium || '').toLowerCase());
@@ -151,6 +194,10 @@ const publicSearchText = work => {
   return text;
 };
 const matchesPublicSearch = (work, query) => {
+  if (activeType === 'Images') {
+    const tagMatch = explicitArtTagMatch(work, query);
+    if (tagMatch !== null) return tagMatch;
+  }
   const terms = String(query || '').toLocaleLowerCase().replace(/[-_./]+/g, ' ').trim().split(/\s+/).filter(Boolean);
   if (!terms.length) return true;
   const haystack = publicSearchText(work);
@@ -253,7 +300,7 @@ const sourceLaunchUrl = work => {
 const sourceLaunchLabel = work => /(?:youtube\.com|youtu\.be)/i.test(workExternalUrl(work)) ? 'Open in YouTube' : 'Open source';
 const youtubeVideoId = work => String(workExternalUrl(work)).match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?/\s]{11})/i)?.[1] || '';
 const workCardVisual = (work, { eager = false } = {}) => {
-  const source = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
+  const source = work._cardPreview || work.image || (String(work.media?.mimeType || '').startsWith('image/') ? workMediaSource(work) : '');
   const imageLoading = eager ? 'eager' : 'lazy';
   const isPdf = work.media?.mimeType === 'application/pdf' || work.mimeType === 'application/pdf';
   if (isPdf && source) return `<img src="${source}" alt="Cover of ${escapeHtml(work.title)}" loading="${imageLoading}">`;
@@ -276,7 +323,7 @@ const workDetailFront = work => {
   const youtubeId = youtubeVideoId(work);
   if (work.media?.mimeType === 'application/pdf' && media) return `<div class="pdf-reader" data-pdf-reader><div class="pdf-reader-toolbar"><span data-pdf-status>Preparing PDF…</span><button data-open-pdf>Open in PDF app ↗</button></div><div class="pdf-pages" data-pdf-pages></div></div>`;
   if (isVideoWork(work) && media) return `<video src="${media}" controls playsinline ${work.image ? `poster="${work.image}"` : ''}></video>`;
-  if (isVideoWork(work) && youtubeId) return `<iframe class="youtube-player" src="https://www.youtube-nocookie.com/embed/${youtubeId}?playsinline=1" title="${escapeHtml(work.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+  if ((isVideoWork(work) || isMusicWork(work)) && youtubeId) return `<iframe class="youtube-player" src="https://www.youtube-nocookie.com/embed/${youtubeId}?playsinline=1" title="${escapeHtml(work.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
   if (isMusicWork(work) && media) return `<div class="audio-front">${work.image ? `<img src="${work.image}" alt="${escapeHtml(work.title)}">` : '<span class="audio-mark">♪</span>'}<h2>${escapeHtml(work.title)}</h2><audio src="${media}" controls></audio></div>`;
   const image = work.image || (String(work.media?.mimeType || '').startsWith('image/') ? media : '');
   const hasProseFront = Boolean(work.text) && isWritingWork(work) && !isVideoWork(work);
@@ -285,7 +332,7 @@ const workDetailFront = work => {
   }
   if (image) return `<img src="${image}" alt="${escapeHtml(work.title)}">`;
   if (isPoetryWork(work) && work.text) return `<div class="text-front poetry-front"><p class="eyebrow">Poetry</p><h2>${escapeHtml(work.title)}</h2><p>Turn the card over to read the transcription.</p></div>`;
-  return `<div class="text-front"><p class="eyebrow">${escapeHtml(work.type || work.medium || 'Archive work')}</p><h2>${escapeHtml(work.title)}</h2><p>${escapeHtml(work.text || work.description || 'Turn the card over for its Archivist record.')}</p></div>`;
+  return `<div class="text-front"><p class="eyebrow">${escapeHtml(work.type || work.medium || 'Archive work')}</p><h2>${escapeHtml(work.title)}</h2><p>${escapeHtml(work.text || work.description || 'Turn the card over for details.')}</p></div>`;
 };
 
 const dataUrlBytes = source => {
@@ -379,8 +426,9 @@ const hydratePdfCardCovers = async () => {
 
 const currentCollectionWorks = () => {
   const query = searchQuery.trim().toLowerCase();
-  return (gallery?.works || []).filter(work => {
+  return (activeType === 'Images' ? artBrowseWorks(gallery?.works || [], artDisplayRepairs) : (gallery?.works || [])).filter(work => {
     if (!matchesCategory(work, activeType)) return false;
+    if (activeType === 'Music' && !workMediaSource(work) && !workExternalUrl(work)) return false;
     if (activeProject !== 'All' && !work.projects?.includes(activeProject)) return false;
     if (activeTag !== 'All' && !work.tags?.includes(activeTag)) return false;
     if (activeSubject !== 'All' && !workSubjects(work).includes(activeSubject)) return false;
@@ -649,7 +697,7 @@ const fitHomeQuotes = () => {
   });
 };
 window.addEventListener('resize', () => requestAnimationFrame(fitHomeQuotes));
-const epigraphMarkup = quote => `<button type="button" class="epigraph-link" data-quote-work="${escapeHtml(quote.work?.id || '')}" aria-label="Open ${escapeHtml(quote.work?.title || 'source work')}"><blockquote>“${escapeHtml(quote.text || quote.quote)}”</blockquote><figcaption><span></span>${escapeHtml(quote.attribution || gallery.profile?.name || 'The Artist')}<em>From ${escapeHtml(quote.work?.title || 'Untitled')}</em><small>The Archivist quote book</small></figcaption></button>`;
+const epigraphMarkup = quote => `<button type="button" class="epigraph-link" data-quote-work="${escapeHtml(quote.work?.id || '')}" aria-label="Open ${escapeHtml(quote.work?.title || 'source work')}"><blockquote>“${escapeHtml(quote.text || quote.quote)}”</blockquote><figcaption><span></span>${escapeHtml(quote.attribution || gallery.profile?.name || 'The Artist')}<em>From ${escapeHtml(quote.work?.title || 'Untitled')}</em></figcaption></button>`;
 const shuffledQuotes = quotes => {
   const shuffled = [...quotes];
   for (let index = shuffled.length - 1; index > 0; index -= 1) {
@@ -659,12 +707,26 @@ const shuffledQuotes = quotes => {
   if (shuffled.length > 1 && String(shuffled[0]?.text || shuffled[0]?.quote) === lastQuoteText) shuffled.push(shuffled.shift());
   return shuffled;
 };
+const workCardType = work => work.independentVideo?.contentRole === 'derivative-overview'
+  ? 'Derivative overview · Video'
+  : (work.medium || work.type || 'Archive work');
 
-const homeShelfCard = (work, index, variant = '') => `<button class="home-shelf-card ${variant === 'rated' ? 'is-rated-card' : ''} ${workExternalUrl(work) ? 'is-linked-work' : ''} ${youtubeVideoId(work) ? 'has-hover-video' : ''}" data-work="${escapeHtml(work.id)}" ${youtubeVideoId(work) ? `data-hover-video="${escapeHtml(youtubeVideoId(work))}"` : ''} style="--delay:${index * 28}ms">
-  ${variant === 'rated' ? `<span class="home-score" aria-hidden="true">${escapeHtml(workGrade(work))}</span>` : ''}
-  <span class="home-shelf-art">${workCardVisual(work)}${variant === 'rated' ? `<span class="home-type-ribbon">${escapeHtml(work.medium || work.type || 'Artwork')}</span>` : ''}</span>
-  <span class="home-shelf-copy"><strong>${escapeHtml(work.title)}</strong><em>${escapeHtml(work.medium || work.type || 'Archive work')}</em></span>
-</button>`;
+const homeShelfCard = (work, index, variant = '') => variant === 'sampler' ? `<article class="home-shelf-card is-sampler-card ${workExternalUrl(work) ? 'is-linked-work' : ''}" style="--delay:${index * 28}ms">
+  <a class="sampler-gallery-open" href="${escapeHtml(publicCollectionHref(`style:${work.samplerKey}`))}" data-public-collection="style:${escapeHtml(work.samplerKey)}" aria-label="Open the ${escapeHtml(work.samplerLabel)} gallery">
+    <span class="home-shelf-art">${workCardVisual(work)}</span>
+    <span class="home-shelf-copy"><strong>${escapeHtml(work.title)}</strong><em>${escapeHtml(work.samplerLabel)} · View gallery →</em></span>
+  </a>
+  <button class="sampler-work-open" data-work="${escapeHtml(work.id)}" aria-label="Open featured video ${escapeHtml(work.title)}">Open featured video ↗</button>
+</article>` : `<article class="home-shelf-card is-flippable-card ${variant === 'rated' ? 'is-rated-card' : ''} ${workExternalUrl(work) ? 'is-linked-work' : ''} ${youtubeVideoId(work) ? 'has-hover-video' : ''}" data-card-work="${escapeHtml(work.id)}" ${youtubeVideoId(work) ? `data-hover-video="${escapeHtml(youtubeVideoId(work))}"` : ''} style="--delay:${Math.min(index, 10) * 28}ms">
+  <span class="card-loading" role="status" aria-label="Loading card"><span class="card-spinner" aria-hidden="true"></span></span>
+  <button class="home-shelf-open" data-work="${escapeHtml(work.id)}" aria-label="Open ${escapeHtml(work.title)}">
+    ${variant === 'rated' ? `<span class="home-score" aria-hidden="true">${escapeHtml(workGrade(work))}</span>` : ''}
+    <span class="home-shelf-art">${workCardVisual(work)}</span>
+    <span class="home-shelf-copy"><strong>${escapeHtml(work.title)}</strong><em>${escapeHtml(workCardType(work))}${activeType === 'Images' && /^\d{4}/.test(work.date || '') ? ` · ${escapeHtml(work.date.slice(0,4))}` : ''}</em></span>
+  </button>
+  ${activeType === 'Images' ? '' : `<div class="home-shelf-back" hidden><strong>${escapeHtml(work.title)}</strong><p>${escapeHtml((work.description || work.text || work.medium || 'View the full card for details.').slice(0, 300))}</p><button data-work="${escapeHtml(work.id)}">Open full card ↗</button></div>
+  <button class="home-shelf-flip" data-card-flip aria-label="Turn over ${escapeHtml(work.title)}" aria-pressed="false">↻</button>`}
+</article>`;
 const publicCollectionHref = key => {
   const parameters = new URLSearchParams(location.search);
   parameters.set('section', activeType);
@@ -683,6 +745,9 @@ const publicEntranceCard = ({ value, kicker, title, description, count, accent, 
 </a>`;
 
 const renderHome = works => {
+  titleChromaController?.destroy();
+  portraitGalleryController?.destroy();
+  portraitGalleryController = null;
   homePortalTimers.forEach(clearTimeout);
   homePortalTimers = [];
   const updateTime = work => Date.parse(work.addedAt || '') || 0;
@@ -710,6 +775,26 @@ const renderHome = works => {
     ...(work.scripture || []), ...(work.doctrine || []), ...(work.joshSpeak || [])
   ].join(' ').toLowerCase().includes(normalizedQuery)) : [];
   const artWorks = works.filter(isArtWork);
+  // Preserve Josh’s pinned selections, plus automatically include the latest week of art.
+  const homeArtIds = [
+    'adef33a6-32a9-4d67-a3fb-61565233c9d6', // FORWARD
+    'd7fd974b-138a-40f3-b354-7c5b9415afd8', // roadhouse poster
+    '763d2268-6dbc-4220-bdf7-3ecc93a39689', // SONSHIP
+    '6d05068a-3d2a-49c6-91dd-34670a375663', // IMPATIENCE
+    '90c6a9ea-4b34-47e4-96b2-d0462bfce5a5', // MAGICALLY THEY'RE VICIOUS
+    'url-1787208534728', // The Lost Boys
+    'bec7a855-8075-4bd7-99f0-c656360f9c87', // JETLAG
+    '269a6672-76a3-4964-8d24-25d886d7848b', // sleepy
+    '10a3a40a-c473-47a0-b250-5955a43c009d' // toy josh
+  ];
+  const homeArtWorks = homeArtSelection(artWorks, homeArtIds);
+  const homeThoughtQuoteIds = ['x4sx838z1:quote:3', 'x4sx838z1:quote:6', 'db0c9650-c650-4fb1-87c0-df2a697531e5:quote:0'];
+  const homeAudioLoops = [
+    // Josh-selected videos; muted previews from 00:20–00:35. Originals remain in the Audio archive.
+    { kind: 'video', source: './assets/video-loops/audio-_SoiaEFT8h4.mp4', poster: '' }, // Imposter — The Theory Of
+    { kind: 'video', source: './assets/video-loops/audio-uN9PtjTWdbc.mp4', poster: '' } // Homeward Bound 2.4.22 — The Theory Of
+  ];
+
   const videoWorks = works.filter(isVideoWork);
   const featuredVideoWorks = videoWorks.filter(work => {
     if (!youtubeVideoId(work)) return false;
@@ -723,14 +808,15 @@ const renderHome = works => {
   const thoughtWorks = works.filter(work => isWritingWork(work) || isTheologyWork(work) || isPoetryWork(work));
   const audioWorks = works.filter(isMusicWork);
   const playlistImages = playlistWorks => [...new Set(playlistWorks.map(work => {
+    if (work._cardPreview) return work._cardPreview;
     if (work.image) return work.image;
     if (String(work.media?.mimeType || '').startsWith('image/')) return workMediaSource(work);
     const youtubeId = youtubeVideoId(work);
     return youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : '';
-  }).filter(Boolean))].slice(0, 16);
+  }).filter(Boolean))];
   const homeVideoLoops = [300, 301, 303, 304, 305, 308]
     .map(number => ({ kind: 'video', source: `./assets/video-loops/makeba-${number}.mp4`, poster: '' }));
-  const thoughtWords = publicQuotes.map(quote => {
+  const thoughtWords = homeThoughtQuoteIds.map(id => publicQuotes.find(quote => quote.id === id)).filter(Boolean).map(quote => {
     const words = String(quote.text || quote.quote || '').replace(/\s+/g, ' ').trim();
     return words ? {
       title: quote.work?.title || 'Quote Book',
@@ -738,10 +824,10 @@ const renderHome = works => {
     } : null;
   }).filter(Boolean).slice(0, 16);
   const entrances = [
-    { value: 'Images', kicker: 'Drawing · painting · design · software', title: 'Art', description: 'Sketches, panels, design, objects, and visual systems.', count: artWorks.length, accent: 'art', marks: '◒', slides: playlistImages(artWorks) },
-    { value: 'Thoughts', kicker: 'Writing · transcripts · poetry', title: 'Thoughts', description: 'Ideas, arguments, stories, teachings, and language across time.', count: thoughtWorks.length, accent: 'thoughts', marks: 'Aa', wordSlides: thoughtWords },
+    { value: 'Images', kicker: 'Drawing · painting · design · software', title: 'Art', description: 'Sketches, panels, design, objects, and visual systems.', count: artWorks.length, accent: 'art', marks: '◒', slides: playlistImages(homeArtWorks) },
     { value: 'Video', kicker: 'MAKE BA · sermons', title: 'Video', description: 'MAKE BA and sermon video selections.', count: videoWorks.length, accent: 'video', marks: '▶', videoSlides: homeVideoLoops },
-    { value: 'Music', kicker: 'Music · voice · sound', title: 'Audio', description: 'Songs, performances, recordings, and experiments in sound.', count: audioWorks.length, accent: 'audio', marks: '∿', slides: playlistImages(audioWorks) }
+    { value: 'Music', kicker: 'Music · voice · sound', title: 'Audio', description: 'Songs, performances, recordings, and experiments in sound.', count: audioWorks.length, accent: 'audio', marks: '∿', videoSlides: homeAudioLoops },
+    { value: 'Thoughts', kicker: 'Writing · transcripts · poetry', title: 'Thoughts', description: 'Ideas, arguments, stories, teachings, and language across time.', count: thoughtWorks.length, accent: 'thoughts', marks: 'Aa', wordSlides: thoughtWords }
   ];
   const portalSlideMarkup = entrance => entrance.wordSlides?.length
     ? entrance.wordSlides.map((slide, index) => `<span class="portal-slide portal-word-slide ${index === 0 ? 'is-active' : ''}"><q>${quoteLetterMarkup(slide.words)}</q><small>— ${escapeHtml(slide.title.toUpperCase())}</small></span>`).join('')
@@ -749,7 +835,7 @@ const renderHome = works => {
       ? entrance.videoSlides.map((slide, index) => slide.kind === 'youtube'
         ? `<span class="portal-slide portal-video-slide ${index === 0 ? 'is-active' : ''}" data-video-kind="youtube" data-video-src="${escapeHtml(slide.source)}"${slide.poster ? ` style="--video-poster:url('${escapeHtml(slide.poster)}')"` : ''}><iframe title="" tabindex="-1" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe></span>`
         : slide.kind === 'video'
-          ? `<span class="portal-slide portal-video-slide ${index === 0 ? 'is-active' : ''}" data-video-kind="video"><video src="${escapeHtml(slide.source)}" ${slide.poster ? `poster="${escapeHtml(slide.poster)}"` : ''} muted loop playsinline preload="auto"></video></span>`
+          ? `<span class="portal-slide portal-video-slide ${index === 0 ? 'is-active' : ''}" data-video-kind="video"><video src="${escapeHtml(slide.source)}" ${slide.poster ? `poster="${escapeHtml(slide.poster)}"` : ''} muted loop playsinline preload="none"></video></span>`
           : `<img class="portal-slide ${index === 0 ? 'is-active' : ''}" src="${escapeHtml(slide.source)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">`).join('')
       : (entrance.slides || []).map((source, index) => `<img class="portal-slide ${index === 0 ? 'is-active' : ''}" src="${escapeHtml(source)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">`).join('');
   const initialPortal = entrances[Math.floor(Math.random() * entrances.length)]?.accent || 'art';
@@ -762,163 +848,60 @@ const renderHome = works => {
     ['Video', works.filter(isVideoWork)],
     ['Writing', works.filter(work => !isPoetryWork(work) && (['writing', 'prose', 'essay', 'story', 'document'].includes(String(work.type || work.medium || '').toLowerCase()) || work.media?.mimeType === 'application/pdf' || work.mimeType === 'application/pdf'))]
   ].filter(([, shelfWorks]) => shelfWorks.length);
-  app.innerHTML = `<div class="shell home-shell simple-public-home">
-    ${renderTopbar()}
-    <main>
-      <img class="home-self-portrait" data-home-portrait="self" src="./assets/josh-self-portrait.png" alt="Self-portrait of Josh McGary seated with a sketchbook">
-      <section class="home-hover-gallery" aria-live="polite">
-        ${entrances.map(entrance => `<div class="home-hover-gallery-panel public-entrance-slideshow ${entrance.wordSlides?.length ? 'is-words' : ''} ${entrance.videoSlides?.length ? 'is-video' : ''}" data-home-panel="${escapeHtml(entrance.accent)}" aria-hidden="true">${portalSlideMarkup(entrance)}</div>`).join('')}
-      </section>
-      <section class="home-portal-stage" aria-live="polite">
-        ${entrances.map(entrance => `<a href="${PUBLIC_SITE_URLS[entrance.value]}" class="home-portal-panel" data-home-panel-trigger="${escapeHtml(entrance.accent)}" aria-label="Open ${escapeHtml(entrance.title)}"><strong class="home-portal-icon" aria-hidden="true">${escapeHtml(entrance.title)}</strong></a>`).join('')}
+  app.innerHTML = `<div class="shell home-shell simple-public-home slanted-public-home">
+    <header class="archive-header"><a class="archive-wordmark home-mockup-wordmark" href="${PUBLIC_SITE_URLS.home}" aria-label="Josh McGary dot com — return home"><strong><span class="home-name-josh">JOSH</span><span class="home-name-mcgary">McGARY<small>.COM</small></span></strong></a></header>
+    <main class="slanted-home-main">
+      <section class="slanted-portals" aria-label="Explore Josh's work">
+        ${entrances.map(entrance => `<a href="${PUBLIC_SITE_URLS[entrance.value]}" class="slanted-portal" aria-label="Open ${escapeHtml(entrance.title)}">
+          <span class="slanted-portal-frame"><span class="slanted-portal-content public-entrance-slideshow ${entrance.wordSlides?.length ? 'is-words' : ''}" data-home-panel="${escapeHtml(entrance.accent)}" aria-hidden="true">${portalSlideMarkup(entrance)}</span></span>
+          <strong class="slanted-portal-label">${escapeHtml(entrance.title)}</strong>
+        </a>`).join('')}
       </section>
     </main>
   </div>`;
   bindActions();
-  requestAnimationFrame(() => requestAnimationFrame(fitHomeQuotes));
-  const portrait = document.querySelector('.home-self-portrait');
-  const portraitSources = [
-    './assets/josh-self-portrait.png',
-    './assets/josh-self-portrait-thoughts.png',
-    './assets/josh-self-portrait-art.png',
-    './assets/josh-self-portrait-video.png',
-    './assets/josh-self-portrait-audio.png'
-  ];
-  const setPortalVideoPlayback = (slide, playing, unload = false) => {
-    if (!slide?.classList.contains('portal-video-slide')) return;
-    const frame = slide.querySelector('iframe');
-    const video = slide.querySelector('video');
-    if (frame) {
-      const sendYouTubeCommand = command => frame.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: command, args: [] }), '*');
-      const startYouTube = () => {
-        sendYouTubeCommand('mute');
-        sendYouTubeCommand('playVideo');
-      };
-      if (playing) {
-        if (!frame.getAttribute('src')) {
-          frame.addEventListener('load', () => {
-            startYouTube();
-            setTimeout(startYouTube, 350);
-            setTimeout(startYouTube, 900);
-          }, { once: true });
-          frame.src = slide.dataset.videoSrc;
-        } else {
-          startYouTube();
-          setTimeout(startYouTube, 250);
-          setTimeout(startYouTube, 700);
-        }
-      } else if (frame.getAttribute('src')) {
-        sendYouTubeCommand(unload ? 'stopVideo' : 'pauseVideo');
-        if (unload) frame.removeAttribute('src');
-      }
-    }
-    if (video) {
-      video.muted = true;
-      if (playing) {
-        if (video.ended) video.currentTime = 0;
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-        if (unload) video.currentTime = 0;
-      }
-    }
+  titleChromaController = mountTitleChroma(document.querySelector('.home-mockup-wordmark'));
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rotationPaused = reducedMotion;
+  const syncMotion = () => {
+    portraitGalleryController?.update();
+    document.querySelectorAll('.slanted-portal video').forEach(video => {
+      if (!rotationPaused && video.closest('.portal-slide').classList.contains('is-active')) video.play().catch(() => {});
+      else video.pause();
+    });
   };
-  document.querySelectorAll('[data-home-panel="video"] video').forEach(video => {
-    video.muted = true;
-    video.load();
-  });
-  document.querySelectorAll('.public-entrance-slideshow').forEach((slideshow, index) => {
-    const images = [...slideshow.querySelectorAll('.portal-slide')];
-    if (images.length < 2) return;
-    const isWords = slideshow.classList.contains('is-words');
-    const isVideo = slideshow.classList.contains('is-video');
-    let currentIndex = 0;
+  document.querySelectorAll('.slanted-portal-content').forEach((slideshow, index) => {
+    let slides = [...slideshow.querySelectorAll('.portal-slide')];
+    let current = 0;
     const cycle = () => {
       if (!slideshow.isConnected) return;
-      if (isVideo && !slideshow.classList.contains('is-active')) {
-        homePortalTimers.push(setTimeout(cycle, 2000));
-        return;
+      slides = [...slideshow.querySelectorAll('.portal-slide')];
+      current = Math.max(0, slides.findIndex(slide => slide.classList.contains('is-active')));
+      if (!rotationPaused && !document.hidden && slides.length > 1 && !slideshow.closest('a').matches(':hover, :focus-visible')) {
+        slides[current].classList.remove('is-active');
+        slides[current].querySelector('video')?.pause();
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('is-active');
+        slides[current].querySelector('video')?.play().catch(() => {});
       }
-      let nextIndex = Math.floor(Math.random() * images.length);
-      if (nextIndex === currentIndex) nextIndex = (nextIndex + 1) % images.length;
-      images[currentIndex].classList.remove('is-active');
-      setPortalVideoPlayback(images[currentIndex], false, isVideo);
-      images[nextIndex].classList.add('is-active');
-      setPortalVideoPlayback(images[nextIndex], slideshow.classList.contains('is-active'));
-      currentIndex = nextIndex;
-      homePortalTimers.push(setTimeout(cycle, isWords ? 9000 + Math.random() * 3000 : isVideo ? 9000 + Math.random() * 5000 : 2600 + Math.random() * 1800));
+      homePortalTimers.push(setTimeout(cycle, 6500 + index * 700));
     };
-    homePortalTimers.push(setTimeout(cycle, 700 + index * 520 + Math.random() * 600));
+    homePortalTimers.push(setTimeout(cycle, 6500 + index * 700));
   });
-  const activateHomePanel = accent => {
-    document.querySelectorAll('[data-home-panel]').forEach(panel => {
-      const active = panel.dataset.homePanel === accent;
-      const wasActive = panel.classList.contains('is-active');
-      if (active && !wasActive && panel.classList.contains('is-words')) {
-        const quote = panel.querySelector('.portal-word-slide.is-active');
-        if (quote) {
-          quote.classList.remove('is-active');
-          void quote.offsetWidth;
-          quote.classList.add('is-active');
-        }
-      }
-      panel.classList.toggle('is-active', active);
-      panel.setAttribute('aria-hidden', active ? 'false' : 'true');
-      panel.querySelectorAll('.portal-video-slide').forEach(slide => setPortalVideoPlayback(slide, active && slide.classList.contains('is-active')));
-    });
-    document.querySelectorAll('[data-home-panel-trigger]').forEach(trigger => trigger.classList.toggle('is-active', trigger.dataset.homePanelTrigger === accent));
-  };
-  const deactivateHomePanel = () => {
-    document.querySelectorAll('[data-home-panel]').forEach(panel => {
-      panel.classList.remove('is-active');
-      panel.setAttribute('aria-hidden', 'true');
-    });
-    document.querySelectorAll('[data-home-panel-trigger]').forEach(trigger => trigger.classList.remove('is-active'));
-    document.querySelector('.simple-public-home')?.classList.remove('is-gallery-active');
-  };
-  document.querySelectorAll('[data-home-panel-trigger]').forEach(trigger => {
-    trigger.addEventListener('pointerenter', () => {
-      activateHomePanel(trigger.dataset.homePanelTrigger);
-      document.querySelector('.simple-public-home')?.classList.add('is-gallery-active');
-    });
-    trigger.addEventListener('pointerleave', deactivateHomePanel);
-    trigger.addEventListener('focus', () => {
-      activateHomePanel(trigger.dataset.homePanelTrigger);
-      document.querySelector('.simple-public-home')?.classList.add('is-gallery-active');
-    });
-    trigger.addEventListener('blur', deactivateHomePanel);
+  syncMotion();
+  const portraitShell = document.querySelector('.slanted-public-home');
+  mountPortraitGallery(portraitShell, () => rotationPaused).then(controller => {
+    if (portraitShell.isConnected) portraitGalleryController = controller;
+    else controller?.destroy();
   });
-  let portraitSwapTimer;
-  let portraitFinishTimer;
-  let portraitZoneActive = false;
-  const spinPortrait = () => {
-    if (!portrait) return;
-    const currentSource = portrait.getAttribute('src');
-    const choices = portraitSources.filter(source => source !== currentSource);
-    const nextSource = choices[Math.floor(Math.random() * choices.length)];
-    clearTimeout(portraitSwapTimer);
-    clearTimeout(portraitFinishTimer);
-    portrait.classList.remove('is-coin-spinning');
-    void portrait.offsetWidth;
-    portrait.classList.add('is-coin-spinning');
-  portraitSwapTimer = setTimeout(() => {
-    portrait.src = nextSource;
-  }, 240);
-    portraitFinishTimer = setTimeout(() => portrait.classList.remove('is-coin-spinning'), 520);
-  };
-  portrait?.addEventListener('pointermove', event => {
-    const bounds = portrait.getBoundingClientRect();
-    const normalizedX = (event.clientX - bounds.left) / bounds.width;
-    const normalizedY = (event.clientY - bounds.top) / bounds.height;
-    const insideCenter = normalizedX >= .24 && normalizedX <= .76 && normalizedY >= .13 && normalizedY <= .87;
-    portrait.style.cursor = insideCenter ? 'pointer' : 'default';
-    if (insideCenter && !portraitZoneActive) spinPortrait();
-    portraitZoneActive = insideCenter;
-  });
-  portrait?.addEventListener('pointerleave', () => {
-    portraitZoneActive = false;
-    portrait.style.cursor = 'default';
-  });
+  const artPanel = document.querySelector('[data-home-panel="art"]');
+  if (artPanel && homeArtWorks.some(work => !playlistImages([work]).length)) {
+    // Only missing selected previews need lazy full-record hydration.
+    Promise.all(homeArtWorks.map(work => playlistImages([work]).length ? work : hydratePublicWork(work).catch(() => work))).then(ready => {
+      const sources = playlistImages(ready);
+      if (artPanel.isConnected && sources.length) artPanel.innerHTML = portalSlideMarkup({ slides: sources });
+    });
+  }
   document.querySelector('[data-home-search]')?.addEventListener('input', event => {
     searchQuery = event.target.value;
     const cursor = searchQuery.length;
@@ -956,18 +939,91 @@ const renderPublicSection = works => {
     Video: '',
     Music: 'Songs, recordings, performances, voice, and experiments in sound.'
   };
-  const sectionWorks = works.filter(work => matchesCategory(work, activeType));
-  const visible = currentCollectionWorks();
+  const playableAudio = work => activeType !== 'Music' || Boolean(workMediaSource(work) || workExternalUrl(work));
+  const sectionWorks = (activeType === 'Images' ? artBrowseWorks(works, artDisplayRepairs) : works).filter(work => matchesCategory(work, activeType) && playableAudio(work));
+  const visible = currentCollectionWorks().filter(playableAudio);
   const previewable = visible;
   const compareWorkDate = (left, right) => Date.parse(right.date || '') - Date.parse(left.date || '') || Date.parse(right.addedAt || '') - Date.parse(left.addedAt || '') || String(left.title || '').localeCompare(String(right.title || ''));
   const years = [...new Set(sectionWorks.map(work => String(work.date || work.addedAt || '').slice(0, 4)).filter(year => /^\d{4}$/.test(year)))].sort((left, right) => right.localeCompare(left));
   const ages = [...new Set(sectionWorks.map(workAge).filter(Boolean))].sort((left, right) => Number(left) - Number(right));
   const ageMenu = `<nav class="public-age-menu" aria-label="Filter ${labels[activeType]} by age"><span>Age</span>${['All', ...ages].map(age => `<button class="${activePublicAge === age ? 'is-active' : ''}" data-public-age="${escapeHtml(age)}">${escapeHtml(age)}</button>`).join('')}</nav>`;
   const workYear = work => String(work.date || work.addedAt || '').slice(0, 4);
-  const accessionTime = work => Date.parse(work.addedAt || work.metadata?.addedAt || '') || 0;
-  const latestAdded = [...previewable].sort((left, right) => Number(right.order ?? -1) - Number(left.order ?? -1) || accessionTime(right) - accessionTime(left) || compareWorkDate(left, right)).slice(0, 24);
+  const exactMetadata = (work, value) => [work.independentVideo?.database, ...(work.independentVideo?.memberships || []).map(membership => membership.database), work.sourceIdentity, ...(work.projects || []), ...(work.collections || [])].some(item => String(item || '').toLowerCase() === value.toLowerCase());
+  const classroomSeries = work => ['Sons to Leaders', 'Being Human', 'SUNDAY STUDIES', 'ABF'].some(series => exactMetadata(work, series));
+  const verifiedYouTubeShort = work => (work.independentVideo?.memberships || []).some(membership => membership.youtubeFormat === 'shorts');
+  const videoSamplerDefinitions = [
+    { key: 'biblical-advice', label: 'Biblical Advice', matches: work => exactMetadata(work, 'MAKEBA Master Archive') },
+    { key: 'bible-study', label: 'Bible Study', matches: work => exactMetadata(work, 'Bible Thoughts') },
+    { key: 'classroom', label: 'Classroom', matches: classroomSeries },
+    { key: 'sermon', label: 'Sermon', matches: work => !verifiedYouTubeShort(work) && (exactMetadata(work, 'All Josh McGary Teachings') || exactMetadata(work, 'Josh McGary Sermons') || /\b(?:ABF Sermon|Sermon Arc Series)\b/i.test(String(work.description || ''))) },
+    { key: 'music-related', label: 'Music-Related', matches: work => work.independentVideo?.origin === 'music-public-youtube-database' },
+    { key: 'film-project', label: 'Film Project', matches: work => exactMetadata(work, 'THE FEED') && (work.tags || []).some(tag => /(?:^|[_\s-])short[_\s-]?film(?:$|[_\s-])/i.test(String(tag))) }
+  ];
+  const musicArtistKey = work => {
+    const description = String(work.description || '');
+    if (exactMetadata(work, 'The Theory Of') || /^the theory of$/i.test(String(work.sourceIdentity || ''))) return 'the-theory-of';
+    if (/\brather than dream(?:'s)?\b/i.test(description)) return 'rather-than-dream';
+    if (/\bfeast with ravens\b/i.test(description)) return 'feast-with-ravens';
+    // `identity` and `sourceIdentity` describe the archive owner/creator on many
+    // sermons, classes, and films. Only the dedicated music source is evidence
+    // that a work belongs in Josh's artist gallery.
+    if (exactMetadata(work, 'Josh McGary Music')) return 'josh-mcgary';
+    return '';
+  };
+  const musicArtistDefinitions = [
+    { key: 'josh-mcgary', label: 'JoshMcGary' },
+    { key: 'the-theory-of', label: 'The Theory Of' },
+    { key: 'rather-than-dream', label: 'Rather than Dream' },
+    { key: 'feast-with-ravens', label: 'Feast With Ravens' }
+  ].map(artist => ({ ...artist, collectionKey: `artist:${artist.key}`, nested: true, matches: work => musicArtistKey(work) === artist.key }));
+  const classroomBrowseDefinitions = [
+    { key: 'sons-to-leaders', label: 'Sons to Leaders', collectionKey: 'series:sons-to-leaders', parentCollectionKey: 'style:classroom', nested: true, matches: work => exactMetadata(work, 'Sons to Leaders') },
+    { key: 'being-human', label: 'Being Human', collectionKey: 'series:being-human', parentCollectionKey: 'style:classroom', nested: true, matches: work => exactMetadata(work, 'Being Human') },
+    { key: 'sunday-studies', label: 'Sunday Studies', collectionKey: 'series:sunday-studies', parentCollectionKey: 'style:classroom', nested: true, matches: work => exactMetadata(work, 'SUNDAY STUDIES') },
+    { key: 'abf', label: 'ABF', collectionKey: 'series:abf', parentCollectionKey: 'style:classroom', nested: true, matches: work => exactMetadata(work, 'ABF') }
+  ];
+  const videoMusicArtists = musicArtistDefinitions.map(definition => ({ ...definition, parentCollectionKey: 'style:music-related' }));
+  const videoBrowseDefinitions = [
+    ...videoSamplerDefinitions.flatMap(definition => [
+      { ...definition, collectionKey: `style:${definition.key}` },
+      ...(definition.key === 'classroom' ? classroomBrowseDefinitions : []),
+      ...(definition.key === 'music-related' ? videoMusicArtists : [])
+    ]),
+    { key: 'shorts', collectionKey: 'style:shorts', label: 'Shorts', matches: verifiedYouTubeShort }
+  ];
+  const artTerms = work => [work.type, work.medium, ...(work.projects || []), ...(work.collections || []), ...(work.tags || [])]
+    .map(value => String(value || '').toLocaleLowerCase().replace(/^\[|\]$/g, '').replace(/^#/, '').trim());
+  const hasArtTerm = (work, terms) => artTerms(work).some(value => terms.includes(value));
+  const legacyArtBrowseDefinitions = [
+    { key: 'sketches', collectionKey: 'art-type:sketches', label: 'Sketches', matches: work => hasArtTerm(work, ['sketch', 'sketches', 'sketchbooks']) },
+    { key: 'drawings', collectionKey: 'art-type:drawings', label: 'Drawings', matches: work => hasArtTerm(work, ['drawing']) },
+    { key: 'illustration', collectionKey: 'art-type:illustration', label: 'Illustration', matches: work => hasArtTerm(work, ['illustration']) },
+    { key: 'painting', collectionKey: 'art-type:painting', label: 'Painting', matches: work => hasArtTerm(work, ['painting']) },
+    { key: 'digital-art', collectionKey: 'art-type:digital-art', label: 'Digital Art', matches: work => hasArtTerm(work, ['digital art', 'digital-art', 'digital drawing', 'digital-drawing', 'digital painting', 'digital-painting']) },
+    { key: 'graphic-design', collectionKey: 'art-type:graphic-design', label: 'Graphic Design', matches: work => hasArtTerm(work, ['graphic design', 'graphic-design', 'infographics', 'narrative-infographic']) },
+    { key: 'photography', collectionKey: 'art-type:photography', label: 'Photography', matches: work => hasArtTerm(work, ['photography']) }
+  ];
+  const artBrowseDefinitions = wordpressArtDefinitions(wordpressCategoryFeed);
+  const audioTypeLabel = work => {
+    if (work.officialAudio) return 'Audio Recording';
+    if (isMusicVideoWork(work)) return 'Music Video';
+    const label = String(work.type || work.medium || '').trim();
+    return label && !/^(?:video|other)$/i.test(label) ? label : 'Audio Recording';
+  };
+  const audioBrowseDefinitions = [
+    { key: 'audio-recording', collectionKey: 'audio-type:recording', label: 'Audio Recording', matches: work => audioTypeLabel(work) === 'Audio Recording' },
+    { key: 'music', collectionKey: 'audio-music', label: 'Music', matches: isMusicWork },
+    { key: 'music-video', collectionKey: 'audio-type:music-video', parentCollectionKey: 'audio-music', nested: true, label: 'Music Video', matches: isMusicVideoWork },
+    ...musicArtistDefinitions.map(definition => ({ ...definition, parentCollectionKey: 'audio-music' }))
+  ];
+  const browseSection = ['Images', 'Video', 'Music'].includes(activeType);
+  const browseDefinitions = activeType === 'Images' ? artBrowseDefinitions : activeType === 'Video' ? videoBrowseDefinitions : audioBrowseDefinitions;
+  const latestVideoStyles = activeType === 'Video' ? videoSamplerDefinitions.map(definition => {
+    const work = [...previewable].filter(definition.matches).sort(compareWorkDate)[0];
+    return work ? { ...work, samplerKey: definition.key, samplerLabel: definition.label } : null;
+  }).filter(Boolean) : [];
   const uniqueRails = [
-    { key: '', title: 'Latest Added', items: latestAdded, latest: true },
+    ...(latestVideoStyles.length ? [{ key: '', title: 'Latest by Style', items: latestVideoStyles, sampler: true }] : []),
     ...years.map(year => ({ key: `year:${year}`, title: year, items: previewable.filter(work => workYear(work) === year).sort(compareWorkDate) }))
   ].filter(rail => rail.items.length);
   const catalogueWorks = [...visible].sort((left, right) => String(left.title || '').localeCompare(String(right.title || '')) || compareWorkDate(left, right));
@@ -983,11 +1039,61 @@ const renderPublicSection = works => {
   const collectionMatches = work => {
     if (!activePublicCollection || activePublicCollection === 'all') return true;
     if (activePublicCollection.startsWith('year:')) return workYear(work) === activePublicCollection.slice(5);
+    const browseDefinition = browseDefinitions.find(definition => definition.collectionKey === activePublicCollection)
+      || (activeType === 'Images' ? legacyArtBrowseDefinitions.find(definition => definition.collectionKey === activePublicCollection) : null);
+    if (browseDefinition) return browseDefinition.matches(work);
     return true;
   };
   const activeRail = uniqueRails.find(rail => rail.key === activePublicCollection);
+  if (browseSection) {
+    const browseEntries = publicBrowseMode === 'year'
+      ? years.map(year => ({ key: `year:${year}`, label: year, count: sectionWorks.filter(work => workYear(work) === year).length }))
+      : browseDefinitions.map(definition => ({ key: definition.collectionKey, label: definition.label, nested: definition.nested, parentCollectionKey: definition.parentCollectionKey, count: sectionWorks.filter(definition.matches).length })).filter(entry => entry.count);
+    const selectedEntry = browseEntries.find(entry => entry.key === activePublicCollection);
+    const legacyArtEntry = activeType === 'Images' && legacyArtBrowseDefinitions.find(definition => definition.collectionKey === activePublicCollection);
+    const browseTitle = selectedEntry?.label || legacyArtEntry?.label || `All ${labels[activeType]}`;
+    const gridWorks = previewable.filter(collectionMatches).sort(compareWorkDate);
+    const browseLink = entry => `<a class="${entry.nested ? 'is-nested' : ''} ${activePublicCollection === entry.key ? 'is-active' : ''}" href="${escapeHtml(publicCollectionHref(entry.key))}" data-public-collection="${escapeHtml(entry.key)}"${entry.parentCollectionKey ? ` data-parent-collection="${escapeHtml(entry.parentCollectionKey)}"` : ''}${entry.nested ? ` aria-label="Open ${escapeHtml(entry.label)} gallery"` : ''}><span>${escapeHtml(entry.label)}</span><em>${entry.count}</em></a>`;
+    const browseMenu = browseEntries.filter(entry => !entry.parentCollectionKey).map(entry => {
+      const children = browseEntries.filter(child => child.parentCollectionKey === entry.key);
+      if (!children.length) return browseLink(entry);
+      const expanded = expandedBrowseGroups.has(entry.key) || children.some(child => child.key === activePublicCollection);
+      const childId = `browse-children-${entry.key.replace(/[^a-z0-9]+/gi, '-')}`;
+      return `<div class="public-browse-group"><div class="public-browse-parent">${browseLink(entry)}<button data-browse-expand="${escapeHtml(entry.key)}" aria-expanded="${expanded}" aria-controls="${childId}" aria-label="${expanded ? 'Collapse' : 'Expand'} ${escapeHtml(entry.label)} options">${expanded ? '−' : '+'}</button></div><div class="public-browse-children" id="${childId}"${expanded ? '' : ' hidden'}>${children.map(browseLink).join('')}</div></div>`;
+    }).join('');
+    app.innerHTML = `<div class="public-section-shell public-browse-shell ${activeType === 'Images' ? 'is-art-browse' : ''} ${activeType === 'Video' ? 'has-video-hero' : ''}">
+      ${renderTopbar()}
+      <main>
+        <header class="public-section-intro"><p>${sectionWorks.length} ${sectionWorks.length === 1 ? 'work' : 'works'}</p><h1>${labels[activeType]}</h1><figure class="public-hover-preview ${activeType === 'Video' ? 'is-visible' : ''}" data-hover-preview aria-hidden="${activeType === 'Video' ? 'false' : 'true'}">${activeType === 'Video' ? '<video src="./assets/video-loops/sermon-suffering-mid.mp4" muted loop autoplay playsinline preload="auto" aria-label="Muted sermon preview from Suffering is not removed by salvation"></video>' : ''}</figure><span class="public-preview-title" data-preview-title aria-live="polite"></span>${descriptions[activeType] ? `<span>${descriptions[activeType]}</span>` : ''}</header>
+        <div class="public-browse-layout">
+          <aside class="public-browse-sidebar" aria-label="Browse ${labels[activeType]}">
+            <div class="public-browse-switch" role="group" aria-label="Group ${labels[activeType]} by">
+              <button class="${publicBrowseMode === 'type' ? 'is-active' : ''}" data-browse-mode="type" aria-pressed="${publicBrowseMode === 'type'}">${activeType === 'Images' ? 'Category' : 'Type'}</button>
+              <button class="${publicBrowseMode === 'year' ? 'is-active' : ''}" data-browse-mode="year" aria-pressed="${publicBrowseMode === 'year'}">Year</button>
+            </div>
+            <nav aria-label="${publicBrowseMode === 'year' ? 'Years' : `${labels[activeType]} ${activeType === 'Images' ? 'categories' : 'types'}`}">
+              <a class="${!activePublicCollection ? 'is-active' : ''}" href="${escapeHtml(publicCollectionHref(''))}" data-public-collection=""><span>All ${escapeHtml(labels[activeType])}</span><em>${sectionWorks.length}</em></a>
+              ${browseMenu}
+            </nav>
+          </aside>
+          <section class="public-browse-gallery" aria-labelledby="public-browse-heading">
+            <header><div><p>${gridWorks.length} ${gridWorks.length === 1 ? 'work' : 'works'}</p><h2 id="public-browse-heading">${escapeHtml(browseTitle)}</h2></div><label class="public-section-search"><span>Search</span><input type="search" value="${escapeHtml(searchQuery)}" placeholder="${activeType === 'Images' ? 'Title or tags · tag:self portrait' : 'Title, subject, medium, year…'}" data-search></label></header>
+            ${activeType === 'Images' ? '' : ageMenu}
+            ${activeType === 'Images' && wordpressCategoryError ? `<p role="status">${escapeHtml(wordpressCategoryError)}</p>` : ''}
+            ${activeType === 'Music' && gallery.audioSourceError ? `<p role="status">${escapeHtml(gallery.audioSourceError)}</p>` : ''}<div class="public-work-grid">${gridWorks.map((work, index) => homeShelfCard(work, index)).join('')}</div>
+            ${gridWorks.length ? '' : `<p class="public-section-empty">No ${labels[activeType].toLowerCase()} match this selection.</p>`}
+          </section>
+        </div>
+      </main>
+      <footer><button data-home>Josh McGary</button><span>${labels[activeType]} · ${escapeHtml(browseTitle)}</span></footer>
+    </div>`;
+    bindActions();
+    if (publicArchiveHost) hydrateVisiblePublicCards();
+    return;
+  }
   if (activePublicCollection) {
-    const collectionTitle = activePublicCollection.startsWith('year:') ? activePublicCollection.slice(5) : activeRail?.title || 'Collection';
+    const styleDefinition = activePublicCollection.startsWith('style:') ? videoSamplerDefinitions.find(definition => definition.key === activePublicCollection.slice(6)) : null;
+    const collectionTitle = activePublicCollection.startsWith('year:') ? activePublicCollection.slice(5) : styleDefinition?.label || activeRail?.title || 'Collection';
     const yearWorks = sectionWorks.filter(collectionMatches).sort(compareWorkDate);
     const gridWorks = previewable.filter(collectionMatches).sort(compareWorkDate);
     const yearTagCounts = new Map();
@@ -1006,7 +1112,8 @@ const renderPublicSection = works => {
       <main>
         <a class="public-grid-back" href="${escapeHtml(publicCollectionHref(''))}" data-close-public-collection>← ${labels[activeType]}</a>
         <header class="public-grid-intro"><p>${gridWorks.length} ${gridWorks.length === 1 ? 'work' : 'works'}</p><h1>${escapeHtml(collectionTitle)}</h1></header>
-        <label class="public-section-search"><span>Search collection</span><input type="search" value="${escapeHtml(searchQuery)}" placeholder="Title, subject, medium, year…" data-search></label>
+
+        <label class="public-section-search"><span>Search collection</span><input type="search" value="${escapeHtml(searchQuery)}" placeholder="${activeType === 'Images' ? 'Title or tags · tag:self portrait' : 'Title, subject, medium, year…'}" data-search></label>
         ${ageMenu}
         <section class="public-card-catalogue"><button class="public-disclosure" data-disclosure aria-expanded="false" aria-controls="year-index"><span>${collectionTitle} index</span><em>${yearIndex.length} cards</em></button><div id="year-index" hidden>${yearIndex.map(work => `<button data-work="${escapeHtml(work.id)}"><strong>${escapeHtml(work.title)}</strong><span>${escapeHtml(work.medium || work.type || 'Artwork')}</span><em>${escapeHtml(work.catalogId || '')}</em></button>`).join('')}</div></section>
         <section class="public-tag-cloud"><button class="public-disclosure" data-disclosure aria-expanded="false" aria-controls="year-subjects"><span>Subjects in ${escapeHtml(collectionTitle)}</span><em>${yearTags.length} recurring terms</em></button><div id="year-subjects" hidden>${yearTags.map(({ label, count }) => `<button data-index-term="${escapeHtml(label)}" style="--tag-weight:${Math.min(2.2, .85 + count / 8)}"><span>${escapeHtml(label)}</span><em>${count}</em></button>`).join('')}</div></section>
@@ -1019,7 +1126,7 @@ const renderPublicSection = works => {
     if (publicArchiveHost) hydrateVisiblePublicCards();
     return;
   }
-  const publishedCount = gallery?.stats?.sectionCounts?.[activeType === 'Images' ? 'art' : activeType === 'Video' ? 'video' : 'audio'] || sectionWorks.length;
+  const publishedCount = sectionWorks.length;
   app.innerHTML = `<div class="public-section-shell ${activeType === 'Video' ? 'has-video-hero' : ''} ${normalizedQuery ? 'has-open-catalogue' : ''}">
     ${renderTopbar()}
     <main>
@@ -1027,7 +1134,7 @@ const renderPublicSection = works => {
       <div class="public-search-cluster"><label class="public-section-search"><span>Search ${labels[activeType]}</span><input type="search" value="${escapeHtml(searchQuery)}" placeholder="" data-search data-cycling-search></label><button class="public-catalogue-toggle" data-disclosure aria-expanded="${normalizedQuery ? 'true' : 'false'}" aria-controls="complete-catalogue" aria-label="${normalizedQuery ? 'Close' : 'Open'} complete card catalogue">▼</button></div>
       ${ageMenu}
       <section class="public-card-catalogue public-card-catalogue-years public-inline-catalogue"><div id="complete-catalogue" ${normalizedQuery ? '' : 'hidden'}>${catalogueGroups.map(group => `<section><header><a href="${escapeHtml(publicCollectionHref(`year:${group.year}`))}" data-public-collection="year:${escapeHtml(group.year)}"><strong>${escapeHtml(group.year)}</strong><em>${group.works.length}</em><span>Open year →</span></a></header><div>${group.works.map(work => `<button data-work="${escapeHtml(work.id)}"><strong>${escapeHtml(work.title)}</strong><span>${escapeHtml(work.medium || work.type || 'Artwork')}</span><em>${escapeHtml(work.catalogId || '')}</em></button>`).join('')}</div></section>`).join('')}</div></section>
-      <div class="public-section-rails">${uniqueRails.map((rail, railIndex) => `<section class="public-section-rail ${rail.latest ? 'is-latest-added' : ''}"><header>${rail.latest ? `<div class="public-rail-title"><h2>${escapeHtml(rail.title)}</h2><span>${rail.items.length}</span><em>Newest archive accessions</em></div>` : `<a class="public-rail-title" href="${escapeHtml(publicCollectionHref(rail.key))}" data-public-collection="${escapeHtml(rail.key)}"><h2>${escapeHtml(rail.title)}</h2><span>${rail.items.length}</span><em>View all →</em></a>`}<nav><button data-rail-scroll="back" data-rail="${railIndex}" aria-label="Scroll ${escapeHtml(rail.title)} backward">←</button><button data-rail-scroll="forward" data-rail="${railIndex}" aria-label="Scroll ${escapeHtml(rail.title)} forward">→</button></nav></header><div data-rail-track="${railIndex}">${rail.items.map((work, index) => homeShelfCard(work, index)).join('')}</div></section>`).join('')}${visible.length ? '' : `<p class="public-section-empty">No ${labels[activeType].toLowerCase()} matches this search.</p>`}</div>
+      <div class="public-section-rails">${uniqueRails.map((rail, railIndex) => `<section class="public-section-rail ${rail.sampler ? 'is-style-sampler' : ''}"><header>${rail.sampler ? `<div class="public-rail-title"><h2>${escapeHtml(rail.title)}</h2><span>${rail.items.length}</span><em>Newest from each series</em></div>` : `<a class="public-rail-title" href="${escapeHtml(publicCollectionHref(rail.key))}" data-public-collection="${escapeHtml(rail.key)}"><h2>${escapeHtml(rail.title)}</h2><span>${rail.items.length}</span><em>View all →</em></a>`}<nav><button data-rail-scroll="back" data-rail="${railIndex}" aria-label="Scroll ${escapeHtml(rail.title)} backward">←</button><button data-rail-scroll="forward" data-rail="${railIndex}" aria-label="Scroll ${escapeHtml(rail.title)} forward">→</button></nav></header><div data-rail-track="${railIndex}">${rail.items.map((work, index) => homeShelfCard(work, index, rail.sampler ? 'sampler' : '')).join('')}</div></section>`).join('')}${visible.length ? '' : `<p class="public-section-empty">No ${labels[activeType].toLowerCase()} matches this search.</p>`}</div>
     </main>
     <footer><button data-home>Josh McGary</button><span>${labels[activeType]}</span></footer>
   </div>`;
@@ -1126,12 +1233,12 @@ const renderProfile = works => {
     <main class="profile-page">
       <header class="profile-hero">
         <div class="profile-portrait">${profile.portrait ? `<img src="${profile.portrait}" alt="Portrait of ${escapeHtml(profile.name || 'the artist')}">` : `<span>${escapeHtml(String(profile.name || 'A').charAt(0))}</span>`}</div>
-        <div class="profile-intro"><p class="eyebrow">The artist behind the archive</p><h1>${escapeHtml(profile.name || 'The Artist')}</h1>${profile.location ? `<p class="profile-location">${escapeHtml(profile.location)}</p>` : ''}${profile.statement ? `<blockquote>${escapeHtml(profile.statement)}</blockquote>` : '<blockquote>An artistic identity assembled from the complete portable corpus.</blockquote>'}</div>
+        <div class="profile-intro"><p class="eyebrow">The artist behind the archive</p><h1>${escapeHtml(profile.name || 'The Artist')}</h1>${profile.location ? `<p class="profile-location">${escapeHtml(profile.location)}</p>` : ''}${profile.statement ? `<blockquote>${escapeHtml(profile.statement)}</blockquote>` : ''}</div>
       </header>
       <section class="profile-scoreboard" aria-label="Corpus evaluation"><div><span>Works</span><strong>${works.length}</strong></div><div><span>Grade</span><strong>${profileScore('grade')}</strong></div><div><span>Media</span><strong>${media.length}</strong></div><div><span>Projects</span><strong>${new Set(works.flatMap(work => work.projects || [])).size}</strong></div></section>
       <section class="profile-dimensions" aria-label="Creative dimensions"><header><p class="eyebrow">Creative dimensions</p><h2>The character of the complete practice.</h2></header><div>${dimensions.map(([label, score, definition]) => `<article><div><strong>${label}</strong><span>${score} / 10</span></div><i style="--dimension-score:${Number.isFinite(Number.parseFloat(score)) ? Math.min(100, Number.parseFloat(score) * 10) : 0}%"></i><p>${definition}</p></article>`).join('')}</div></section>
       <section class="profile-practice"><div><p class="eyebrow">Multimodal practice</p><h2>A body of work without a single container.</h2></div><div class="profile-mediums">${media.map(([label, count]) => `<div><header><strong>${escapeHtml(label)}</strong><span>${count}</span></header><i style="--profile-bar:${Math.round((count / maxMedium) * 100)}%"></i></div>`).join('')}</div></section>
-      ${sections.length ? `<section class="profile-critical"><header><p class="eyebrow">Corpus intelligence</p><h2>Critical profile</h2><p>${profile.evaluationUpdatedAt ? `Synthesized ${escapeHtml(new Date(profile.evaluationUpdatedAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }))}` : `${works.length} works considered`}</p></header><div class="profile-essay">${sections.map(section => `<article><h3>${escapeHtml(section.title)}</h3>${section.paragraphs.map(paragraph => `<p>${profileParagraphMarkup(paragraph, works)}</p>`).join('')}</article>`).join('')}</div></section>` : `<section class="profile-critical profile-awaiting"><p class="eyebrow">Corpus intelligence</p><h2>Awaiting the artist’s public corpus evaluation.</h2><p>Publish an Artistic Profile from Archivist to complete this page.</p></section>`}
+      ${sections.length ? `<section class="profile-critical"><header><h2>Critical profile</h2><p>${profile.evaluationUpdatedAt ? `Synthesized ${escapeHtml(new Date(profile.evaluationUpdatedAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }))}` : `${works.length} works considered`}</p></header><div class="profile-essay">${sections.map(section => `<article><h3>${escapeHtml(section.title)}</h3>${section.paragraphs.map(paragraph => `<p>${profileParagraphMarkup(paragraph, works)}</p>`).join('')}</article>`).join('')}</div></section>` : `<section class="profile-critical profile-awaiting"><h2>Artist profile coming soon.</h2></section>`}
       ${tags.length ? `<section class="profile-signals"><p class="eyebrow">Recurring constellations</p><div>${tags.map(([tag, count]) => `<span>${escapeHtml(tag)} <em>${count}</em></span>`).join('')}</div></section>` : ''}
       ${strongest.length ? `<section class="home-shelf profile-evidence"><header><h2>Evidence in the archive</h2><span>${strongest.length}</span></header><div class="home-shelf-track">${strongest.map((work, index) => homeShelfCard(work, index)).join('')}</div></section>` : ''}
       <footer><span>Artist profile · ${works.length} works</span>${profile.contact ? `<a href="mailto:${encodeURIComponent(profile.contact)}">Contact</a>` : ''}</footer>
@@ -1169,6 +1276,7 @@ const renderQuoteBook = works => {
 };
 
 const renderGallery = () => {
+  titleChromaController?.destroy();
   clearInterval(quoteCycleTimer);
   detailExpanded = false;
   setCardViewLock(false);
@@ -1261,20 +1369,22 @@ const renderGallery = () => {
 };
 
 const renderWork = (work, { urlMode = 'replace' } = {}) => {
+  titleChromaController?.destroy();
   setCardViewLock(true);
   syncWorkUrl(work, urlMode);
   const works = currentCollectionWorks();
   const index = works.findIndex(candidate => String(candidate.id) === String(work.id));
   const previous = index > 0 ? works[index - 1] : works[works.length - 1];
   const next = index < works.length - 1 ? works[index + 1] : works[0];
+  const hasYouTubePlayer = (isVideoWork(work) || isMusicWork(work)) && Boolean(youtubeVideoId(work));
   app.innerHTML = `<article class="work-view ${detailExpanded ? 'is-full-bleed' : ''}">
     ${renderTopbar()}
-    <header class="detail-nav"><label class="detail-search"><input type="search" placeholder="Search this collection…" aria-label="Search this collection from card view" data-detail-search><span class="detail-search-results" data-detail-results hidden></span></label><span>${index + 1} / ${works.length}</span><div class="detail-actions"><button data-copy-link aria-label="Copy permanent link to ${escapeHtml(work.title)}">Copy link</button><button data-previous aria-label="Previous work">←</button><button data-next aria-label="Next work">→</button></div></header>
-    <h1 class="detail-title">${escapeHtml(work.title)}</h1>
+    <header class="detail-nav"><label class="detail-search"><input type="search" placeholder="Search this collection…" aria-label="Search this collection from card view" data-detail-search><span class="detail-search-results" data-detail-results hidden></span></label><span>${index + 1} / ${works.length}</span><div class="detail-actions"><button data-detail-flip aria-label="Turn card over">↻</button><button data-copy-link aria-label="Copy permanent link to ${escapeHtml(work.title)}">Copy link</button><button data-previous aria-label="Previous work">←</button><button data-next aria-label="Next work">→</button></div></header>
+    ${hasYouTubePlayer ? '' : `<h1 class="detail-title">${escapeHtml(work.title)}</h1>`}
     <div class="work-stage" data-swipe-stage>
       <button class="detail-close" data-back aria-label="Close card and return to gallery">×</button>
       <div class="card-motion" data-card-motion><div class="detail-card ${detailSide === 'metadata' ? 'is-flipped' : ''}" data-detail-card>
-        <section class="detail-face detail-front">${workDetailFront(work)}${workExternalUrl(work) ? `<a class="external-launch" href="${escapeHtml(sourceLaunchUrl(work))}">${escapeHtml(sourceLaunchLabel(work))}<span>↗</span></a>` : ''}</section>
+        <section class="detail-face detail-front">${workDetailFront(work)}${!hasYouTubePlayer && workExternalUrl(work) ? `<a class="external-launch" href="${escapeHtml(sourceLaunchUrl(work))}">${escapeHtml(sourceLaunchLabel(work))}<span>↗</span></a>` : ''}</section>
         <section class="detail-face detail-back"><div class="detail-back-layout">
           <div class="detail-back-preview">${workCardVisual(work)}</div>
           <div class="detail-back-info">
@@ -1293,19 +1403,21 @@ const renderWork = (work, { urlMode = 'replace' } = {}) => {
             ${work.tags?.length ? `<div><dt>Tags</dt><dd>${escapeHtml(work.tags.map(tag => `#${tag}`).join(' '))}</dd></div>` : ''}
           </dl>
           ${work.description ? `<section class="work-wiki-card"><span>About this work</span><p>${escapeHtml(work.description)}</p></section>` : ''}
-          ${work.critique ? `<section class="critique-card"><span>AI critique</span><p>${escapeHtml(work.critique)}</p></section>` : ''}
+          ${work.critique?.trim() ? `<section class="critique-card"><span>Artistic Critique</span><p>${escapeHtml(work.critique)}</p></section>` : ''}
+          ${work.context?.trim() ? `<section class="critique-card"><span>Conceptual Framework</span><p>${escapeHtml(work.context)}</p></section>` : ''}
           ${work.text ? `<section class="transcription-card"><span>${isPoetryWork(work) ? 'Transcription' : 'Writing'}</span><p>${escapeHtml(work.text)}</p></section>` : ''}
           </div>
         </div></section>
       </div></div>
     </div>
     <div class="card-slider-wrap"><span>Next</span><div class="card-slider" role="slider" tabindex="0" aria-label="Pull left for next or right for previous" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" data-card-slider><span class="card-slider-track"><i data-slider-progress></i><b data-slider-thumb></b></span></div><span>Previous</span></div>
-    <p class="swipe-hint">${workExternalUrl(work) ? 'Hold the preview to open its source app' : work.media?.mimeType === 'application/pdf' ? 'Hold to expand · swipe sideways to browse' : 'Tap the card to turn it over'}</p>
+    ${hasYouTubePlayer ? '' : `<p class="swipe-hint">${workExternalUrl(work) ? 'Hold the preview to open its source app' : work.media?.mimeType === 'application/pdf' ? 'Hold to expand · swipe sideways to browse' : 'Tap the card to turn it over'}</p>`}
   </article>`;
   const stage = document.querySelector('[data-swipe-stage]');
   const cardMotion = document.querySelector('[data-card-motion]');
   const card = document.querySelector('[data-detail-card]');
   hydratePdfReader(work);
+  document.querySelector('[data-detail-flip]')?.addEventListener('click', () => settleCard(detailSide === 'image' ? 'metadata' : 'image'));
   const detailFront = document.querySelector('.detail-front');
   const detailImage = detailFront?.querySelector(':scope > img');
   if (detailFront && detailImage) {
@@ -1598,13 +1710,25 @@ const bindActions = () => {
     }
   }));
   document.querySelector('[data-version-code]')?.remove();
-  const versionCode = document.createElement('span');
-  versionCode.className = 'version-code';
-  versionCode.dataset.versionCode = '';
-  versionCode.textContent = `${DOCENT_BUILD} · ${gallery?.payloadVersion || 'G?'}`;
-  versionCode.title = `Archive interface ${DOCENT_BUILD}; catalogue payload ${gallery?.payloadVersion || 'legacy'}`;
-  document.body.appendChild(versionCode);
   hydratePdfCardCovers();
+  document.querySelectorAll('.is-flippable-card').forEach(card => {
+    const work = gallery?.works.find(item => String(item.id) === card.dataset.cardWork);
+    const pendingShard = work?.shardId && !work._cardPreview && !work.image && !work.media && !work._hydrated;
+    card.classList.add('is-loading');
+    card.setAttribute('aria-busy', 'true');
+    if (!pendingShard) settleShelfCard(card);
+    card.querySelector('[data-card-flip]')?.addEventListener('click', () => {
+      if (card.classList.contains('is-loading')) return;
+      const flipped = card.classList.toggle('is-flipped');
+      card.querySelector('.home-shelf-back').hidden = !flipped;
+      card.querySelector('.home-shelf-open').hidden = flipped;
+      card.querySelector('[data-card-flip]').setAttribute('aria-pressed', String(flipped));
+      card.querySelector('[data-card-flip]').setAttribute('aria-label', `${flipped ? 'Show preview of' : 'Turn over'} ${work?.title || 'card'}`);
+      const frame = card.querySelector('.card-hover-video');
+      if (frame?._playerMessageHandler) window.removeEventListener('message', frame._playerMessageHandler);
+      frame?.remove();
+    });
+  });
   document.querySelectorAll('[data-import]').forEach(button => button.addEventListener('click', () => packageInput.click()));
   document.querySelectorAll('[data-dropbox]').forEach(button => button.addEventListener('click', () => syncDropbox().catch(error => alert(error.message))));
   document.querySelectorAll('[data-work]').forEach(button => button.addEventListener('click', () => {
@@ -1619,7 +1743,7 @@ const bindActions = () => {
   const startCardVideo = button => {
     const videoId = button?.dataset.hoverVideo;
     const art = button?.querySelector('.home-shelf-art');
-    if (!videoId || !art || art.querySelector('iframe')) return;
+    if (!videoId || !art || button.classList.contains('is-loading') || button.classList.contains('is-flipped') || art.querySelector('iframe')) return;
     const frame = document.createElement('iframe');
     frame.className = 'card-hover-video';
     frame.title = '';
@@ -1831,15 +1955,31 @@ const bindActions = () => {
   }));
   document.querySelectorAll('[data-public-age]').forEach(button => button.addEventListener('click', () => {
     activePublicAge = button.dataset.publicAge;
-    activePublicCollection = '';
     activeYear = 'All';
     renderGallery();
   }));
   document.querySelectorAll('[data-public-collection]').forEach(button => button.addEventListener('click', event => {
     event.preventDefault();
+    const browseScrollY = window.scrollY;
     activePublicCollection = button.dataset.publicCollection;
+    if (button.dataset.parentCollection) expandedBrowseGroups.add(button.dataset.parentCollection);
     activeYear = 'All'; searchQuery = '';
-    renderGallery(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderGallery();
+    requestAnimationFrame(() => window.scrollTo({ top: browseScrollY, behavior: 'instant' }));
+  }));
+  document.querySelectorAll('[data-browse-expand]').forEach(button => button.addEventListener('click', () => {
+    const key = button.dataset.browseExpand;
+    if (expandedBrowseGroups.has(key)) expandedBrowseGroups.delete(key);
+    else expandedBrowseGroups.add(key);
+    renderGallery();
+  }));
+  document.querySelectorAll('[data-browse-mode]').forEach(button => button.addEventListener('click', () => {
+    publicBrowseMode = button.dataset.browseMode;
+    expandedBrowseGroups = new Set();
+    activePublicCollection = '';
+    activeYear = 'All';
+    searchQuery = '';
+    renderGallery();
   }));
   document.querySelector('[data-close-public-collection]')?.addEventListener('click', event => {
     event.preventDefault();
@@ -1910,7 +2050,15 @@ window.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('resize', updateVisualViewport);
 window.visualViewport?.addEventListener('scroll', updateVisualViewport);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=133', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+if ('serviceWorker' in navigator) {
+  let serviceWorkerReloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (serviceWorkerReloading) return;
+    serviceWorkerReloading = true;
+    location.reload();
+  });
+  navigator.serviceWorker.register('./sw.js?v=160', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {});
+}
 
 const oauth = new URLSearchParams(location.search);
 const oauthCode = oauth.get('code');
@@ -1937,6 +2085,7 @@ const hostnameSection = {
 }[location.hostname];
 if (hostnameSection) activeType = hostnameSection;
 activePublicCollection = pageParameters.get('collection') || '';
+if (activePublicCollection.startsWith('year:')) publicBrowseMode = 'year';
 const loadBundledGallery = async () => {
   const response = await fetch('./preview-gallery.json?v=117', { cache: 'no-store' });
   if (!response.ok) throw new Error(`Preview catalogue returned ${response.status}.`);
@@ -1953,50 +2102,46 @@ const loadBundledGallery = async () => {
   return preview;
 };
 const loadPublicCorpus = async () => {
-  const response = await fetch(`${PUBLIC_CORPUS_ENDPOINT}/manifest.json`, { cache: 'no-store' });
+  const [response, videoResponse] = await Promise.all([
+    fetch(`${PUBLIC_CORPUS_ENDPOINT}/manifest.json`, { cache: 'no-store' }),
+    fetch(INDEPENDENT_VIDEO_FEED, { cache: 'no-store' })
+  ]);
   if (!response.ok) throw new Error(`Public catalogue returned ${response.status}.`);
+  if (!videoResponse.ok) throw new Error(`Independent Video catalogue returned ${videoResponse.status}.`);
   const manifest = await response.json();
+  const videoFeed = await videoResponse.json();
   if (!validManifest(manifest)) throw new Error('The public catalogue manifest is incomplete.');
+  if (!validIndependentVideoFeed(videoFeed)) throw new Error('The independent Video catalogue is incomplete.');
   const indexPath = String(manifest.index?.path || '/The_Docent/index.json').replace(/^\/The_Docent\//, '');
   const indexResponse = await fetch(`${PUBLIC_CORPUS_ENDPOINT}/${indexPath}`, { cache: 'no-store' });
   if (!indexResponse.ok) throw new Error(`Public catalogue index returned ${indexResponse.status}.`);
   const index = await indexResponse.json();
   if (!validPackage(index)) throw new Error('The public catalogue index is incomplete.');
-  return {
+  return withIndependentVideos({
     ...manifest,
     schema: 'the-archivist.docent-gallery',
     works: index.works
-  };
+  }, videoFeed);
 };
-const nextPublicPaint = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-const renderPublicHomeProgressively = async completeGallery => {
-  let allWorks = completeGallery.works || [];
-  const stagedWorks = [];
-  const stagedIds = new Set();
-  const stages = [
-    work => isArtWork(work),
-    work => isVideoWork(work),
-    work => isWritingWork(work) || isTheologyWork(work) || isPoetryWork(work),
-    () => true
-  ];
-  for (const includesWork of stages) {
-    allWorks.forEach(work => {
-      const id = String(work.permanentWorkId || work.id);
-      if (!stagedIds.has(id) && includesWork(work)) {
-        stagedIds.add(id);
-        stagedWorks.push(work);
-      }
-    });
-    gallery = { ...completeGallery, works: [...stagedWorks] };
-    renderHome(gallery.works);
-    await nextPublicPaint();
-  }
+const settleShelfCard = card => {
+  const finish = failed => {
+    if (!card.isConnected) return;
+    card.classList.remove('is-loading');
+    card.setAttribute('aria-busy', 'false');
+    if (failed) card.querySelector('.home-shelf-art').innerHTML = '<span class="card-unavailable">Preview unavailable</span>';
+  };
+  const image = card.querySelector('.home-shelf-art img');
+  if (!image) { finish(false); return; }
+  if (image.complete) { finish(!image.naturalWidth); return; }
+  image.addEventListener('load', () => finish(false), { once: true });
+  image.addEventListener('error', () => finish(true), { once: true });
 };
 const hydratePublicWork = async work => {
-  if (!work?.shardId || work.image || work.media) return work;
-  let shardPromise = publicShardCache.get(work.shardId);
+  if (!work?.shardId || (work.image && !work._artImageCorrection) || work.media || work._hydrated) return work;
+  const shardUrl = publicShardUrl(work, gallery, PUBLIC_CORPUS_ENDPOINT);
+  let shardPromise = publicShardCache.get(shardUrl);
   if (!shardPromise) {
-    shardPromise = fetch(`${PUBLIC_CORPUS_ENDPOINT}/shards/${encodeURIComponent(work.shardId)}.json`, { cache: 'force-cache' })
+    shardPromise = fetch(shardUrl, { cache: 'no-cache' })
       .then(response => {
         if (!response.ok) throw new Error(`Public catalogue segment ${work.shardId} returned ${response.status}.`);
         return response.json();
@@ -2005,41 +2150,51 @@ const hydratePublicWork = async work => {
         if (!validShard(shard)) throw new Error(`Public catalogue segment ${work.shardId} is incomplete.`);
         return shard;
       });
-    publicShardCache.set(work.shardId, shardPromise);
+    publicShardCache.set(shardUrl, shardPromise);
   }
   const shard = await shardPromise;
   const complete = shard.works.find(candidate => String(candidate.id) === String(work.id));
   if (!complete) return work;
-  const merged = { ...work, ...complete, order: work.order, shardId: work.shardId };
-  gallery.works = gallery.works.map(candidate => String(candidate.id) === String(work.id) ? merged : candidate);
-  return merged;
+  const merged = { ...work, ...complete, order: work.order, shardId: work.shardId, _hydrated: true };
+  const corrected = applyArtImageCorrection(merged, artDisplayRepairs);
+  gallery.works = gallery.works.map(candidate => String(candidate.id) === String(work.id) ? corrected : candidate);
+  return corrected;
 };
+let publicCardsObserver;
 const hydrateVisiblePublicCards = () => {
-  if (!('IntersectionObserver' in window)) return;
-  const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const button = entry.target;
-    observer.unobserve(button);
-    const work = gallery.works.find(candidate => String(candidate.id) === button.dataset.work);
-    if (!work || work.image || work.media) return;
+  publicCardsObserver?.disconnect();
+  const hydrate = card => {
+    const work = gallery.works.find(candidate => String(candidate.id) === card.dataset.cardWork);
+    if (!work || work._cardPreview || work.image || work.media || work._hydrated) return;
     hydratePublicWork(work).then(complete => {
-      if (complete === work) return;
-      document.querySelectorAll(`[data-work="${CSS.escape(String(work.id))}"] .home-shelf-art`).forEach(art => {
-        art.innerHTML = workCardVisual(complete);
-      });
-    }).catch(() => {});
+      if (!card.isConnected) return;
+      card.querySelector('.home-shelf-art').innerHTML = workCardVisual(complete);
+      const backCopy = card.querySelector('.home-shelf-back p');
+      if (backCopy) backCopy.textContent = (complete.description || complete.text || complete.medium || 'View the full card for details.').slice(0, 300);
+      settleShelfCard(card);
+    }).catch(() => {
+      if (!card.isConnected) return;
+      card.querySelector('.home-shelf-art').innerHTML = '<span class="card-unavailable">Preview unavailable</span>';
+      settleShelfCard(card);
+      publicShardCache.delete(publicShardUrl(work, gallery, PUBLIC_CORPUS_ENDPOINT));
+    });
+  };
+  const cards = [...document.querySelectorAll('.is-flippable-card[data-card-work]')];
+  if (!('IntersectionObserver' in window)) { cards.slice(0, 12).forEach(hydrate); return; }
+  publicCardsObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    publicCardsObserver.unobserve(entry.target);
+    hydrate(entry.target);
   }), { rootMargin: '240px' });
-  document.querySelectorAll('.home-shelf-card[data-work]').forEach(button => {
-    const work = gallery.works.find(candidate => String(candidate.id) === button.dataset.work);
-    if (work?.shardId && !work.image && !work.media) observer.observe(button);
+  cards.forEach(card => {
+    const work = gallery.works.find(candidate => String(candidate.id) === card.dataset.cardWork);
+    if (work?.shardId && !work._cardPreview && !work.image && !work.media && !work._hydrated) publicCardsObserver.observe(card);
   });
 };
-if (previewMode) app.innerHTML = '<main class="empty"><p class="eyebrow">Josh McGary</p><h1>Opening the archive…</h1></main>';
+app.innerHTML = '<main class="empty" role="status" aria-label="Loading"><span class="page-loading-spinner" aria-hidden="true"></span></main>';
 
 const publicArchiveHost = /(^|\.)joshmcgary\.com$/i.test(location.hostname);
-const progressivePublicHome = publicArchiveHost && activeType === 'All';
 gallery = previewMode || publicArchiveHost ? null : await readStoredGallery();
-if (progressivePublicHome) renderHome([]);
 if (previewMode || !gallery) {
   try {
     gallery = publicArchiveHost ? await loadPublicCorpus() : await loadBundledGallery();
@@ -2051,23 +2206,54 @@ if (previewMode || !gallery) {
     }
   }
 }
-if (gallery && progressivePublicHome) await renderPublicHomeProgressively(gallery);
-else if (gallery) {
-  renderGallery();
+if (gallery && (activeType === 'Music' || String(requestedWorkId || '').startsWith('audio-youtube-'))) {
+  try {
+    const audioResponse = await fetch('./data/music-discography.json', { cache: 'no-store' });
+    if (!audioResponse.ok) throw new Error(`Official audio catalogue returned ${audioResponse.status}.`);
+    gallery = withOfficialAudio(gallery, await audioResponse.json());
+  } catch (error) {
+    console.error('Official audio catalogue unavailable:', error);
+    gallery.audioSourceError = 'Official releases are temporarily unavailable. Showing available linked recordings only.';
+  }
 }
-else if (!previewMode) renderEmpty();
-if (gallery && requestedWorkId) {
-  const requestedWork = gallery.works.find(work => String(work.permanentWorkId || work.id) === requestedWorkId || String(work.id) === requestedWorkId);
+if (gallery && (activeType === 'Images' || activeType === 'All' || requestedWorkId)) {
+  try {
+    const response = await fetch('./art-display-repairs.json', {cache:'no-store'});
+    if (!response.ok) throw new Error(`Art display repairs returned ${response.status}`);
+    artDisplayRepairs = await response.json();
+    if (artDisplayRepairs.schema !== 'josh-art-display-repairs-v1') throw new Error('Incomplete Art display repair feed');
+    gallery = {...gallery, works:gallery.works.map(work => applyArtImageCorrection(work, artDisplayRepairs))};
+  } catch (error) { artDisplayRepairs = null; console.error(error); }
+}
+if (gallery && (activeType === 'Images' || activeType === 'All')) {
+  try {
+    const response = await fetch('./card-previews.json', {cache:'no-store'});
+    if (response.ok) {const feed=await response.json();gallery={...gallery,works:gallery.works.map(work=>attachCardPreview(work,feed))};}
+  } catch (error) {console.warn('Card previews unavailable; using original artwork.',error);}
+}
+if (gallery && activeType === 'Images') {
+  try {
+    const response = await fetch('./wordpress-categories.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Category feed returned ${response.status}`);
+    wordpressCategoryFeed = await response.json();
+    if (wordpressCategoryFeed.schema !== 'josh-wordpress-categories-v1') throw new Error('Incomplete category feed');
+    gallery = {...gallery, works:gallery.works.map(work => attachWordPressTags(work, wordpressCategoryFeed))};
+  } catch (error) {
+    wordpressCategoryFeed = null;
+    wordpressCategoryError = 'Categories are temporarily unavailable. Browse All Art or filter by year.';
+    console.error(error);
+  }
+}
+if (gallery) {
+  const requestedWork = requestedWorkId && gallery.works.find(work => String(work.permanentWorkId || work.id) === requestedWorkId || String(work.id) === requestedWorkId);
   if (requestedWork) {
     if (/^(?:www\.)?joshmcgary\.com$/i.test(location.hostname)) activeType = viewerForWork(requestedWork);
     detailExpanded = false;
     detailSide = 'image';
-    renderWork(requestedWork);
-    hydratePublicWork(requestedWork).then(complete => {
-      if (complete !== requestedWork) renderWork(complete);
-    }).catch(() => {});
-  }
-}
+    const readyWork = await hydratePublicWork(requestedWork).catch(() => requestedWork);
+    renderWork(readyWork);
+  } else renderGallery();
+} else if (!previewMode) renderEmpty();
 window.addEventListener('popstate', () => {
   if (!gallery) return;
   const workId = new URLSearchParams(location.search).get('work');
